@@ -1,0 +1,236 @@
+import {
+  boolean,
+  check,
+  index,
+  integer,
+  pgEnum,
+  pgTable,
+  smallint,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+
+export const bookingStatusEnum = pgEnum("booking_status", [
+  "pending",
+  "confirmed",
+  "cancelled",
+  "no_show",
+]);
+
+export const bookingKindEnum = pgEnum("booking_kind", ["slot", "table"]);
+
+export const waitlistRoleEnum = pgEnum("waitlist_role", [
+  "customer",
+  "business",
+]);
+
+export const category = pgTable("category", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  kind: text("kind").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const location = pgTable("location", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id"),
+  name: text("name").notNull(),
+  cityName: text("city_name"),
+  kind: text("kind").notNull().default("city"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const business = pgTable("business", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  categoryId: uuid("category_id").references(() => category.id),
+  locationId: uuid("location_id").references(() => location.id),
+  status: text("status").notNull().default("draft"),
+  timezone: text("timezone").notNull().default("Europe/Nicosia"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const staff = pgTable("staff", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id")
+    .notNull()
+    .references(() => business.id),
+  locationId: uuid("location_id").references(() => location.id),
+  name: text("name").notNull(),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const service = pgTable("service", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id")
+    .notNull()
+    .references(() => business.id),
+  name: text("name").notNull(),
+  durationMinutes: integer("duration_minutes").notNull(),
+  staffId: uuid("staff_id").references(() => staff.id),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const resource = pgTable("resource", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id")
+    .notNull()
+    .references(() => business.id),
+  locationId: uuid("location_id").references(() => location.id),
+  name: text("name").notNull(),
+  kind: text("kind").notNull().default("table"),
+  seats: integer("seats"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const availabilityRule = pgTable(
+  "availability_rule",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => business.id),
+    staffId: uuid("staff_id").references(() => staff.id),
+    resourceId: uuid("resource_id").references(() => resource.id),
+    weekday: smallint("weekday"),
+    startsAtMinutes: integer("starts_at_minutes").notNull(),
+    endsAtMinutes: integer("ends_at_minutes").notNull(),
+    timezone: text("timezone").notNull().default("Europe/Nicosia"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    check(
+      "availability_minutes",
+      sql`${t.startsAtMinutes} >= 0 AND ${t.endsAtMinutes} > ${t.startsAtMinutes} AND ${t.endsAtMinutes} <= 1440`,
+    ),
+  ],
+);
+
+export const customer = pgTable(
+  "customer",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => business.id),
+    phone: text("phone").notNull(),
+    name: text("name"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("customer_tenant_phone").on(t.tenantId, t.phone)],
+);
+
+export const consent = pgTable("consent", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tenantId: uuid("tenant_id").references(() => business.id),
+  subjectType: text("subject_type").notNull(),
+  subjectId: uuid("subject_id"),
+  purpose: text("purpose").notNull(),
+  granted: boolean("granted").notNull(),
+  grantedAt: timestamp("granted_at", { withTimezone: true }).notNull().defaultNow(),
+  textVersion: text("text_version").notNull(),
+  channel: text("channel").notNull().default("web"),
+  retentionDays: integer("retention_days").notNull(),
+  retainUntil: timestamp("retain_until", { withTimezone: true }).notNull(),
+  withdrawnAt: timestamp("withdrawn_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const booking = pgTable(
+  "booking",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => business.id),
+    locationId: uuid("location_id").references(() => location.id),
+    kind: bookingKindEnum("kind").notNull(),
+    staffId: uuid("staff_id").references(() => staff.id),
+    serviceId: uuid("service_id").references(() => service.id),
+    resourceId: uuid("resource_id").references(() => resource.id),
+    customerId: uuid("customer_id").references(() => customer.id),
+    status: bookingStatusEnum("status").notNull().default("pending"),
+    startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
+    endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+    displayTimezone: text("display_timezone").notNull().default("Europe/Nicosia"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    check("booking_time_order", sql`${t.endsAt} > ${t.startsAt}`),
+    index("booking_tenant_starts_idx").on(t.tenantId, t.startsAt),
+  ],
+);
+
+export const waitlistEntry = pgTable(
+  "waitlist_entry",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    role: waitlistRoleEnum("role").notNull(),
+    name: text("name").notNull(),
+    phone: text("phone").notNull(),
+    city: text("city"),
+    consentId: uuid("consent_id")
+      .notNull()
+      .references(() => consent.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("waitlist_phone_role").on(t.phone, t.role)],
+);
+
+export const deletionRequest = pgTable("deletion_request", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  phone: text("phone"),
+  email: text("email"),
+  status: text("status").notNull().default("received"),
+  details: text("details"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  processedAt: timestamp("processed_at", { withTimezone: true }),
+});
+
+export const otpChallenge = pgTable(
+  "otp_challenge",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    phone: text("phone").notNull(),
+    purpose: text("purpose").notNull().default("login"),
+    codeHash: text("code_hash"),
+    ipHash: text("ip_hash"),
+    sendCount: integer("send_count").notNull().default(0),
+    attemptCount: integer("attempt_count").notNull().default(0),
+    windowStartedAt: timestamp("window_started_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    lastSentAt: timestamp("last_sent_at", { withTimezone: true }),
+    lockedUntil: timestamp("locked_until", { withTimezone: true }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("otp_phone_purpose_idx").on(t.phone, t.purpose)],
+);
+
+export const otpIpWindow = pgTable("otp_ip_window", {
+  ipHash: text("ip_hash").primaryKey(),
+  windowStartedAt: timestamp("window_started_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  sendCount: integer("send_count").notNull().default(0),
+  lockedUntil: timestamp("locked_until", { withTimezone: true }),
+});
+
+export const rateLimitWindow = pgTable("rate_limit_window", {
+  key: text("key").primaryKey(),
+  windowStartedAt: timestamp("window_started_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  hitCount: integer("hit_count").notNull().default(0),
+});

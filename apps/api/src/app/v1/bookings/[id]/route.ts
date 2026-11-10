@@ -1,0 +1,80 @@
+import { z } from "zod";
+import {
+  BookingStatusError,
+  TenantAccessError,
+  getBookingForTenant,
+  isDatabaseConfigured,
+  updateBookingStatus,
+} from "@ada-merkez/db";
+import { apiMessages } from "@ada-merkez/copy";
+import { corsHeaders, json, readJson } from "../../../../lib/http";
+import { sessionOr401 } from "../../../../lib/auth";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(
+  request: Request,
+  context: { params: Promise<{ id: string }> },
+) {
+  const headers = corsHeaders(request);
+  const auth = sessionOr401(request, headers);
+  if (!auth.ok) return auth.response;
+  if (!isDatabaseConfigured()) {
+    return json(
+      { ok: false, code: "SERVICE_UNAVAILABLE", message: apiMessages.dbUnavailable },
+      503,
+      headers,
+    );
+  }
+  const { id } = await context.params;
+  try {
+    const row = await getBookingForTenant(auth.session.tenantId, id);
+    return json({ ok: true, booking: row }, 200, headers);
+  } catch (error: unknown) {
+    if (error instanceof TenantAccessError) {
+      return json({ ok: false, code: error.code, message: apiMessages.notFound }, 404, headers);
+    }
+    return json({ ok: false, code: "ERROR" }, 500, headers);
+  }
+}
+
+const PatchBody = z.object({
+  status: z.enum(["pending", "confirmed", "cancelled", "no_show"]),
+});
+
+export async function PATCH(
+  request: Request,
+  context: { params: Promise<{ id: string }> },
+) {
+  const headers = corsHeaders(request);
+  const auth = sessionOr401(request, headers);
+  if (!auth.ok) return auth.response;
+  const parsed = PatchBody.safeParse(await readJson(request));
+  if (!parsed.success) {
+    return json({ ok: false, code: "INVALID" }, 400, headers);
+  }
+  if (!isDatabaseConfigured()) {
+    return json(
+      { ok: false, code: "SERVICE_UNAVAILABLE", message: apiMessages.dbUnavailable },
+      503,
+      headers,
+    );
+  }
+  const { id } = await context.params;
+  try {
+    const row = await updateBookingStatus(auth.session.tenantId, id, parsed.data.status);
+    return json({ ok: true, booking: row }, 200, headers);
+  } catch (error: unknown) {
+    if (error instanceof TenantAccessError) {
+      return json({ ok: false, code: error.code, message: apiMessages.notFound }, 404, headers);
+    }
+    if (error instanceof BookingStatusError) {
+      return json({ ok: false, code: error.code, message: error.message }, error.status, headers);
+    }
+    return json({ ok: false, code: "ERROR" }, 500, headers);
+  }
+}
+
+export function OPTIONS(request: Request) {
+  return json({ ok: true }, 204, corsHeaders(request));
+}

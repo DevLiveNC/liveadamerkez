@@ -1,0 +1,34 @@
+{
+  "name": "ada-merkez",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Ada Merkez — Kuzey Kıbrıs ve Türkiye için işletme keşfi, randevu ve rezervasyon.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev:api": "npm run dev -w @ada-merkez/api",
+    "dev:landing": "npm run dev -w @ada-merkez/landing",
+    "build": "npm run build -w @ada-merkez/api && npm run build -w @ada-merkez/landing",
+    "build:api": "npm run build -w @ada-merkez/api",
+    "build:landing": "npm run build -w @ada-merkez/landing",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "e2e": "playwright test",
+    "copy-check": "node scripts/copy-check.mjs",
+    "db:migrate": "npm run migrate -w @ada-merkez/db",
+    "ci": "npm run lint && npm run typecheck && npm run copy-check && npm run test && npm run build && npm run e2e"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^22.19.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

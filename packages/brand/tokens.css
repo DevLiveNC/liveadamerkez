@@ -1,0 +1,183 @@
+/* Ada Merkez — tasarım jetonları v1 (2026-11-10)
+   Kaynak: /workspace/ada-merkez/tasarim/tokens.json
+   Kullanım: kökte data-theme="light" | "dark" (varsayılan: light). */
+
+:root,
+[data-theme="light"] {
+  --am-color-background: #f7f4ef;
+  --am-color-surface: #ffffff;
+  --am-color-surface-muted: #ede8e0;
+  --am-color-text: #0f2c44;
+  --am-color-text-muted: #6b665e;
+  --am-color-text-subtle: #8c877e;
+  --am-color-border: #d6d0c6;
+
+  --am-color-primary: #0f2c44;
+  --am-color-primary-hover: #0a1f31;
+  --am-color-on-primary: #ffffff;
+  --am-color-secondary: #1f6a8f;
+  --am-color-on-secondary: #ffffff;
+  --am-color-accent: #e4572e;
+  --am-color-accent-hover: #c2410c;
+  --am-color-accent-soft: #f4d6c8;
+  --am-color-on-accent: #ffffff;
+
+  /* Açık zeminde metin/ikon için AA sağlayan değerler */
+  --am-color-success: #007a3d;
+  --am-color-success-fill: #007a3d;
+  --am-color-success-subtle: #e3f6ec;
+  --am-color-warning: #a16207;
+  --am-color-warning-fill: #a16207;
+  --am-color-warning-subtle: #fbf3d8;
+  --am-color-danger: #c62828;
+  --am-color-danger-fill: #c62828;
+  --am-color-danger-subtle: #fdecec;
+  --am-color-info: #1e6aa6;
+  --am-color-info-fill: #1e6aa6;
+  --am-color-info-subtle: #e6f3fb;
+  --am-color-focus: #e4572e;
+  --am-color-live: #00d26a;
+
+  --am-shadow-sm: 0 1px 2px rgba(15, 44, 68, 0.06);
+  --am-shadow-md: 0 8px 24px rgba(15, 44, 68, 0.1);
+  --am-shadow-lg: 0 16px 48px rgba(15, 44, 68, 0.16);
+  --am-shadow-pin: 0 8px 24px rgba(228, 87, 46, 0.28);
+}
+
+[data-theme="dark"] {
+  --am-color-background: #0a1624;
+  --am-color-surface: #0f2c44;
+  --am-color-surface-muted: #16344f;
+  --am-color-text: #f7f4ef;
+  --am-color-text-muted: #b8b2a8;
+  --am-color-text-subtle: #8c877e;
+  --am-color-border: #1a4566;
+
+  --am-color-primary: #f7f4ef;
+  --am-color-primary-hover: #ffffff;
+  --am-color-on-primary: #0f2c44;
+  --am-color-secondary: #3e8fb5;
+  --am-color-on-secondary: #0a1624;
+  --am-color-accent: #e4572e;
+  --am-color-accent-hover: #f07a52;
+  --am-color-accent-soft: #5a2618;
+  --am-color-on-accent: #ffffff;
+
+  --am-color-success: #00d26a;
+  --am-color-success-fill: #00d26a;
+  --am-color-success-subtle: #0b3a24;
+  --am-color-warning: #e8a317;
+  --am-color-warning-fill: #e8a317;
+  --am-color-warning-subtle: #3a2e0e;
+  --am-color-danger: #ff8a80;
+  --am-color-danger-fill: #ff8a80;
+  --am-color-danger-subtle: #3a1515;
+  --am-color-info: #7ec4f0;
+  --am-color-info-fill: #7ec4f0;
+  --am-color-info-subtle: #0e2f45;
+  --am-color-focus: #f07a52;
+  --am-color-live: #00d26a;
+
+  --am-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --am-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.36);
+  --am-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.45);
+  --am-shadow-pin: 0 8px 24px rgba(228, 87, 46, 0.4);
+}
+
+/* Marka sabitleri (tema bağımsız) */
+:root {
+  --am-brand-navy: #0f2c44;
+  --am-brand-navy-deep: #0a1624;
+  --am-brand-navy-mid: #1a4566;
+  --am-brand-aegean: #1f6a8f;
+  --am-brand-coral: #e4572e;
+  --am-brand-coral-dark: #c2410c;
+  --am-brand-coral-light: #f07a52;
+  --am-brand-coral-soft: #f4d6c8;
+  --am-brand-sand: #f7f4ef;
+  --am-brand-sand-dark: #ede8e0;
+  --am-brand-cream: #fff8f3;
+  --am-brand-white: #ffffff;
+  --am-brand-ink: #12110f;
+  --am-brand-muted: #6b665e;
+  --am-brand-live: #00d26a;
+
+  --am-neutral-50: #f7f4ef;
+  --am-neutral-100: #ede8e0;
+  --am-neutral-200: #d6d0c6;
+  --am-neutral-300: #b8b2a8;
+  --am-neutral-400: #8c877e;
+  --am-neutral-500: #6b665e;
+  --am-neutral-600: #4a463f;
+  --am-neutral-700: #2f2c28;
+  --am-neutral-800: #1c1a17;
+  --am-neutral-900: #12110f;
+
+  --am-font-display: "Outfit", "Inter", system-ui, sans-serif;
+  --am-font-sans: "Inter", system-ui, sans-serif;
+
+  --am-text-xs: 0.75rem;
+  --am-text-sm: 0.875rem;
+  --am-text-md: 1rem;
+  --am-text-lg: 1.125rem;
+  --am-text-xl: 1.25rem;
+  --am-text-2xl: 1.5rem;
+  --am-text-3xl: 2rem;
+  --am-text-4xl: 2.5rem;
+  --am-text-5xl: 3rem;
+  --am-text-6xl: 4rem;
+
+  --am-leading-xs: 1rem;
+  --am-leading-sm: 1.25rem;
+  --am-leading-md: 1.5rem;
+  --am-leading-lg: 1.75rem;
+  --am-leading-xl: 1.75rem;
+  --am-leading-2xl: 2rem;
+  --am-leading-3xl: 2.5rem;
+  --am-leading-4xl: 3rem;
+  --am-leading-5xl: 3.5rem;
+  --am-leading-6xl: 4.5rem;
+
+  --am-space-0: 0;
+  --am-space-1: 0.25rem;
+  --am-space-2: 0.5rem;
+  --am-space-3: 0.75rem;
+  --am-space-4: 1rem;
+  --am-space-5: 1.25rem;
+  --am-space-6: 1.5rem;
+  --am-space-8: 2rem;
+  --am-space-10: 2.5rem;
+  --am-space-12: 3rem;
+  --am-space-16: 4rem;
+  --am-space-20: 5rem;
+  --am-space-24: 6rem;
+
+  --am-radius-sm: 4px;
+  --am-radius-md: 8px;
+  --am-radius-lg: 12px;
+  --am-radius-xl: 16px;
+  --am-radius-2xl: 24px;
+  --am-radius-full: 9999px;
+  --am-radius-icon: 22%;
+}
+
+html {
+  color-scheme: light;
+  background: var(--am-color-background);
+  color: var(--am-color-text);
+  font-family: var(--am-font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--am-font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--am-color-text);
+}
