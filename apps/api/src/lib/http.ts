@@ -19,13 +19,13 @@ export function corsHeaders(request: Request): Record<string, string> {
   const origin = request.headers.get("origin");
   const headers: Record<string, string> = {
     Vary: "Origin",
-    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, X-Tenant-Id",
+    "Access-Control-Allow-Methods": "GET,POST,PATCH,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, X-Tenant-Id, Authorization, X-Internal-Token",
   };
-  if (origin && (allowed.length === 0 || allowed.includes(origin) || allowed.includes("*"))) {
+  if (origin && allowed.includes(origin)) {
     headers["Access-Control-Allow-Origin"] = origin;
-  } else if (allowed.length === 1 && allowed[0]) {
-    headers["Access-Control-Allow-Origin"] = allowed[0];
+  } else if (allowed.includes("*") && origin) {
+    headers["Access-Control-Allow-Origin"] = origin;
   }
   return headers;
 }
@@ -36,4 +36,13 @@ export async function readJson<T>(request: Request): Promise<T | null> {
   } catch {
     return null;
   }
+}
+
+export function clientIp(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  return request.headers.get("x-real-ip")?.trim() || "0.0.0.0";
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { waitlist } from "@ada-merkez/copy";
 import { apiBase } from "../lib/api";
 
@@ -9,6 +9,21 @@ type Status = { kind: "ok" | "err"; text: string } | null;
 export function WaitlistForm({ defaultRole = "customer" }: { defaultRole?: "customer" | "business" }) {
   const [status, setStatus] = useState<Status>(null);
   const [pending, setPending] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const base = apiBase();
+    if (!base) {
+      setOpen(false);
+      return;
+    }
+    fetch(`${base}/health`)
+      .then((response) => response.json())
+      .then((body: { waitlistOpen?: boolean }) => {
+        setOpen(body.waitlistOpen === true);
+      })
+      .catch(() => setOpen(false));
+  }, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -53,6 +68,10 @@ export function WaitlistForm({ defaultRole = "customer" }: { defaultRole?: "cust
         form.reset();
         return;
       }
+      if (response.status === 503 && body?.code === "waitlist_closed") {
+        setOpen(false);
+        return;
+      }
       if (response.status === 409) {
         setStatus({ kind: "err", text: waitlist.duplicate });
         return;
@@ -70,6 +89,21 @@ export function WaitlistForm({ defaultRole = "customer" }: { defaultRole?: "cust
     } finally {
       setPending(false);
     }
+  }
+
+  if (!open) {
+    return (
+      <div className="form-card" role="status">
+        <p>
+          <strong>{waitlist.closedTitle}</strong>
+        </p>
+        <p>{waitlist.closedBody}</p>
+        <p>
+          {waitlist.retentionNote}{" "}
+          <a href="/yasal/kvkk">{waitlist.kvkkPlaceholder}</a>
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -105,6 +139,10 @@ export function WaitlistForm({ defaultRole = "customer" }: { defaultRole?: "cust
         <input type="checkbox" name="consent" required />
         <span>{waitlist.consentLabel}</span>
       </label>
+      <p>
+        {waitlist.retentionNote}{" "}
+        <a href="/yasal/kvkk">{waitlist.kvkkPlaceholder}</a>
+      </p>
       <label className="checkbox">
         <input type="checkbox" name="whatsapp" />
         <span>{waitlist.whatsappLabel}</span>

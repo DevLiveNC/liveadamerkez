@@ -7,7 +7,7 @@ import {
   listBookingsForTenant,
 } from "@ada-merkez/db";
 import { corsHeaders, json, readJson } from "../../../lib/http";
-import { readTenantId } from "../../../lib/tenant-header";
+import { sessionOr401 } from "../../../lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -20,15 +20,12 @@ const Body = z.object({
   serviceId: z.string().uuid().optional(),
   customerId: z.string().uuid().optional(),
   locationId: z.string().uuid().optional(),
-  status: z.enum(["pending", "confirmed", "cancelled", "no_show"]).optional(),
 });
 
 export async function GET(request: Request) {
   const headers = corsHeaders(request);
-  const tenantId = readTenantId(request);
-  if (!tenantId) {
-    return json({ ok: false, code: "TENANT_REQUIRED" }, 401, headers);
-  }
+  const auth = sessionOr401(request, headers);
+  if (!auth.ok) return auth.response;
   if (!isDatabaseConfigured()) {
     return json(
       { ok: false, code: "SERVICE_UNAVAILABLE", message: apiMessages.dbUnavailable },
@@ -36,16 +33,14 @@ export async function GET(request: Request) {
       headers,
     );
   }
-  const rows = await listBookingsForTenant(tenantId);
+  const rows = await listBookingsForTenant(auth.session.tenantId);
   return json({ ok: true, bookings: rows }, 200, headers);
 }
 
 export async function POST(request: Request) {
   const headers = corsHeaders(request);
-  const tenantId = readTenantId(request);
-  if (!tenantId) {
-    return json({ ok: false, code: "TENANT_REQUIRED" }, 401, headers);
-  }
+  const auth = sessionOr401(request, headers);
+  if (!auth.ok) return auth.response;
   const parsed = Body.safeParse(await readJson(request));
   if (!parsed.success) {
     return json({ ok: false, code: "INVALID" }, 400, headers);
@@ -59,7 +54,7 @@ export async function POST(request: Request) {
   }
   try {
     const row = await createBooking({
-      tenantId,
+      tenantId: auth.session.tenantId,
       kind: parsed.data.kind,
       startsAt: new Date(parsed.data.startsAt),
       endsAt: new Date(parsed.data.endsAt),
@@ -68,7 +63,7 @@ export async function POST(request: Request) {
       serviceId: parsed.data.serviceId,
       customerId: parsed.data.customerId,
       locationId: parsed.data.locationId,
-      status: parsed.data.status ?? "pending",
+      status: "pending",
     });
     return json({ ok: true, booking: row }, 201, headers);
   } catch (error) {

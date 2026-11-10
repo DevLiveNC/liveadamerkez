@@ -1,6 +1,7 @@
 import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import * as schema from "./schema.js";
+import { pgSslOption } from "./ssl.js";
 
 export type Database = NodePgDatabase<typeof schema>;
 
@@ -17,11 +18,10 @@ export function getPool(): pg.Pool {
     throw new Error("DATABASE_URL tanımlı değil.");
   }
   if (!pool) {
-    const neon = url.includes("neon.tech") || url.includes("sslmode=require");
     pool = new pg.Pool({
       connectionString: url,
       max: Number(process.env.DB_POOL_MAX ?? 5),
-      ssl: neon ? { rejectUnauthorized: false } : undefined,
+      ssl: pgSslOption(url),
     });
   }
   return pool;
@@ -52,6 +52,11 @@ export async function withTenant<T>(
   try {
     await client.query("BEGIN");
     await client.query("SELECT set_config('app.tenant_id', $1, true)", [tenantId]);
+    try {
+      await client.query("SET LOCAL ROLE ada_app");
+    } catch {
+      /* rol yoksa app.tenant_id ile devam */
+    }
     const value = await fn(client);
     await client.query("COMMIT");
     return value;
@@ -61,6 +66,16 @@ export async function withTenant<T>(
   } finally {
     client.release();
   }
+}
+
+export async function withTenantDb<T>(
+  tenantId: string,
+  fn: (db: Database) => Promise<T>,
+): Promise<T> {
+  return withTenant(tenantId, async (client) => {
+    const scoped = drizzle(client, { schema });
+    return fn(scoped);
+  });
 }
 
 export async function closePool(): Promise<void> {

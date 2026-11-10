@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { apiMessages } from "@ada-merkez/copy";
 import { isDatabaseConfigured, verifyOtp } from "@ada-merkez/db";
+import { toE164 } from "@ada-merkez/shared";
 import { corsHeaders, json, readJson } from "../../../../lib/http";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +18,10 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return json({ ok: false, code: "INVALID" }, 400, headers);
   }
+  const phone = toE164(parsed.data.phone);
+  if (!phone) {
+    return json({ ok: false, code: "INVALID" }, 400, headers);
+  }
   if (!isDatabaseConfigured()) {
     return json(
       { ok: false, code: "SERVICE_UNAVAILABLE", message: apiMessages.dbUnavailable },
@@ -24,20 +29,18 @@ export async function POST(request: Request) {
       headers,
     );
   }
-  const decision = await verifyOtp(
-    parsed.data.phone,
-    parsed.data.purpose ?? "login",
-    false,
-  );
+  const decision = await verifyOtp(phone, parsed.data.purpose ?? "login", parsed.data.code);
+  if (decision.ok) {
+    return json({ ok: true, verified: true }, 200, headers);
+  }
   const status =
-    !decision.ok && (decision.code === "LOCKED" || decision.code === "MAX_ATTEMPTS")
-      ? 429
-      : 401;
+    decision.code === "LOCKED" || decision.code === "MAX_ATTEMPTS" ? 429 : 401;
   return json(
     {
       ok: false,
-      code: decision.ok ? "NOT_ISSUED" : decision.code,
+      code: decision.code,
       message: apiMessages.otpLimited,
+      retryAfterMs: "retryAfterMs" in decision ? decision.retryAfterMs : undefined,
     },
     status,
     headers,

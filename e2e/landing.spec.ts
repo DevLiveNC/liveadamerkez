@@ -8,7 +8,7 @@ test.beforeAll(() => {
   fs.mkdirSync(artifactDir, { recursive: true });
 });
 
-test("landing smoke: copy, PWA, waitlist, legal placeholder", async ({ page }) => {
+test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ page }) => {
   const response = await page.goto("/");
   expect(response?.ok()).toBeTruthy();
 
@@ -23,10 +23,9 @@ test("landing smoke: copy, PWA, waitlist, legal placeholder", async ({ page }) =
   await expect(page.locator("body")).not.toContainText(/ücretsiz kurulum/i);
   await expect(page.locator("body")).not.toContainText(/ilk ve tek/i);
 
-  await expect(page.locator("form")).toBeVisible();
-  await expect(
-    page.getByRole("checkbox", { name: /Bekleme listesi kaydım/ }),
-  ).toBeVisible();
+  await expect(page.getByText("Bekleme listesi çok yakında açılıyor")).toBeVisible();
+  await expect(page.getByRole("link", { name: /KVKK aydınlatma metni yakında/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Listeye yazıl" })).toHaveCount(0);
 
   const manifest = await page.request.get("/manifest.webmanifest");
   expect(manifest.ok()).toBeTruthy();
@@ -49,15 +48,6 @@ test("landing smoke: copy, PWA, waitlist, legal placeholder", async ({ page }) =
 
   await page.goto("/yasal/aydinlatma");
   await expect(page.getByText("Kullanıcı onayı bekliyor")).toBeVisible();
-});
-
-test("waitlist form stays usable when API is unreachable", async ({ page }) => {
-  await page.goto("/");
-  await page.getByRole("textbox", { name: "Ad", exact: true }).fill("Deneme Kullanıcı");
-  await page.getByRole("textbox", { name: "Telefon" }).fill("+905331112233");
-  await page.getByRole("checkbox", { name: /Bekleme listesi kaydım/ }).check();
-  await page.getByRole("button", { name: "Listeye yazıl" }).click();
-  await expect(page.getByRole("status")).toContainText(/alınamıyor|daha sonra/i);
 });
 
 test("desktop screenshot", async ({ page }) => {

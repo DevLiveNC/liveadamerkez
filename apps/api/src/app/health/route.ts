@@ -1,4 +1,4 @@
-import { APP_TIMEZONE } from "@ada-merkez/shared";
+import { APP_TIMEZONE, isWaitlistOpen } from "@ada-merkez/shared";
 import { checkDatabase, isDatabaseConfigured } from "@ada-merkez/db";
 import { corsHeaders, json } from "../../lib/http";
 
@@ -12,6 +12,7 @@ export async function GET(request: Request) {
       service: "ada-merkez-api",
       db,
       timezone: process.env.APP_TIMEZONE?.trim() || APP_TIMEZONE,
+      waitlistOpen: isWaitlistOpen(),
     },
     200,
     corsHeaders(request),

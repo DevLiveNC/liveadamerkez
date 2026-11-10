@@ -11,6 +11,13 @@ export type OtpChallengeState = {
   expiresAt: number | null;
 };
 
+export type OtpIpState = {
+  ipHash: string;
+  sendCount: number;
+  windowStartedAt: number;
+  lockedUntil: number | null;
+};
+
 export type OtpSendDecision =
   | { ok: true; next: OtpChallengeState }
   | { ok: false; code: "RATE_LIMITED"; retryAfterMs: number; next: OtpChallengeState };
@@ -153,6 +160,64 @@ export function evaluateOtpVerify(
     ok: false,
     code: "INVALID",
     next: { ...current, attemptCount },
+  };
+}
+
+export type OtpIpDecision =
+  | { ok: true; next: OtpIpState }
+  | { ok: false; code: "RATE_LIMITED"; retryAfterMs: number; next: OtpIpState };
+
+export function evaluateOtpIpSend(
+  current: OtpIpState | null,
+  now: number,
+  ipHash: string,
+): OtpIpDecision {
+  let state: OtpIpState = current ?? {
+    ipHash,
+    sendCount: 0,
+    windowStartedAt: now,
+    lockedUntil: null,
+  };
+
+  if (state.lockedUntil !== null && now < state.lockedUntil) {
+    return {
+      ok: false,
+      code: "RATE_LIMITED",
+      retryAfterMs: state.lockedUntil - now,
+      next: state,
+    };
+  }
+
+  if (now - state.windowStartedAt >= OTP_POLICY.windowMs) {
+    state = {
+      ipHash,
+      sendCount: 0,
+      windowStartedAt: now,
+      lockedUntil: null,
+    };
+  }
+
+  if (state.sendCount >= OTP_POLICY.maxSendsPerIpWindow) {
+    const retryAfterMs = OTP_POLICY.windowMs - (now - state.windowStartedAt);
+    const locked: OtpIpState = {
+      ...state,
+      lockedUntil: now + Math.max(retryAfterMs, 0),
+    };
+    return {
+      ok: false,
+      code: "RATE_LIMITED",
+      retryAfterMs: Math.max(retryAfterMs, 0),
+      next: locked,
+    };
+  }
+
+  return {
+    ok: true,
+    next: {
+      ...state,
+      sendCount: state.sendCount + 1,
+      lockedUntil: null,
+    },
   };
 }
 

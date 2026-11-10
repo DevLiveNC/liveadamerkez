@@ -31,7 +31,10 @@ jobs:
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/ada_merkez_test
       APP_TIMEZONE: Europe/Nicosia
-      NEXT_PUBLIC_API_URL: ""
+      NEXT_PUBLIC_API_URL: http://127.0.0.1:3001
+      CORS_ORIGINS: http://127.0.0.1:3100
+      AUTH_SECRET: e2e-auth-secret
+      OTP_PEPPER: e2e-otp-pepper
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

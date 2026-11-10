@@ -2,7 +2,7 @@
 
 **Tarih:** 10 Kasım 2026 (Asia/Famagusta)  
 **Sahip:** KIRMIZIYÜZ Live Development Software LTD  
-**Ürün:** KKTC süper uygulaması (işletme keşfi, randevu/rezervasyon, WhatsApp AI rezervasyonu, QR menü, POS, bilet, öğrenci indirimi)  
+**Ürün:** Kuzey Kıbrıs ve Türkiye için süper uygulama (işletme keşfi, randevu/rezervasyon, WhatsApp AI rezervasyonu, QR menü, POS, bilet, öğrenci indirimi)  
 **Bu belge:** Tasarım botu, v1. Dev botu jetonlar için `tokens.json` ve `tokens.css` dosyalarını kullanır.
 
 ## 1. Seçilen yön

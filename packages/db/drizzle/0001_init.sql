@@ -275,7 +275,13 @@ CREATE POLICY business_self ON business
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'ada_app') THEN
-    CREATE ROLE ada_app LOGIN PASSWORD 'ada_app';
+    CREATE ROLE ada_app NOLOGIN;
+  ELSE
+    BEGIN
+      ALTER ROLE ada_app WITH NOLOGIN;
+    EXCEPTION WHEN OTHERS THEN
+      RAISE NOTICE 'ada_app NOLOGIN yapılamadı: %', SQLERRM;
+    END;
   END IF;
 EXCEPTION WHEN insufficient_privilege THEN
   RAISE NOTICE 'ada_app rolü oluşturulamadı; API düzeyinde kiracı süzmesi geçerlidir.';

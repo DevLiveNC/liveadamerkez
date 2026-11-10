@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { apiMessages } from "@ada-merkez/copy";
-import { RETENTION_DAYS } from "@ada-merkez/shared";
+import { RETENTION_DAYS, isWaitlistOpen, toE164 } from "@ada-merkez/shared";
 import {
   isDatabaseConfigured,
   recordConsent,
@@ -19,13 +19,11 @@ const Body = z.object({
   whatsappUpdatesGranted: z.boolean().optional(),
 });
 
-function normalizePhone(input: string): string {
-  const digits = input.replace(/[^\d+]/g, "");
-  return digits;
-}
-
 export async function POST(request: Request) {
   const headers = corsHeaders(request);
+  if (!isWaitlistOpen()) {
+    return json({ ok: false, code: "waitlist_closed" }, 503, headers);
+  }
   const raw = await readJson<unknown>(request);
   const parsed = Body.safeParse(raw);
   if (!parsed.success) {
@@ -57,7 +55,10 @@ export async function POST(request: Request) {
     );
   }
 
-  const phone = normalizePhone(parsed.data.phone);
+  const phone = toE164(parsed.data.phone);
+  if (!phone) {
+    return json({ ok: false, code: "INVALID", message: "Geçerli bir telefon yazın." }, 400, headers);
+  }
   try {
     const primary = await recordConsent({
       purpose: "waitlist_contact",

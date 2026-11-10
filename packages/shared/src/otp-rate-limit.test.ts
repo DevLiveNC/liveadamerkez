@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   OTP_POLICY,
+  evaluateOtpIpSend,
   evaluateOtpSend,
   evaluateOtpVerify,
 } from "./otp-rate-limit.js";
@@ -62,6 +63,19 @@ describe("OTP rate limit and attempt cap", () => {
     const sent = evaluateOtpSend(null, t0, PHONE);
     const ok = evaluateOtpVerify(sent.next, t0 + 500, true);
     expect(ok.ok).toBe(true);
+  });
+
+  it("blocks a fourth send from the same IP hash", () => {
+    const t0 = 5_000_000;
+    const ip = "abcd";
+    let state = null;
+    for (let i = 0; i < OTP_POLICY.maxSendsPerIpWindow; i += 1) {
+      const result = evaluateOtpIpSend(state, t0, ip);
+      expect(result.ok).toBe(true);
+      state = result.next;
+    }
+    const blocked = evaluateOtpIpSend(state, t0 + 10, ip);
+    expect(blocked.ok).toBe(false);
   });
 
   it("rejects verify after code ttl", () => {

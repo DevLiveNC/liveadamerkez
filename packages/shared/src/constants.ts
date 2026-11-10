@@ -30,8 +30,23 @@ export const CONSENT_TEXT_VERSION = "placeholder-pending-approval" as const;
 
 export const OTP_POLICY = {
   maxSendsPerWindow: 3,
+  maxSendsPerIpWindow: 8,
   windowMs: 15 * 60 * 1000,
   maxVerifyAttempts: 5,
   lockMs: 30 * 60 * 1000,
   codeTtlMs: 5 * 60 * 1000,
 } as const;
+
+export const BOOKING_STATUS_TRANSITIONS: Record<
+  BookingStatus,
+  readonly BookingStatus[]
+> = {
+  pending: ["confirmed", "cancelled"],
+  confirmed: ["cancelled", "no_show"],
+  cancelled: [],
+  no_show: [],
+};
+
+export function isWaitlistOpen(value = process.env.WAITLIST_OPEN): boolean {
+  return value?.trim() === "true";
+}

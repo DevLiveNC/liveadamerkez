@@ -203,6 +203,7 @@ export const otpChallenge = pgTable(
     phone: text("phone").notNull(),
     purpose: text("purpose").notNull().default("login"),
     codeHash: text("code_hash"),
+    ipHash: text("ip_hash"),
     sendCount: integer("send_count").notNull().default(0),
     attemptCount: integer("attempt_count").notNull().default(0),
     windowStartedAt: timestamp("window_started_at", { withTimezone: true })
@@ -216,3 +217,20 @@ export const otpChallenge = pgTable(
   },
   (t) => [index("otp_phone_purpose_idx").on(t.phone, t.purpose)],
 );
+
+export const otpIpWindow = pgTable("otp_ip_window", {
+  ipHash: text("ip_hash").primaryKey(),
+  windowStartedAt: timestamp("window_started_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  sendCount: integer("send_count").notNull().default(0),
+  lockedUntil: timestamp("locked_until", { withTimezone: true }),
+});
+
+export const rateLimitWindow = pgTable("rate_limit_window", {
+  key: text("key").primaryKey(),
+  windowStartedAt: timestamp("window_started_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  hitCount: integer("hit_count").notNull().default(0),
+});

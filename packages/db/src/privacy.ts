@@ -1,9 +1,10 @@
+import { and, eq, or } from "drizzle-orm";
 import {
   CONSENT_TEXT_VERSION,
   RETENTION_DAYS,
 } from "@ada-merkez/shared";
 import { getDb } from "./client.js";
-import { consent, deletionRequest, waitlistEntry } from "./schema.js";
+import { booking, consent, customer, deletionRequest, waitlistEntry } from "./schema.js";
 
 export function retainUntil(days: number, from = new Date()): Date {
   return new Date(from.getTime() + days * 24 * 60 * 60 * 1000);
@@ -71,6 +72,76 @@ export async function createDeletionRequest(input: {
     })
     .returning();
   return row;
+}
+
+const ANON_NAME = "silindi";
+
+export async function anonymizePersonalData(input: {
+  phone?: string | null;
+  email?: string | null;
+}) {
+  const db = getDb();
+  const phone = input.phone ?? null;
+  const email = input.email ?? null;
+  if (!phone && !email) return { waitlist: 0, customers: 0, bookings: 0 };
+
+  const waitlistClauses = [];
+  if (phone) waitlistClauses.push(eq(waitlistEntry.phone, phone));
+  const waitlistRows = waitlistClauses.length
+    ? await db.select().from(waitlistEntry).where(or(...waitlistClauses))
+    : [];
+
+  let waitlistCount = 0;
+  for (const row of waitlistRows) {
+    await db
+      .update(waitlistEntry)
+      .set({
+        name: ANON_NAME,
+        phone: `deleted:${row.id}`,
+      })
+      .where(eq(waitlistEntry.id, row.id));
+    waitlistCount += 1;
+  }
+
+  let customerCount = 0;
+  if (phone) {
+    const customers = await db.select().from(customer).where(eq(customer.phone, phone));
+    for (const row of customers) {
+      await db
+        .update(customer)
+        .set({
+          name: ANON_NAME,
+          phone: `deleted:${row.id}`,
+        })
+        .where(and(eq(customer.id, row.id), eq(customer.tenantId, row.tenantId)));
+      customerCount += 1;
+      await db
+        .update(booking)
+        .set({ notes: null })
+        .where(eq(booking.customerId, row.id));
+    }
+  }
+
+  return { waitlist: waitlistCount, customers: customerCount, bookings: customerCount };
+}
+
+export async function processDeletionRequest(id: string) {
+  const db = getDb();
+  const [row] = await db.select().from(deletionRequest).where(eq(deletionRequest.id, id)).limit(1);
+  if (!row) return null;
+  await anonymizePersonalData({ phone: row.phone, email: row.email });
+  const [updated] = await db
+    .update(deletionRequest)
+    .set({
+      status: "processed",
+      processedAt: new Date(),
+      phone: row.phone ? `deleted:${row.id}` : null,
+      email: row.email ? `deleted:${row.id}` : null,
+      details: null,
+    })
+    .where(eq(deletionRequest.id, id))
+    .returning();
+  return updated;
 }
 
 export { RETENTION_DAYS, CONSENT_TEXT_VERSION };

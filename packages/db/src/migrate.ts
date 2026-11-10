@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
+import { pgSslOption } from "./ssl.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const sqlDir = path.resolve(here, "../drizzle");
@@ -10,7 +11,10 @@ export async function migrate(databaseUrl = process.env.DATABASE_URL): Promise<v
   if (!databaseUrl) {
     throw new Error("DATABASE_URL tanımlı değil; migration atlandı değil, hata.");
   }
-  const client = new pg.Client({ connectionString: databaseUrl });
+  const client = new pg.Client({
+    connectionString: databaseUrl,
+    ssl: pgSslOption(databaseUrl),
+  });
   await client.connect();
   try {
     await client.query(`

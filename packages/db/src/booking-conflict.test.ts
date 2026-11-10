@@ -2,7 +2,13 @@ import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { migrate } from "./migrate.js";
 import { closePool, getPool, isDatabaseConfigured } from "./client.js";
-import { BookingConflictError, createBooking, listBookingsForTenant } from "./bookings.js";
+import {
+  BookingConflictError,
+  BookingStatusError,
+  createBooking,
+  listBookingsForTenant,
+  updateBookingStatus,
+} from "./bookings.js";
 
 const hasDb = isDatabaseConfigured();
 
@@ -134,5 +140,22 @@ describe.skipIf(!hasDb)("DB-level double booking protection", () => {
     const onlyA = await listBookingsForTenant(a.tenantId);
     expect(onlyA.every((row) => row.tenantId === a.tenantId)).toBe(true);
     expect(onlyA.some((row) => row.tenantId === b.tenantId)).toBe(false);
+  });
+
+  it("rejects illegal status transitions", async () => {
+    const { tenantId, staffId } = await seedTenant("status");
+    const row = await createBooking({
+      tenantId,
+      kind: "slot",
+      staffId,
+      startsAt: new Date("2026-09-01T10:00:00.000Z"),
+      endsAt: new Date("2026-09-01T11:00:00.000Z"),
+      status: "pending",
+    });
+    const confirmed = await updateBookingStatus(tenantId, row!.id, "confirmed");
+    expect(confirmed?.status).toBe("confirmed");
+    await expect(updateBookingStatus(tenantId, row!.id, "pending")).rejects.toBeInstanceOf(
+      BookingStatusError,
+    );
   });
 });

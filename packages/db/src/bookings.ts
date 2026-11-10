@@ -1,9 +1,13 @@
 import { and, eq } from "drizzle-orm";
 import type { BookingKind, BookingStatus } from "@ada-merkez/shared";
-import { TenantAccessError, assertSameTenant } from "@ada-merkez/shared";
+import {
+  TenantAccessError,
+  assertSameTenant,
+  canTransitionBookingStatus,
+} from "@ada-merkez/shared";
 
 export { TenantAccessError };
-import { getDb, getPool } from "./client.js";
+import { getPool, withTenantDb } from "./client.js";
 import { booking } from "./schema.js";
 
 export class BookingConflictError extends Error {
@@ -13,6 +17,16 @@ export class BookingConflictError extends Error {
   constructor(message = "Bu saat aralığı dolu.") {
     super(message);
     this.name = "BookingConflictError";
+  }
+}
+
+export class BookingStatusError extends Error {
+  readonly status = 422;
+  readonly code = "INVALID_STATUS_TRANSITION";
+
+  constructor(message = "Bu durum geçişi geçerli değil.") {
+    super(message);
+    this.name = "BookingStatusError";
   }
 }
 
@@ -52,26 +66,27 @@ function isExclusionViolation(error: unknown): boolean {
 }
 
 export async function createBooking(input: NewBooking) {
-  const db = getDb();
   try {
-    const [row] = await db
-      .insert(booking)
-      .values({
-        tenantId: input.tenantId,
-        kind: input.kind,
-        startsAt: input.startsAt,
-        endsAt: input.endsAt,
-        staffId: input.staffId ?? null,
-        resourceId: input.resourceId ?? null,
-        serviceId: input.serviceId ?? null,
-        customerId: input.customerId ?? null,
-        locationId: input.locationId ?? null,
-        status: input.status ?? "pending",
-        displayTimezone: input.displayTimezone ?? "Europe/Nicosia",
-        notes: input.notes ?? null,
-      })
-      .returning();
-    return row;
+    return await withTenantDb(input.tenantId, async (db) => {
+      const [row] = await db
+        .insert(booking)
+        .values({
+          tenantId: input.tenantId,
+          kind: input.kind,
+          startsAt: input.startsAt,
+          endsAt: input.endsAt,
+          staffId: input.staffId ?? null,
+          resourceId: input.resourceId ?? null,
+          serviceId: input.serviceId ?? null,
+          customerId: input.customerId ?? null,
+          locationId: input.locationId ?? null,
+          status: input.status ?? "pending",
+          displayTimezone: input.displayTimezone ?? "Europe/Nicosia",
+          notes: input.notes ?? null,
+        })
+        .returning();
+      return row;
+    });
   } catch (error) {
     if (isExclusionViolation(error)) {
       throw new BookingConflictError();
@@ -80,19 +95,48 @@ export async function createBooking(input: NewBooking) {
   }
 }
 
+export async function updateBookingStatus(
+  tenantId: string,
+  bookingId: string,
+  status: BookingStatus,
+) {
+  return withTenantDb(tenantId, async (db) => {
+    const [existing] = await db
+      .select()
+      .from(booking)
+      .where(and(eq(booking.id, bookingId), eq(booking.tenantId, tenantId)))
+      .limit(1);
+    if (!existing) {
+      throw new TenantAccessError();
+    }
+    assertSameTenant(existing.tenantId, tenantId);
+    if (!canTransitionBookingStatus(existing.status, status)) {
+      throw new BookingStatusError();
+    }
+    const [row] = await db
+      .update(booking)
+      .set({ status, updatedAt: new Date() })
+      .where(and(eq(booking.id, existing.id), eq(booking.tenantId, tenantId)))
+      .returning();
+    return row;
+  });
+}
+
 export async function listBookingsForTenant(tenantId: string) {
-  return getDb()
-    .select()
-    .from(booking)
-    .where(eq(booking.tenantId, tenantId));
+  return withTenantDb(tenantId, (db) =>
+    db.select().from(booking).where(eq(booking.tenantId, tenantId)),
+  );
 }
 
 export async function getBookingForTenant(tenantId: string, bookingId: string) {
-  const [row] = await getDb()
-    .select()
-    .from(booking)
-    .where(and(eq(booking.id, bookingId), eq(booking.tenantId, tenantId)))
-    .limit(1);
+  const row = await withTenantDb(tenantId, async (db) => {
+    const [found] = await db
+      .select()
+      .from(booking)
+      .where(and(eq(booking.id, bookingId), eq(booking.tenantId, tenantId)))
+      .limit(1);
+    return found ?? null;
+  });
   if (!row) {
     throw new TenantAccessError();
   }

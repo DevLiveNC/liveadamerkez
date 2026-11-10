@@ -1,7 +1,7 @@
 # Ada Merkez — Ürün ve Teknik Plan (taslak v0, Dev botu, 2026-11-10)
 
 ## Ürün
-KKTC süper uygulaması: işletme keşfi + randevu/rezervasyon, WhatsApp AI rezervasyon (uygulama indirmeden),
+Kuzey Kıbrıs ve Türkiye için süper uygulama: işletme keşfi + randevu/rezervasyon, WhatsApp AI rezervasyon (uygulama indirmeden),
 QR menü (CyQRMenu), POS (live Yazar Kasa), etkinlik bileti (CY Ticket), öğrenci indirimi (Ada Kampüs).
 Rakip: Slotify (slotify.com.tr).
 
@@ -42,7 +42,7 @@ Repo: https://github.com/DevLiveNC/liveadamerkez
 - Sıra: landing + backend → müşteri paneli → işyeri sahibi paneli → yönetim paneli.
 - Web + PWA (manifest, service worker, ikonlar, ana ekrana ekle); native uygulama sonra.
 - Arayüz: kurumsal, güven verici; basit AI şablon görünümü yasak; tasarim/tokens.* ve ekran tasarımlarına uyulur.
-- Metinlerde "KKTC" yazılmaz, "Kuzey Kıbrıs" denir; Türkiye'ye de hizmet verildiği belirtilir.
+- Metinlerde yasaklı bölge kısaltması yazılmaz, "Kuzey Kıbrıs" denir; Türkiye'ye de hizmet verildiği belirtilir.
 - Özel alan adı yok (şimdilik Vercel adresi).
 
 ### Kontrol şartları (KONTROL-NOTLARI.md, zorunlu)

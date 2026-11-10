@@ -115,6 +115,14 @@ export const waitlist = {
     "Bekleme listesi kaydı şu anda alınamıyor. Lütfen daha sonra yeniden deneyin.",
   consentRequired: "Devam etmek için açık rıza kutusunu işaretleyin.",
   invalid: "Lütfen ad ve telefon alanlarını kontrol edin.",
+  closedTitle: "Bekleme listesi çok yakında açılıyor",
+  closedBody:
+    "Yasal metinler onaylanınca kayıt alınacak. Şu an form kapalıdır; veri yazılmaz.",
+  retentionNote:
+    "Açık rıza ile iletişim bilgileri önerilen 730 gün saklanır; süre yasal metin onayıyla kesinleşir.",
+  kvkkPlaceholder: "KVKK aydınlatma metni yakında",
+  consentLegal:
+    "Aydınlatma metni yer tutucudur. Kayıt açılınca iletişim rızası bu kutudan alınır.",
 } as const;
 
 export const install = {

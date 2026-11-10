@@ -2,7 +2,7 @@
 
 ## 2026-11-10 · PLAN.md v0 incelemesi — Koşullu onay
 Plan yönü uygun; aşağıdakiler kodlamadan önce plana eklenmeli:
-1. Kişisel veri: telefon, rezervasyon ve müşteri verisi işleniyor. Aydınlatma metni, açık rıza (WhatsApp hatırlatma mesajları dahil), saklama süresi ve silme talebi akışı planda yok. KKTC mevzuatı ve TR'li kullanıcılar için KVKK, yasal metinler kullanıcı onayıyla yazılmalı.
+1. Kişisel veri: telefon, rezervasyon ve müşteri verisi işleniyor. Aydınlatma metni, açık rıza (WhatsApp hatırlatma mesajları dahil), saklama süresi ve silme talebi akışı planda yok. Kuzey Kıbrıs mevzuatı ve TR'li kullanıcılar için KVKK, yasal metinler kullanıcı onayıyla yazılmalı.
 2. Çift rezervasyon: aynı slot/masa için veritabanı düzeyinde benzersizlik veya kilit (yalnızca uygulama kontrolü yetmez).
 3. WhatsApp OTP: istek sınırlama (rate limit), deneme sınırı ve kötüye kullanım koruması.
 4. Çok kiracılı yetki: işletme paneli yalnızca kendi işletmesinin verisini görebilmeli; testle doğrulanmalı.

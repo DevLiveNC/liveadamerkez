@@ -4,7 +4,7 @@
  * Hedef: landing, i18n, meta, OG, manifest, API kullanıcı mesajları.
  *
  * Yasak:
- * - KKTC (bölge adı: Kuzey Kıbrıs)
+ * - yasaklı bölge kısaltması (bölge adı: Kuzey Kıbrıs)
  * - üstünlük iddiası (ilk / tek)
  * - onaylanmamış ücretsiz teklif
  */
@@ -13,12 +13,7 @@ import path from "node:path";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 
-const TARGET_DIRS = [
-  "apps/landing/src",
-  "apps/landing/public",
-  "apps/api/src",
-  "packages/copy",
-];
+const TARGET_DIRS = ["apps", "packages", "docs"];
 
 const EXTENSIONS = new Set([
   ".ts",
@@ -95,11 +90,17 @@ const files = TARGET_DIRS.flatMap((rel) => walk(path.join(ROOT, rel)));
 /** @type {{ file: string, line: number, id: string, excerpt: string, hint: string }[]} */
 const hits = [];
 
+function scanLine(line) {
+  return line
+    .replace(/https?:\/\/\S+/gi, "")
+    .replace(/\[[^\]]*\]\([^)]*\)/g, "");
+}
+
 for (const file of files) {
   const text = fs.readFileSync(file, "utf8");
   const lines = text.split(/\r?\n/);
   for (let i = 0; i < lines.length; i += 1) {
-    const line = lines[i] ?? "";
+    const line = scanLine(lines[i] ?? "");
     for (const rule of RULES) {
       if (rule.pattern.test(line)) {
         hits.push({
@@ -125,5 +126,5 @@ if (hits.length > 0) {
 }
 
 console.log(
-  `copy-check: ${files.length} dosya tarandı, yasaklı ifade yok (KKTC / ilk-tek iddiası / ücretsiz teklif).`,
+  `copy-check: ${files.length} dosya tarandı, yasaklı ifade yok (bölge kısaltması / ilk-tek iddiası / ücretsiz teklif).`,
 );
