@@ -49,8 +49,9 @@ export function Header() {
               <button type="button" aria-pressed="true">
                 TR
               </button>
-              <button type="button" aria-pressed="false">
+              <button type="button" disabled aria-disabled="true" aria-label={nav.enLabel} title={nav.enSoon}>
                 EN
+                <span className="lang-soon">{nav.enSoon}</span>
               </button>
             </div>
           ) : null}

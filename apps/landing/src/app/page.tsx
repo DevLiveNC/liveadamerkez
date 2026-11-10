@@ -17,6 +17,7 @@ import {
   waitlist,
   whatsappFlow,
 } from "@ada-merkez/copy";
+import { SearchWhen } from "../components/SearchWhen";
 import { WaitlistForm } from "../components/WaitlistForm";
 
 function StockImg({
@@ -137,7 +138,7 @@ export default function HomePage() {
             </div>
             <div className="search-field">
               <span>{search.whenLabel}</span>
-              <strong>{search.whenValue}</strong>
+              <SearchWhen />
             </div>
             <div className="search-go">
               <button className="btn btn-navy" type="submit">

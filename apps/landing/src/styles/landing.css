@@ -62,6 +62,17 @@
   background: var(--am-brand-navy);
   color: #fff;
 }
+.seg button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.lang-soon {
+  margin-left: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 .seg button:focus-visible { outline: none; box-shadow: var(--am-focus-ring); }
 .currency { gap: 0; }
 .currency-label {

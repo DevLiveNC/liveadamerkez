@@ -34,6 +34,8 @@ export const nav = {
   menu: "Menü",
   sections: "Bölümler",
   lang: "Dil",
+  enSoon: "Yakında",
+  enLabel: "EN, Yakında",
   homeAria: "Ada Merkez ana sayfa",
 } as const;
 
@@ -305,7 +307,7 @@ export const search = {
   whatLabel: "Ne arıyorsun",
   whatValue: "Kuaför, klinik veya restoran",
   whenLabel: "Ne zaman",
-  whenValue: "Yarın, 11 Kasım",
+  whenPrefix: "Yarın,",
   submit: "Saatleri gör",
   pilot:
     "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",

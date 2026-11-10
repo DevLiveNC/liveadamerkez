@@ -34,6 +34,21 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   ).toBeVisible();
   await expect(page.getByRole("link", { name: "Erken erişime kaydol" }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Kendi işletmeni ekle" }).first()).toBeVisible();
+  await expect(page.locator(".search-field").filter({ hasText: "Ne zaman" }).locator("strong")).toHaveText(
+    /^Yarın, \d{1,2} \S+$/,
+  );
+  await expect(page.locator(".nav-lang button[disabled]")).toBeDisabled();
+  await expect(page.locator(".nav-lang button[disabled]")).toContainText("EN");
+  await expect(page.locator(".nav-lang .lang-soon")).toHaveText("Yakında");
+  await expect(page.locator('link[rel="preload"][as="font"]')).toHaveCount(4);
+
+  const ofl = await page.request.get("/fonts/OFL.txt");
+  expect(ofl.ok()).toBeTruthy();
+  const oflText = await ofl.text();
+  expect(oflText).toMatch(/SIL Open Font License, Version 1\.1/);
+  expect(oflText).toMatch(/Inter Project Authors/);
+  expect(oflText).toMatch(/Plus Jakarta Sans Project Authors/);
+  expect((await page.request.get("/fonts/PlusJakartaSans-Variable.woff2")).status()).toBe(404);
   await expect(page.locator("body")).not.toContainText(/KKTC/i);
   await expect(page.locator("body")).not.toContainText(/ücretsiz kurulum/i);
   await expect(page.locator("body")).not.toContainText(/ilk ve tek/i);
