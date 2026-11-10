@@ -1,4 +1,5 @@
-/* Ada Merkez dekor — KAYNAK: ui/landing/assets/dekor/dekor.js
+/* Runtime değil (React: packages/ui/src/dekor/Dekor.tsx). Tasarım arşivi.
+   Ada Merkez dekor — KAYNAK: ui/landing/assets/dekor/dekor.js
    Etkinleştirme (html veya body):
      data-dekor="landing" | "app-giris" | "app-musteri" | "app-isletme" | "app-yonetici"
    Hafif paralaks (translate3d + rAF, ±16 px); prefers-reduced-motion kapalı.

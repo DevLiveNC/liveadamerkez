@@ -41,7 +41,7 @@ packages/db       Drizzle şema, SQL migration, kiracı + çift rezervasyon
 packages/shared   saat dilimi, OTP limit, kiracı yardımcıları
 packages/copy     kullanıcıya görünen metin (tek kaynak)
 packages/brand    tokens.css / tokens.json / logo
-packages/ui       ortak dekor (dekor.css/js, 1×/2× srcset, sahneler)
+packages/ui       ortak dekor (React Dekor, CSS, 1×/2× srcset)
 docs/             PLAN, kontrol notları, özellik listesi, bağlam
 ```
 

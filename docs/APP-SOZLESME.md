@@ -1,34 +1,40 @@
 # Ada Merkez — /app dekor sözleşmesi
 
-Müşteri, işletme ve yönetici panelleri ayrı PR’larda yazılır. Dekor ortak paketten gelir; sahne `data-dekor` ile seçilir. Kaynak: `packages/ui/dekor/` (`dekor.css`, `dekor.js`, `svg/`, `webp/`, `YERLESIM.md`).
+Müşteri, işletme ve yönetici panelleri ayrı PR’larda yazılır. Runtime: React `Dekor` (`@ada-merkez/ui`). `dekor.js` DOM’a ekleme yapmaz. Tek varlık kaynağı: `packages/ui/dekor/` (Next import; `public/assets/dekor` yok).
 
 ## Etkinleştirme
 
-Kök layout’ta CSS ve JS’yi ekle; `html` ve `body` üzerine sahneyi yaz:
+```tsx
+import { Dekor, DekorNavCorner } from "@ada-merkez/ui";
+import "@ada-merkez/ui/dekor.css";
 
-```html
 <html lang="tr" data-dekor="app-musteri">
-  <link rel="stylesheet" href="/assets/dekor/dekor.css">
-  …
   <body data-dekor="app-musteri">
-    …
-    <script src="/assets/dekor/dekor.js" defer></script>
+    {children}
+    <Dekor scene="app-musteri" />
   </body>
 </html>
 ```
 
-Varlıkları her Next uygulamasının `public/assets/dekor/` altına kopyala (landing bunu yapıyor). `dekor.js` yolundan `./webp` ve `./svg` çözer.
+Landing slot’ları sayfa ağacında (hero, bölüm arası). `data-dekor` html/body’de kalır (CSS sahneleri).
+
+İşletme / yönetici yan menü köşesi:
+
+```tsx
+<nav className="side-nav">
+  …
+  <DekorNavCorner />
+</nav>
+```
 
 ## Sahneler
 
-| `data-dekor` | Uygulama | Tipik rota |
+| `data-dekor` / `scene` | Uygulama | Tipik rota |
 | --- | --- | --- |
-| `landing` | Pazarlama (şimdi bağlı) | `/` |
+| `landing` | Pazarlama | `/` (`slot` ile yerleşim) |
 | `app-giris` | Giriş, kayıt, bekleme listesi, işletme başvurusu | `/app/giris`, formlar |
 | `app-musteri` | Müşteri (keşif, rezervasyon) | `/app/musteri/…` |
 | `app-isletme` | İşletme paneli | `/app/isletme/…` |
 | `app-yonetici` | Yönetici paneli | `/app/yonetici/…` veya `/app/yonetim/…` |
 
-Üretimde attribute yazılır. `dekor.js` yoksa sınıf/yoldan da tahmin eder; buna bel bağlanmaz.
-
-Yerleşim tabloları: `packages/ui/dekor/YERLESIM.md`. Paneller sade: kum grain + alt dalga şeridi + en fazla bir küçük sprite. Paralaks `prefers-reduced-motion: reduce` iken kapalı. `will-change` yalnızca kaydırma sırasında. Sprite CSS genişliği `floor(doğal2x / 2)` üstünü geçmez.
+Yerleşim: `packages/ui/dekor/YERLESIM.md`. Mobilde desk-only sprite DOM’a girmez. Masaüstü `srcset` 1× + 2×; 1× ekranda 2× dosya seçilmez. Paralaks `prefers-reduced-motion` kapalı; `will-change` yalnızca kaydırmada.

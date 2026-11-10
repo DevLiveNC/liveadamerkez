@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { site } from "@ada-merkez/copy";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
@@ -57,8 +56,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang={site.language} data-theme="light" data-dekor="landing">
       <head>
-        {/* eslint-disable-next-line @next/next/no-css-tags -- Tasarım dekor.css, göreli svg/kum-grain */}
-        <link rel="stylesheet" href="/assets/dekor/dekor.css" />
         <link rel="preload" href="/fonts/PlusJakartaSans-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/PlusJakartaSans-SemiBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
@@ -81,7 +78,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <InstallHint />
         <Footer />
         <ServiceWorkerRegister />
-        <Script src="/assets/dekor/dekor.js" strategy="afterInteractive" />
       </body>
     </html>
   );

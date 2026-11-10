@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
     config.resolve.extensionAlias = {
       ".js": [".ts", ".tsx", ".js"],
     };
+    config.module.rules.push({
+      test: /\.svg$/,
+      include: /packages\/ui\/dekor/,
+      type: "asset/resource",
+    });
     return config;
   },
 };

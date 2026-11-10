@@ -5,13 +5,17 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./dekor.css": "./dekor/dekor.css",
-    "./dekor.js": "./dekor/dekor.js"
+    "./dekor.css": "./dekor/dekor.css"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
+  "peerDependencies": {
+    "react": "^19.1.0"
+  },
   "devDependencies": {
+    "@types/react": "^19.1.16",
+    "react": "^19.1.0",
     "typescript": "^5.9.3"
   }
 }

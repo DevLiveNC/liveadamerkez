@@ -40,27 +40,28 @@ test("dekor sahnesi tüm landing sayfalarında; dalga/kum/köpük bitmap yok", a
         .join(" "),
     );
     expect(sources, route).not.toMatch(FORBIDDEN_BITMAP);
+    expect(await page.locator('script[src*="dekor.js"]').count()).toBe(0);
   }
 });
 
-test("landing YERLESIM: svg şeritler ve 2x spritelar", async ({ page }) => {
+test("landing YERLESIM: svg şeritler ve spritelar", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
-  await page.waitForSelector(".am-dekor-item");
+  await page.waitForFunction(() => document.querySelectorAll(".am-dekor-item").length === 8);
   await expect(page.locator(".am-dekor-item")).toHaveCount(8);
   await expect(page.locator(".am-dekor--zeytin.am-dekor--desk-only")).toHaveCount(1);
   await expect(page.locator(".am-dekor-band--foam")).toHaveCount(2);
   await expect(page.locator(".am-dekor-band--wave")).toHaveCount(2);
   await expect(page.locator(".am-dekor-band--tracks")).toHaveCount(1);
-  await expect(page.locator('img[src*="dalga-kenar.svg"]')).toHaveCount(2);
-  await expect(page.locator('img[src*="kopuk.svg"]')).toHaveCount(2);
-  await expect(page.locator('img[src*="ayak-izi.svg"]')).toHaveCount(1);
+  await expect(page.locator('img[src*="dalga-kenar"]')).toHaveCount(2);
+  await expect(page.locator('img[src*="kopuk"]')).toHaveCount(2);
+  await expect(page.locator('img[src*="ayak-izi"]')).toHaveCount(1);
 });
 
 test("dekor sprite: renderedWidth * DPR ≤ naturalWidth", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
-  await page.waitForSelector("section.hero img[data-am-dekor-sprite]");
+  await page.waitForFunction(() => document.querySelectorAll("section.hero img[data-am-dekor-sprite]").length >= 2);
   await page.locator("section.hero img[data-am-dekor-sprite]").evaluateAll(async (imgs) => {
     await Promise.all(
       imgs.map((img) => {
@@ -73,14 +74,16 @@ test("dekor sprite: renderedWidth * DPR ≤ naturalWidth", async ({ page }) => {
 
   const palmiye = dekorDisplaySize(
     {
-      src2x: "/assets/dekor/webp/palmiye.webp",
+      src2x: "/palmiye.webp",
       width2x: DEKOR_DIM_2X.palmiye.width2x,
       height2x: DEKOR_DIM_2X.palmiye.height2x,
+      src1x: "/palmiye-1x.webp",
     },
     156,
   );
   expect(palmiye.width).toBe(156);
   expect(withinNaturalPixels(palmiye.width, 2, DEKOR_DIM_2X.palmiye.width2x)).toBe(true);
+  expect(withinNaturalPixels(palmiye.width, 1, 156)).toBe(true);
 
   const live = await page.locator("img[data-am-dekor-sprite]").evaluateAll((imgs) => {
     const dpr = window.devicePixelRatio || 1;
@@ -107,6 +110,18 @@ test("dekor sprite: renderedWidth * DPR ≤ naturalWidth", async ({ page }) => {
   }
 });
 
+test("masaüstü 1x ekranda 2x palmiye inmez", async ({ page }) => {
+  const urls: string[] = [];
+  page.on("request", (req) => urls.push(req.url()));
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await page.waitForFunction(() => document.querySelectorAll(".am-dekor-item").length === 8);
+  const palmiye2x = urls.filter(
+    (url) => /palmiye/.test(url) && !/palmiye-1x/.test(url) && !/palmiye-m/.test(url) && /\.webp(?:\?|$)/.test(url),
+  );
+  expect(palmiye2x, palmiye2x.join("\n")).toEqual([]);
+});
+
 test("landing yatay taşma yok", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
@@ -123,7 +138,7 @@ test("landing yatay taşma yok", async ({ page }) => {
 test("dekor metin/kart/düğme ile çakışmaz", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
-  await page.waitForSelector(".am-dekor-item");
+  await page.waitForFunction(() => document.querySelectorAll(".am-dekor-item").length === 8);
   const hits = await page.evaluate((textSel) => {
     const overlap = (a: DOMRect, b: DOMRect) => {
       const x = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
@@ -152,14 +167,14 @@ test("dekor metin/kart/düğme ile çakışmaz", async ({ page }) => {
   expect(hits, hits.join("\n")).toEqual([]);
 });
 
-test("mobilde desk-only gizlenir", async ({ page }) => {
+test("mobilde desk-only DOM'da yok", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.waitForSelector(".am-dekor-item");
-  const visibleDeskOnly = await page.locator(".am-dekor--desk-only").evaluateAll((els) =>
-    els.filter((el) => window.getComputedStyle(el).display !== "none").length,
-  );
-  expect(visibleDeskOnly).toBe(0);
+  await expect(page.locator(".am-dekor--desk-only")).toHaveCount(0);
+  await expect(page.locator(".am-dekor--sarmal")).toHaveCount(0);
+  await expect(page.locator(".am-dekor--begonvil")).toHaveCount(0);
+  await expect(page.locator(".am-dekor--cakil")).toHaveCount(0);
 });
 
 test("reduced-motion paralaksı kapatır", async ({ page }) => {
