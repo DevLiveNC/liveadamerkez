@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isAppPath, loginUrl, parseAppRoleParam, safeAppPath } from "./app-path.js";
+import { isAppPath, loginUrl, parseAppRoleParam, readNextParam, safeAppPath } from "./app-path.js";
 
 describe("safeAppPath", () => {
   it("allows /app and nested app paths", () => {
@@ -26,6 +26,15 @@ describe("isAppPath", () => {
     expect(isAppPath("/app/giris")).toBe(true);
     expect(isAppPath("/apple")).toBe(false);
     expect(isAppPath("/")).toBe(false);
+  });
+});
+
+describe("readNextParam", () => {
+  it("re-filters next on every read", () => {
+    expect(readNextParam(new URLSearchParams("next=/app/hesap"))).toBe("/app/hesap");
+    expect(readNextParam(new URLSearchParams("next=https://evil.test/app"))).toBe("/app");
+    expect(readNextParam(new URLSearchParams("next=/apple"), "/app/randevular")).toBe("/app/randevular");
+    expect(readNextParam(null)).toBe("/app");
   });
 });
 

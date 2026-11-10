@@ -4,6 +4,18 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@ada-merkez/copy", "@ada-merkez/brand", "@ada-merkez/shared", "@ada-merkez/ui"],
   poweredByHeader: false,
   reactStrictMode: true,
+  async headers() {
+    return [
+      {
+        source: "/app/sw.js",
+        headers: [
+          { key: "Content-Type", value: "application/javascript; charset=utf-8" },
+          { key: "Service-Worker-Allowed", value: "/app/" },
+          { key: "Cache-Control", value: "no-cache" },
+        ],
+      },
+    ];
+  },
   webpack: (config) => {
     config.resolve.extensionAlias = {
       ".js": [".ts", ".tsx", ".js"],

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { app } from "@ada-merkez/copy";
-import { parseAppRoleParam, safeAppPath } from "@ada-merkez/shared";
+import { parseAppRoleParam, readNextParam } from "@ada-merkez/shared";
 import { GirisForm } from "../../../components/app/GirisForm";
 import { getSession } from "../../../lib/app-auth";
 
@@ -10,7 +10,7 @@ export default async function GirisPage({
   searchParams: Promise<{ rol?: string; kayit?: string; next?: string }>;
 }) {
   const params = await searchParams;
-  const next = safeAppPath(params.next);
+  const next = readNextParam(new URLSearchParams({ next: params.next ?? "" }));
   const session = await getSession();
   if (session) redirect(next);
   const role = parseAppRoleParam(params.rol);

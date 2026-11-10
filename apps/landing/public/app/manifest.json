@@ -6,7 +6,7 @@
   "lang": "tr",
   "dir": "ltr",
   "start_url": "/app",
-  "scope": "/app",
+  "scope": "/app/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "theme_color": "#0F2C44",

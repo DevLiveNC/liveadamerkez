@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { app } from "@ada-merkez/copy";
-import { safeAppPath, type SessionRole } from "@ada-merkez/shared";
+import { readNextParam, safeAppPath, type SessionRole } from "@ada-merkez/shared";
 import { apiBase } from "../../lib/api";
 
 const ROLES: { id: SessionRole; label: string }[] = [
@@ -33,7 +33,6 @@ export function GirisForm({
   const [debugCode, setDebugCode] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const next = useMemo(() => safeAppPath(nextPath), [nextPath]);
 
   const canRegister = role !== "admin";
   const isRegister = canRegister && mode === "register";
@@ -98,6 +97,10 @@ export function GirisForm({
         setError(body?.message ?? app.invalidCode);
         return;
       }
+      const next =
+        typeof window === "undefined"
+          ? safeAppPath(nextPath)
+          : readNextParam(new URLSearchParams(window.location.search), nextPath);
       router.replace(next);
       router.refresh();
     } catch {

@@ -48,6 +48,14 @@ export function safeAppPath(raw: unknown, fallback = APP_HOME): string {
   }
 }
 
+/** `next` query her okumada `safeAppPath` ile süzülür. */
+export function readNextParam(
+  search: { get(name: string): string | null } | null | undefined,
+  fallback = APP_HOME,
+): string {
+  return safeAppPath(search?.get("next"), safeAppPath(fallback));
+}
+
 export function loginUrl(options?: {
   next?: string | null;
   role?: SessionRole;

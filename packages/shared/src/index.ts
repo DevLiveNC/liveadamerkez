@@ -16,6 +16,7 @@ export {
   isAppPath,
   loginUrl,
   parseAppRoleParam,
+  readNextParam,
   roleToQuery,
   safeAppPath,
 } from "./app-path.js";

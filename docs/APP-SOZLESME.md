@@ -4,6 +4,10 @@ PWA `apps/landing` içinde `/app` altında yaşar. API `apps/api` üzerindedir. 
 
 Runtime dekor: React `Dekor` (`@ada-merkez/ui`). `dekor.js` DOM’a ekleme yapmaz ve sayfaya yüklenmez. Tek varlık kaynağı: `packages/ui/dekor/` (Next import `@ada-merkez/ui/dekor.css`; `public/assets/dekor` yok).
 
+## Yetki
+
+Her panel sayfası ve uçta `requireRole` (veya `requireSession`) zorunludur. Middleware rol kontrolü yapmaz; yalnızca `x-ada-path` ve `Cache-Control` yazar. Sayfa veya API rolü atlanırsa misafir veya yanlış rol o panele girer.
+
 ## Dekor
 
 ```tsx
@@ -69,9 +73,9 @@ await requireRole(["admin"], "/app/yonetim");
 - `getSession()` çerezdeki jetonu API `GET /v1/auth/me` ile doğrular. İstemci jetonu okumaz.
 - `requireSession(next)` yoksa `/app/giris?next=` (yalnız `/app` yolları).
 - `requireRole(role, next)` oturum yoksa girişe, rol uymazsa `/app/yetki` sayfasına gider.
-- Open redirect yok: `safeAppPath` yalnızca `/app` ve `/app/...` kabul eder (`/apple` ve `https://` elenir).
+- Open redirect yok: `next` her okumada `safeAppPath` / `readNextParam` ile süzülür (`/apple` ve `https://` elenir).
 
-Çerez: `am_session`, `HttpOnly`, `Path=/app`, `SameSite=Lax`. Landing BFF: `POST/DELETE /app/api/oturum`.
+Çerez: `am_session`, `HttpOnly`, `Path=/app`, `SameSite=Lax`. Landing BFF: `POST/DELETE /app/api/oturum`. BFF mutasyonları `Origin` / `Sec-Fetch-Site` ile aynı origin ister. `/app/api` yanıtları `Cache-Control: no-store`. `DELETE` ayrıca `Clear-Site-Data: "cache"` döner ve SW’ye `CLEAR_CACHES` mesajı gider.
 
 ## API
 
@@ -88,12 +92,14 @@ Sunucu yetkisi: `apps/api/src/lib/auth.ts` → `sessionOr401`, `requireRole`. Ki
 
 ## PWA
 
-- Manifest: `/app/manifest.json` — `start_url=/app`, `scope=/app`, `display=standalone`
+- Manifest: `/app/manifest.json` — `start_url=/app`, `scope=/app/`, `display=standalone`
 - İkonlar: `/app/icons/` (192, 512, maskable-512, apple-touch-180)
 - iOS splash: `/app/splash/` + `apple-touch-startup-image` (`IosSplashLinks`)
 - Kısayol: Keşif `/app`, Randevularım `/app/randevular`
-- Service worker: `/app/sw.js`, kayıt kapsamı `/app/`
+- Service worker: `/app/sw.js`, kayıt kapsamı `/app/` (manifest `scope` ile aynı)
 - Landing SW `/app` isteklerini işlemez
+- SW yalnızca kamu kabuğunu (`/app/offline.html`) ve statik ikon / splash / manifest dosyalarını önbelleğe alır. Gezinme, HTML ve RSC `network-only`; `cache.put` yok.
+- Kimlikli HTML, RSC ve `/app/api` yanıtları `Cache-Control: no-store`.
 
 ## Test hesapları
 

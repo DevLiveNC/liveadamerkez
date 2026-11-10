@@ -3,6 +3,8 @@ import { app, site } from "@ada-merkez/copy";
 import { AppChrome } from "../../components/app/AppChrome";
 import { IosSplashLinks } from "../../components/app/IosSplashLinks";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: app.title,
   description: app.description,

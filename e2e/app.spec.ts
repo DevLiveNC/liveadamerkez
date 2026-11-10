@@ -1,4 +1,26 @@
-import { expect, test } from "@playwright/test";
+import { randomInt, randomUUID } from "node:crypto";
+import pg from "pg";
+import { expect, test, type Page } from "@playwright/test";
+import { hashOtp } from "@ada-merkez/shared/node";
+
+const apiURL = process.env.PLAYWRIGHT_API_URL ?? "http://127.0.0.1:3001";
+
+async function cacheDump(page: Page): Promise<{ names: string[]; urls: string[]; body: string }> {
+  return page.evaluate(async () => {
+    const names = await caches.keys();
+    const urls: string[] = [];
+    const chunks: string[] = [];
+    for (const name of names) {
+      const cache = await caches.open(name);
+      for (const req of await cache.keys()) {
+        urls.push(req.url);
+        const res = await cache.match(req);
+        chunks.push(res ? await res.text() : "");
+      }
+    }
+    return { names, urls, body: chunks.join("\n") };
+  });
+}
 
 test("PWA app shell is guest-visible and login is role-tabbed", async ({ page }) => {
   const home = await page.goto("/app");
@@ -30,7 +52,7 @@ test("PWA app shell is guest-visible and login is role-tabbed", async ({ page })
     icons?: { src?: string }[];
   };
   expect(manifestBody.start_url).toBe("/app");
-  expect(manifestBody.scope).toBe("/app");
+  expect(manifestBody.scope).toBe("/app/");
   expect(manifestBody.display).toBe("standalone");
   expect(manifestBody.shortcuts?.some((item) => item.url === "/app/randevular")).toBe(true);
   expect(manifestBody.icons?.every((icon) => icon.src?.startsWith("/app/icons/"))).toBe(true);
@@ -38,7 +60,16 @@ test("PWA app shell is guest-visible and login is role-tabbed", async ({ page })
 
   const sw = await page.request.get("/app/sw.js");
   expect(sw.ok()).toBeTruthy();
-  expect(await sw.text()).toMatch(/ada-merkez-app/);
+  const swText = await sw.text();
+  expect(swText).toMatch(/ada-merkez-app-v3/);
+  expect(swText).toMatch(/CLEAR_CACHES/);
+  expect(swText).toMatch(/offline\.html/);
+  const offline = await page.request.get("/app/offline.html");
+  expect(offline.ok()).toBeTruthy();
+  expect(await offline.text()).not.toMatch(/KvkkProbe|\+90\d{10}/);
+
+  const hesapHeaders = await page.request.get("/app/hesap");
+  expect(hesapHeaders.headers()["cache-control"] ?? "").toMatch(/no-store/i);
 
   await page.goto("/app/giris");
   await expect(page.locator("html")).toHaveAttribute("data-dekor", "app-giris");
@@ -88,4 +119,90 @@ test("landing CTAs point at the app and waitlist stays closed", async ({ page })
   );
   await expect(page.getByText("Bekleme listesi çok yakında açılıyor")).toBeVisible();
   await expect(page.getByRole("button", { name: "Listeye yazıl" })).toHaveCount(0);
+});
+
+test("logout does not leave personal data in Cache Storage", async ({ page, request }) => {
+  test.setTimeout(90_000);
+  const health = await request.get(`${apiURL}/health`);
+  expect(health.ok()).toBeTruthy();
+  const healthBody = (await health.json()) as { db?: string };
+  test.skip(!process.env.DATABASE_URL, "DATABASE_URL gerekli");
+  expect(healthBody.db, JSON.stringify(healthBody)).toBe("connected");
+
+  const landingOrigin = new URL(page.url() === "about:blank" ? "http://127.0.0.1:3100/" : page.url()).origin;
+  const forged = await request.post("/app/api/oturum", {
+    headers: {
+      origin: "https://evil.test",
+      "sec-fetch-site": "cross-site",
+    },
+    data: { phone: "05551234567", code: "000000", role: "customer", mode: "login" },
+  });
+  expect(forged.status()).toBe(403);
+
+  const clearProbe = await request.delete("/app/api/oturum", {
+    headers: {
+      origin: landingOrigin,
+      "sec-fetch-site": "same-origin",
+    },
+  });
+  expect(clearProbe.status()).toBe(200);
+  expect(clearProbe.headers()["cache-control"] ?? "").toMatch(/no-store/i);
+  expect(clearProbe.headers()["clear-site-data"] ?? "").toMatch(/cache/i);
+
+  const marker = `KvkkProbe-${randomUUID().slice(0, 8)}`;
+  const phoneE164 = `+90555${String(randomInt(0, 10_000_000)).padStart(7, "0")}`;
+  const code = String(randomInt(0, 1_000_000)).padStart(6, "0");
+  process.env.OTP_PEPPER ??= "e2e-otp-pepper";
+  process.env.AUTH_SECRET ??= "e2e-auth-secret";
+  const databaseUrl = process.env.DATABASE_URL!;
+  const client = new pg.Client({ connectionString: databaseUrl });
+  await client.connect();
+  try {
+    await client.query(
+      `INSERT INTO app_account (phone, name, role) VALUES ($1, $2, 'customer')`,
+      [phoneE164, marker],
+    );
+    const now = new Date();
+    const expires = new Date(now.getTime() + 60 * 60 * 1000);
+    await client.query(
+      `INSERT INTO otp_challenge (phone, purpose, code_hash, send_count, attempt_count, window_started_at, last_sent_at, expires_at)
+       VALUES ($1, 'login', $2, 1, 0, $3, $3, $4)`,
+      [phoneE164, hashOtp(phoneE164, "login", code), now, expires],
+    );
+  } finally {
+    await client.end();
+  }
+
+  await page.goto("/app");
+  const login = await page.evaluate(async ({ phone, code: otp }) => {
+    const res = await fetch("/app/api/oturum", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ phone, code: otp, role: "customer", mode: "login" }),
+    });
+    return { ok: res.ok, body: await res.json().catch(() => null) };
+  }, { phone: phoneE164, code });
+  expect(login.ok, JSON.stringify(login.body)).toBeTruthy();
+
+  await page.goto("/app/hesap");
+  await expect(page.getByRole("button", { name: "Çıkış" })).toBeVisible();
+  await expect(page.getByText(marker)).toBeVisible();
+  await expect(page.getByText(phoneE164)).toBeVisible();
+
+  const loggedIn = await cacheDump(page);
+  expect(loggedIn.body).not.toContain(marker);
+  expect(loggedIn.body).not.toContain(phoneE164);
+  expect(loggedIn.urls.join("\n")).not.toMatch(/\/app\/hesap/);
+
+  const [logoutRes] = await Promise.all([
+    page.waitForResponse((res) => res.url().includes("/app/api/oturum") && res.request().method() === "DELETE"),
+    page.getByRole("button", { name: "Çıkış" }).click(),
+  ]);
+  expect(logoutRes.headers()["cache-control"] ?? "").toMatch(/no-store/i);
+  await page.waitForURL((url) => url.pathname === "/app" || url.pathname === "/app/");
+
+  const after = await cacheDump(page);
+  expect(after.body).not.toContain(marker);
+  expect(after.body).not.toContain(phoneE164);
+  expect(after.urls.join("\n")).not.toMatch(/\/app\/hesap|\?_rsc=/);
 });
