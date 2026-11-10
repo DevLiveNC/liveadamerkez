@@ -14,7 +14,21 @@ describe("HMAC session", () => {
     expect(claims?.role).toBe("business");
   });
 
-  it("rejects tampered tokens and missing secret", () => {
+  it("signs customer sessions without a tenant", () => {
+    const token = signSession({ role: "customer", sub: "cust-1" }, { secret: SECRET, ttlMs: 60_000 });
+    const claims = verifySession(token, SECRET);
+    expect(claims?.role).toBe("customer");
+    expect(claims?.sub).toBe("cust-1");
+    expect(claims?.tenantId).toBe("");
+  });
+
+  it("allows business sessions before a tenant is bound", () => {
+    const token = signSession({ role: "business", sub: "x" }, { secret: SECRET, ttlMs: 60_000 });
+    expect(verifySession(token, SECRET)?.role).toBe("business");
+    expect(verifySession(token, SECRET)?.tenantId).toBe("");
+  });
+
+  it("rejects unknown roles and expired tokens", () => {
     const token = signSession(
       { tenantId: "11111111-1111-4111-8111-111111111111", role: "admin", sub: "a" },
       { secret: SECRET, ttlMs: 60_000 },

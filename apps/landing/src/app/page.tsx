@@ -21,6 +21,7 @@ import { Dekor } from "@ada-merkez/ui";
 import { SampleBoardDate } from "../components/SampleBoardDate";
 import { SearchWhen } from "../components/SearchWhen";
 import { WaitlistForm } from "../components/WaitlistForm";
+import { AddToHomeSection } from "../components/AddToHomeSection";
 
 function StockImg({
   name,
@@ -98,10 +99,10 @@ export default function HomePage() {
             <h1 className="t-display">{hero.title}</h1>
             <p className="t-lede">{hero.lead}</p>
             <div className="hero-cta">
-              <a className="btn btn-coral btn-lg" href="#waitlist">
-                {hero.primaryCta}
+              <a className="btn btn-coral btn-lg" href="/app">
+                {cta.openApp}
               </a>
-              <a className="btn btn-ghost btn-lg" href="/basvuru">
+              <a className="btn btn-ghost btn-lg" href="/app/giris?rol=isletme&kayit=1">
                 {hero.secondaryCta}
               </a>
             </div>
@@ -636,7 +637,7 @@ export default function HomePage() {
             </aside>
           </div>
           <div className="biz-cta">
-            <a className="btn btn-coral" href="/basvuru">
+            <a className="btn btn-coral" href="/app/giris?rol=isletme&kayit=1">
               {cta.business}
             </a>
             <span className="note status-soon">{waitlist.closedShort}</span>
@@ -766,6 +767,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <AddToHomeSection />
+
       <section className="close" id="waitlist">
         <div className="wrap">
           <div className="close-box">
@@ -780,7 +783,7 @@ export default function HomePage() {
               <a className="btn btn-coral btn-lg" href="/bekleme-listesi">
                 {cta.customer}
               </a>
-              <a className="btn btn-ghost on-dark btn-lg" href="/basvuru">
+              <a className="btn btn-ghost on-dark btn-lg" href="/app/giris?rol=isletme&kayit=1">
                 {cta.business}
               </a>
               <p className="status-soon">{waitlist.closedShort}</p>

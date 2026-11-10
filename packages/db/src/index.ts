@@ -4,4 +4,5 @@ export * from "./bookings.js";
 export * from "./privacy.js";
 export * from "./otp.js";
 export * from "./marketing.js";
+export * from "./accounts.js";
 export { migrate } from "./migrate.js";

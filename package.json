@@ -23,6 +23,7 @@
     "e2e": "playwright test",
     "copy-check": "node scripts/copy-check.mjs",
     "db:migrate": "npm run migrate -w @ada-merkez/db",
+    "db:seed-test": "npm run seed-test -w @ada-merkez/db",
     "ci": "npm run lint && npm run typecheck && npm run copy-check && npm run test && npm run build && npm run e2e"
   },
   "devDependencies": {

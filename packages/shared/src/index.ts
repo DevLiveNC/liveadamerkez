@@ -9,3 +9,15 @@ export * from "./qr-channels.js";
 export * from "./referral.js";
 export * from "./events.js";
 export * from "./consent-cookie.js";
+export {
+  APP_HOME,
+  APP_LOGIN,
+  SESSION_COOKIE,
+  isAppPath,
+  loginUrl,
+  parseAppRoleParam,
+  roleToQuery,
+  safeAppPath,
+} from "./app-path.js";
+export { SESSION_ROLES, isSessionRole } from "./roles.js";
+export type { SessionRole } from "./roles.js";

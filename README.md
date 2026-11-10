@@ -4,7 +4,7 @@ Kuzey Kıbrıs ve Türkiye için işletme keşfi, randevu ve rezervasyon. Kuafö
 
 Şirket: **Kırmızıyüz Live Development Software LTD**.
 
-Bu PR: monorepo iskeleti, API’nin ilk hali, Türkçe PWA landing. Müşteri / işyeri / yönetim panelleri sonraki PR’lar.
+PWA uygulama `apps/landing` içinde `/app` altında (aynı origin, ayrı manifest ve service worker). Oturum sözleşmesi: `docs/APP-SOZLESME.md`.
 
 ## HeyTaksi’den uyarlanan yapı
 
@@ -33,7 +33,7 @@ Logo kesin değil. UI yalnızca `apps/landing/public/brand/logo.svg` yer tutucus
 
 ```
 apps/api          API (health, bekleme listesi, rıza/silme, OTP iskeleti, rezervasyon)
-apps/landing      Türkçe PWA landing
+apps/landing      Türkçe landing + `/app` PWA kabuğu (giriş, keşif, rol kapıları)
 apps/customer     yer tutucu (sonraki PR)
 apps/business     yer tutucu (sonraki PR)
 apps/admin        yer tutucu (sonraki PR)
@@ -60,6 +60,7 @@ Veritabanı (isteğe bağlı; landing’siz de çalışır):
 ```bash
 export DATABASE_URL=postgres://postgres:postgres@localhost:5432/ada_merkez
 npm run db:migrate
+npm run db:seed-test   # rastgele müşteri/işletme/yönetici; kodlar yalnızca stdout
 ```
 
 ```bash

@@ -9,7 +9,7 @@ import {
 } from "@ada-merkez/db";
 import { apiMessages } from "@ada-merkez/copy";
 import { corsHeaders, json, readJson } from "../../../../lib/http";
-import { sessionOr401 } from "../../../../lib/auth";
+import { requireRole, sessionOr401 } from "../../../../lib/auth";
 import { dispatchServerEvents } from "../../../../lib/analytics";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +21,11 @@ export async function GET(
   const headers = corsHeaders(request);
   const auth = sessionOr401(request, headers);
   if (!auth.ok) return auth.response;
+  const role = requireRole(auth.session, ["business", "admin"], headers);
+  if (!role.ok) return role.response;
+  if (!auth.session.tenantId) {
+    return json({ ok: false, code: "FORBIDDEN", message: apiMessages.forbidden }, 403, headers);
+  }
   if (!isDatabaseConfigured()) {
     return json(
       { ok: false, code: "SERVICE_UNAVAILABLE", message: apiMessages.dbUnavailable },
@@ -54,6 +59,11 @@ export async function PATCH(
   const headers = corsHeaders(request);
   const auth = sessionOr401(request, headers);
   if (!auth.ok) return auth.response;
+  const role = requireRole(auth.session, ["business", "admin"], headers);
+  if (!role.ok) return role.response;
+  if (!auth.session.tenantId) {
+    return json({ ok: false, code: "FORBIDDEN", message: apiMessages.forbidden }, 403, headers);
+  }
   const parsed = PatchBody.safeParse(await readJson(request));
   if (!parsed.success) {
     return json({ ok: false, code: "INVALID" }, 400, headers);

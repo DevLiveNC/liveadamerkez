@@ -1,0 +1,49 @@
+{
+  "id": "/app",
+  "name": "Ada Merkez",
+  "short_name": "Ada Merkez",
+  "description": "Kuzey Kıbrıs ve Türkiye için işletme keşfi, randevu ve rezervasyon. Dilersen uygulama indirmeden WhatsApp’tan hallet.",
+  "lang": "tr",
+  "dir": "ltr",
+  "start_url": "/app",
+  "scope": "/app",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0F2C44",
+  "background_color": "#F8F0E3",
+  "categories": ["lifestyle", "business"],
+  "icons": [
+    {
+      "src": "/app/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Keşif",
+      "short_name": "Keşif",
+      "url": "/app",
+      "icons": [{ "src": "/app/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Randevularım",
+      "short_name": "Randevu",
+      "url": "/app/randevular",
+      "icons": [{ "src": "/app/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

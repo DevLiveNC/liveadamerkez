@@ -28,6 +28,8 @@ export const waitlistRoleEnum = pgEnum("waitlist_role", [
   "business",
 ]);
 
+export const appRoleEnum = pgEnum("app_role", ["customer", "business", "admin"]);
+
 export const category = pgTable("category", {
   id: uuid("id").primaryKey().defaultRandom(),
   slug: text("slug").notNull().unique(),
@@ -111,6 +113,24 @@ export const availabilityRule = pgTable(
       "availability_minutes",
       sql`${t.startsAtMinutes} >= 0 AND ${t.endsAtMinutes} > ${t.startsAtMinutes} AND ${t.endsAtMinutes} <= 1440`,
     ),
+  ],
+);
+
+export const appAccount = pgTable(
+  "app_account",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    phone: text("phone").notNull(),
+    email: text("email"),
+    name: text("name"),
+    role: appRoleEnum("role").notNull(),
+    tenantId: uuid("tenant_id").references(() => business.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("app_account_phone_role").on(t.phone, t.role),
+    uniqueIndex("app_account_email_role").on(t.email, t.role),
   ],
 );
 

@@ -1,12 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { site } from "@ada-merkez/copy";
-import { Footer } from "../components/Footer";
-import { Header } from "../components/Header";
-import { InstallHint } from "../components/InstallHint";
-import { ServiceWorkerRegister } from "../components/ServiceWorkerRegister";
-import { Analytics } from "../components/Analytics";
-import { AttributionCapture } from "../components/AttributionCapture";
-import { ConsentBanner } from "../components/ConsentBanner";
+import { Dekor } from "@ada-merkez/ui";
+import { isAppPath } from "@ada-merkez/shared";
+import { MarketingChrome } from "../components/MarketingChrome";
+import { dekorForPath } from "../lib/dekor";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
@@ -52,9 +50,12 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const path = (await headers()).get("x-ada-path") ?? "";
+  const isApp = isAppPath(path);
+  const dekor = dekorForPath(path);
   return (
-    <html lang={site.language} data-theme="light" data-dekor="landing">
+    <html lang={site.language} data-theme="light" data-dekor={dekor}>
       <head>
         <link rel="preload" href="/fonts/PlusJakartaSans-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/PlusJakartaSans-SemiBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
@@ -66,18 +67,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="landing" data-dekor="landing">
-        <a className="skip" href="#icerik">
-          İçeriğe geç
-        </a>
-        <AttributionCapture />
-        <Analytics />
-        <ConsentBanner />
-        <Header />
-        {children}
-        <InstallHint />
-        <Footer />
-        <ServiceWorkerRegister />
+      <body className={isApp ? "am-app" : "landing"} data-dekor={dekor}>
+        <MarketingChrome>{children}</MarketingChrome>
+        {dekor === "landing" ? null : <Dekor scene={dekor} />}
       </body>
     </html>
   );

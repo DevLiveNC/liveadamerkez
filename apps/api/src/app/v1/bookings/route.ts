@@ -7,7 +7,7 @@ import {
   listBookingsForTenant,
 } from "@ada-merkez/db";
 import { corsHeaders, json, readJson } from "../../../lib/http";
-import { sessionOr401 } from "../../../lib/auth";
+import { requireRole, sessionOr401 } from "../../../lib/auth";
 import { dispatchServerEvents, paramsFromAttribution } from "../../../lib/analytics";
 import { parseStoredAttribution } from "@ada-merkez/shared";
 
@@ -38,6 +38,11 @@ export async function GET(request: Request) {
   const headers = corsHeaders(request);
   const auth = sessionOr401(request, headers);
   if (!auth.ok) return auth.response;
+  const role = requireRole(auth.session, ["business", "admin"], headers);
+  if (!role.ok) return role.response;
+  if (!auth.session.tenantId) {
+    return json({ ok: false, code: "FORBIDDEN", message: apiMessages.forbidden }, 403, headers);
+  }
   if (!isDatabaseConfigured()) {
     return json(
       { ok: false, code: "SERVICE_UNAVAILABLE", message: apiMessages.dbUnavailable },
@@ -53,6 +58,11 @@ export async function POST(request: Request) {
   const headers = corsHeaders(request);
   const auth = sessionOr401(request, headers);
   if (!auth.ok) return auth.response;
+  const role = requireRole(auth.session, ["business", "admin"], headers);
+  if (!role.ok) return role.response;
+  if (!auth.session.tenantId) {
+    return json({ ok: false, code: "FORBIDDEN", message: apiMessages.forbidden }, 403, headers);
+  }
   const parsed = Body.safeParse(await readJson(request));
   if (!parsed.success) {
     return json({ ok: false, code: "INVALID" }, 400, headers);

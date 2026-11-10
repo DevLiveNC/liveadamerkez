@@ -1,7 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { isSessionRole, type SessionRole } from "./roles.js";
 import { assertProductionSecrets } from "./secrets.js";
-
-export type SessionRole = "business" | "admin";
 
 export type SessionClaims = {
   tenantId: string;
@@ -25,15 +24,19 @@ function signingSecret(explicit?: string): string | null {
 }
 
 export function signSession(
-  claims: Omit<SessionClaims, "exp"> & { exp?: number },
+  claims: Omit<SessionClaims, "exp" | "tenantId"> & { tenantId?: string; exp?: number },
   options?: { secret?: string; ttlMs?: number },
 ): string {
   const secret = signingSecret(options?.secret);
   if (!secret) {
     throw new Error("AUTH_SECRET tanımlı değil.");
   }
+  if (!isSessionRole(claims.role)) {
+    throw new Error("Geçersiz oturum rolü.");
+  }
+  const tenantId = claims.tenantId ?? "";
   const payload: SessionClaims = {
-    tenantId: claims.tenantId,
+    tenantId,
     role: claims.role,
     sub: claims.sub,
     exp: claims.exp ?? Date.now() + (options?.ttlMs ?? 8 * 60 * 60 * 1000),
@@ -58,11 +61,11 @@ export function verifySession(
   if (!timingSafeEqual(left, right)) return null;
   try {
     const claims = JSON.parse(Buffer.from(body, "base64url").toString("utf8")) as SessionClaims;
-    if (!claims.tenantId || !claims.role || !claims.sub || typeof claims.exp !== "number") {
+    if (typeof claims.tenantId !== "string" || !claims.sub || typeof claims.exp !== "number") {
       return null;
     }
+    if (!isSessionRole(claims.role)) return null;
     if (claims.exp < Date.now()) return null;
-    if (claims.role !== "business" && claims.role !== "admin") return null;
     return claims;
   } catch {
     return null;
