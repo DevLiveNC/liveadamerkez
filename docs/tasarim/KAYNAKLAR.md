@@ -74,13 +74,15 @@ Canlı yol: `apps/landing/public/fonts/`. Lisans metni: `apps/landing/public/fon
 
 Telif satırları `OFL.txt` başındadır. Değişken (variable) woff2 sitede kullanılmaz; dağıtılmaz.
 
-## 6. Landing dekor (kum / deniz / yeşillik)
+## 6. Dekor (yeşillik / kabuk 2× WebP; dalga–kum–köpük SVG)
 
-Chat GPT üretimi sprite sheet’lerden kesildi (`tasarim/ui/landing/assets/dekor/gpt/sheet-1-sahil.png`, `sheet-2-yesillik.png`, `sheet-3-detay.png`). Gerçek kişi yoktur. Master PNG: `tasarim/ui/landing/assets/dekor/png/`. Canlı kopya: `apps/landing/public/landing/dekor/`.
+Chat GPT üretimi sprite sheet’lerden kesildi (`tasarim/ui/landing/assets/dekor/gpt/sheet-1-sahil.png`, `sheet-2-yesillik.png`, `sheet-3-detay.png`). Gerçek kişi yoktur. Master PNG: `tasarim/ui/landing/assets/dekor/png/`. Canlı: `packages/ui/dekor/` ve `apps/landing/public/assets/dekor/`. `dekor.css` / `dekor.js` Tasarım v3.3; yerleşim `packages/ui/dekor/YERLESIM.md`.
 
-| Paket | Toplam WebP |
+Dalga, kum, köpük ve ayak izi SVG’dir. `dalga`, `kopuk-serit`, `kum-tepecigi`, `ayak-izi`, `kemer` WebP kullanılmaz.
+
+| Paket | Toplam |
 |---|---|
-| Masaüstü (`*.webp`, `*-m.webp` hariç) | ~556 KB (555.8 KB) |
-| Mobil (`*-m.webp`) | ~198 KB (197.5 KB) |
+| Masaüstü 2× (8 sprite) | ~88 KB |
+| Mobil 1× (`*-m.webp`) | ~26 KB |
 
-Landing’de kullanılan adlar: `palmiye`, `begonvil`, `kum-tepecigi`, `tarak-kabuk`, `sarmal-kabuk`, `dalga`, `kopuk-serit`, `zeytin-dali`, `deniz-yildizi`, `ayak-izi`. Kesim ve ölçü tablosu: `docs/tasarim/dekor-README.md`. Opaklık canlıda 0.8–1 (README’deki düşük opaklık geçersiz).
+Kullanılan adlar: `palmiye`, `begonvil`, `zeytin-dali`, `yaprak-kumesi`, `tarak-kabuk`, `sarmal-kabuk`, `deniz-yildizi`, `cakil`. Opaklık 0.85–1 (grain doku 0.16). Eski 0.12–0.35 tablo geçersiz. /app sahneleri: `docs/APP-SOZLESME.md`.

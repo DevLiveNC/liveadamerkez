@@ -24,10 +24,8 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   await expect(page.getByText("Yakında açılıyor").first()).toBeVisible();
   await expect(page.getByText("Kabuki").first()).toBeVisible();
   await expect(page.getByText("Boş saat burada durur. Müşteri görür, sen onaylarsın.")).toBeVisible();
-  await expect(page.locator(".hero-dekor-left")).toHaveCount(1);
-  await expect(page.locator(".hero-dekor-right")).toHaveCount(1);
-  await expect(page.locator(".hero-dekor-left img, .hero-dekor-right img")).toHaveCount(5);
-  await expect(page.locator(".dekor-band")).toHaveCount(5);
+  await expect(page.locator("html[data-dekor='landing']")).toHaveCount(1);
+  await expect(page.locator("body[data-dekor='landing']")).toHaveCount(1);
   await expect(page.locator(".kabuki--hero img")).toBeVisible();
   await expect(page.getByText("Yakında: CY Ticket ve Ada Kampüs entegrasyonu").first()).toBeVisible();
   await expect(page.locator("body")).not.toContainText(/gelecek ortak/i);

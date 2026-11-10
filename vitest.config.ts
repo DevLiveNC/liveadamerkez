@@ -20,6 +20,7 @@ export default defineConfig({
       "@ada-merkez/shared": path.resolve(__dirname, "packages/shared/src/index.ts"),
       "@ada-merkez/copy": path.resolve(__dirname, "packages/copy/src/index.ts"),
       "@ada-merkez/db": path.resolve(__dirname, "packages/db/src/index.ts"),
+      "@ada-merkez/ui": path.resolve(__dirname, "packages/ui/src/index.ts"),
     },
   },
 });
