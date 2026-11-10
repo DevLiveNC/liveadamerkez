@@ -101,7 +101,6 @@ export const pilot = {
   heading: "Defter durmasın, boş saat görünsün.",
   body: "Müşteri uygun saati kendisi seçer. Gelen istekler — uygulama veya WhatsApp — aynı panelde durur. Hatırlatma gider. Fiyat ve paket burada yoktur.",
   citiesNote: "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
-  previewNote: "Tasarım önizlemesi — uydurma puan, yorum veya işletme sayısı yok.",
 } as const;
 
 export const close = {

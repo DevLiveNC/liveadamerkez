@@ -73,9 +73,6 @@ export default function HomePage() {
                   14:00
                 </button>
               </div>
-              <p className="t-xs t-muted" style={{ marginTop: 10 }}>
-                Tasarım önizlemesi · puan yok
-              </p>
             </aside>
             <div className="cluster-phone">
               <div className="device">
@@ -168,7 +165,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="search-band" aria-label="Arama önizlemesi">
+      <section className="search-band" aria-label="Arama">
         <div className="wrap">
           <form className="search-bar" action="#nasil">
             <div className="search-field">
@@ -193,7 +190,6 @@ export default function HomePage() {
           </form>
           <div className="pilot-line">
             <p>{pilot.citiesNote}</p>
-            <p>{pilot.previewNote}</p>
           </div>
         </div>
       </section>
@@ -240,7 +236,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <h4>Örnek kuaför</h4>
-                    <p>Gönyeli · Yalnız tasarım önizlemesi</p>
+                    <p>Gönyeli</p>
                   </div>
                   <span className="slot-pill">14:00</span>
                 </article>
@@ -397,7 +393,7 @@ export default function HomePage() {
           </div>
         </div>
         <div className="wrap">
-          <div className="panel-bleed" role="img" aria-label="İşletme paneli tasarım önizlemesi: günlük takvim, gelen istekler ve boş saatler">
+          <div className="panel-bleed" role="img" aria-label="İşletme paneli: günlük takvim, gelen istekler ve boş saatler">
             <aside className="p-side">
               <Logo inverted height={28} decorative className="logo-h-lg" />
               <p className="t-xs" style={{ color: "rgba(247,244,239,0.5)", margin: "16px 8px 8px" }}>
