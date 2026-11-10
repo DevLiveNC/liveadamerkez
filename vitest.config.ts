@@ -16,6 +16,9 @@ export default defineConfig({
   resolve: {
     alias: {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 918f0d8 (Fix: production sırları node:crypto olmadan yüklensin)
       "@ada-merkez/shared/secrets": path.resolve(__dirname, "packages/shared/src/secrets.ts"),
       "@ada-merkez/shared/node": path.resolve(__dirname, "packages/shared/src/node.ts"),
       "@ada-merkez/shared": path.resolve(__dirname, "packages/shared/src/index.ts"),
