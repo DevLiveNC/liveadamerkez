@@ -33,6 +33,8 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   await expect(page.locator("body")).not.toContainText(/doğrulanacak/i);
   await expect(page.locator("body")).not.toContainText(/netleşmedi/i);
   await expect(page.locator("body")).not.toContainText(/\bTODO\b/);
+  await expect(page.locator("body")).not.toContainText(/önizleme/i);
+  await expect(page.locator("body")).not.toContainText(/uydurma/i);
   await expect(page.locator(".topbar")).toHaveCount(0);
   await expect(page.locator(".nav-geo")).toHaveCount(0);
 

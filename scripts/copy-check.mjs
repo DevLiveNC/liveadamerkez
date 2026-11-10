@@ -7,7 +7,7 @@
  * - yasaklı bölge kısaltması (bölge adı: Kuzey Kıbrıs)
  * - üstünlük iddiası (ilk / tek)
  * - onaylanmamış ücretsiz teklif
- * - sitede görünen iç not / yer tutucu ([CTA], doğrulanacak, TODO, netleşmedi)
+ * - sitede görünen iç not / yer tutucu ([CTA], doğrulanacak, TODO, netleşmedi, önizleme, uydurma)
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -101,6 +101,16 @@ const LEAK_RULES = [
     id: "netlesmedi",
     pattern: /netleşmedi/i,
     hint: "İç not. Kullanıcıya giden metinden çıkarın.",
+  },
+  {
+    id: "onizleme",
+    pattern: /önizleme/i,
+    hint: "İç not. Canlıda önizleme yazısı görünmez.",
+  },
+  {
+    id: "uydurma",
+    pattern: /uydurma/i,
+    hint: "İç not. Canlıda uydurma yazısı görünmez.",
   },
 ];
 
