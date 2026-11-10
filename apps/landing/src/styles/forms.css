@@ -1,6 +1,3 @@
-/* Logo: tek varlık, forms/assets/logo.svg — kesin değil, yer tutucu.
-   Bu dosyayı değiştirmek E1 ekranlarındaki tüm logoları değiştirir.
-   tokens.json logo.status alanına dokunulmaz. */
 :root {
   --am-form-logo: url("/brand/logo.svg");
 }
@@ -179,6 +176,8 @@
 
 .form-actions { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
 .form-meta { font-size: 12px; color: var(--am-color-text-subtle); }
+.form-status { font-size: 13px; min-height: 1.2em; }
+.form-status[data-kind="err"] { color: var(--am-color-danger); font-weight: 600; }
 .btn .spin {
   width: 16px; height: 16px; border-radius: 99px;
   border: 2px solid rgba(255,255,255,0.35);
@@ -245,3 +244,28 @@
 [data-state="success"] .form-intro { display: none; }
 [data-state="success"] .form-hero .span-5 { grid-column: 1 / 8; }
 [data-state="success"] .thanks { padding-top: 24px; padding-bottom: 80px; }
+
+
+/* Kapalı form durumu — kayıt henüz alınmıyor */
+.form-closed { display: none; padding: 8px 0 80px; max-width: 28em; }
+.form-closed .closed-pill {
+  display: inline-block;
+  margin: 16px 0 20px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--am-color-border);
+  background: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--am-brand-navy);
+}
+[data-state="closed"] .form-card,
+[data-state="closed"] .form-intro,
+[data-state="closed"] .thanks { display: none; }
+[data-state="closed"] .form-closed { display: block; }
+[data-state="closed"] .form-hero .span-7 { display: none; }
+[data-state="closed"] .form-hero .span-5 { grid-column: 1 / -1; }
+[data-state="closed"] .foot nav,
+[data-state="closed"] .form-meta { display: none; }

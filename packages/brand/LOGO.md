@@ -1,10 +1,11 @@
 # Logo (ürün UI)
 
-Karar bekleniyor (`tokens.json` → `logo.status`: KESİN DEĞİL).
+Logo A wordmark **kesin** (`logo-v3/final/`, 10 Kasım 2026).
 
-Landing ve formlar **marka-kiti kilitlerini gömmez**. Tek yer tutucu:
+Landing ve formlar bu dosyaları okur:
 
-- `apps/landing/public/brand/logo.svg` (wordmark; `Logo` bileşeni)
-- `apps/landing/public/brand/icon.svg` (PWA / favicon kaynağı)
+- `apps/landing/public/brand/logo.svg` — açık zemin wordmark
+- `apps/landing/public/brand/logo-koyu.svg` — koyu zemin wordmark
+- `apps/landing/public/brand/icon.svg` — mercan kare A (PWA / favicon)
 
-Bu dosyaları değiştirmek tüm nav, form, teşekkür ve alt bilgi logolarını günceller.
+Bu dosyaları değiştirmek nav, form ve alt bilgi logolarını günceller.

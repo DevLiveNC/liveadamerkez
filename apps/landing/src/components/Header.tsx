@@ -2,79 +2,68 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { cta, nav, site } from "@ada-merkez/copy";
+import { cta, nav } from "@ada-merkez/copy";
 import { Logo } from "./Logo";
+import { UtilBar } from "./UtilBar";
+
+const LANDING_LINKS = [
+  { href: "/#kategoriler", label: nav.discover },
+  { href: "/#nasil", label: nav.how },
+  { href: "/#whatsapp", label: nav.whatsapp },
+  { href: "/#isletmeler", label: nav.business },
+  { href: "/#pilot", label: nav.pilot },
+  { href: "/#sss", label: nav.faq },
+] as const;
 
 export function Header() {
   const pathname = usePathname();
-  const variant = pathname.startsWith("/basvuru") || pathname.startsWith("/bekleme") || pathname.startsWith("/q")
-    ? "form"
-    : "landing";
-  const [open, setOpen] = useState(false);
+  const variant =
+    pathname.startsWith("/basvuru") || pathname.startsWith("/bekleme") || pathname.startsWith("/q")
+      ? "form"
+      : "landing";
 
   return (
-    <header className="nav">
-      <div className="wrap nav-in">
-        <Link href="/" aria-label={`${site.name} ana sayfa`}>
-          <Logo height={32} />
-        </Link>
-        {variant === "form" ? (
-          <nav className="nav-links form-nav-links" aria-label="Formlar">
-            <Link href="/bekleme-listesi">{nav.waitlist}</Link>
-            <Link href="/basvuru">{nav.apply}</Link>
-          </nav>
-        ) : (
-          <nav className="nav-links desk-only" aria-label="Bölümler">
-            <Link href="/#nasil">{nav.how}</Link>
-            <Link href="/#whatsapp">{nav.whatsapp}</Link>
-            <Link href="/#isletmeler">{nav.business}</Link>
-            <Link href="/#sonra">{nav.later}</Link>
-          </nav>
-        )}
-        {variant === "landing" ? (
-          <div className="nav-cta">
-            <Link className="btn btn-ghost btn-sm desk-only" href="/basvuru">
-              {cta.business}
-            </Link>
-            <Link className="btn btn-coral btn-sm" href="/#waitlist">
-              {cta.customer}
-            </Link>
-          </div>
-        ) : null}
-        {variant === "landing" ? (
-          <button
-            className="nav-menu"
-            type="button"
-            aria-label={nav.menu}
-            aria-expanded={open}
-            onClick={() => setOpen((value) => !value)}
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <path d="M3 5h14M3 10h14M3 15h14" />
-            </svg>
-          </button>
-        ) : null}
-      </div>
-      {open ? (
-        <div className="nav-panel is-open">
-          <Link href="/#nasil" onClick={() => setOpen(false)}>
-            {nav.how}
+    <>
+      {variant === "landing" ? <UtilBar /> : null}
+      <header className="nav">
+        <div className="wrap nav-in">
+          <Link href="/" aria-label={nav.homeAria}>
+            <Logo className="logo-h" height={32} />
           </Link>
-          <Link href="/#whatsapp" onClick={() => setOpen(false)}>
-            {nav.whatsapp}
-          </Link>
-          <Link href="/#isletmeler" onClick={() => setOpen(false)}>
-            {nav.business}
-          </Link>
-          <Link href="/bekleme-listesi" onClick={() => setOpen(false)}>
-            {nav.waitlist}
-          </Link>
-          <Link href="/basvuru" onClick={() => setOpen(false)}>
-            {nav.apply}
-          </Link>
+          {variant === "form" ? (
+            <nav className="nav-links form-nav-links" aria-label="Formlar">
+              <Link href="/bekleme-listesi">{nav.waitlist}</Link>
+              <Link href="/basvuru">{nav.apply}</Link>
+            </nav>
+          ) : (
+            <nav className="nav-links desk-only" aria-label={nav.sections}>
+              {LANDING_LINKS.map((item) => (
+                <Link key={item.href} href={item.href}>
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          )}
+          {variant === "landing" ? (
+            <div className="seg lang nav-lang" role="group" aria-label={nav.lang}>
+              <button type="button" aria-pressed="true">
+                TR
+              </button>
+              <button type="button" disabled aria-disabled="true" aria-label={nav.enLabel} title={nav.enSoon}>
+                EN
+                <span className="lang-soon">{nav.enSoon}</span>
+              </button>
+            </div>
+          ) : null}
+          {variant === "landing" ? (
+            <div className="nav-cta">
+              <Link className="btn btn-coral btn-sm" href="/#waitlist">
+                {cta.customer}
+              </Link>
+            </div>
+          ) : null}
         </div>
-      ) : null}
-    </header>
+      </header>
+    </>
   );
 }

@@ -1,21 +1,24 @@
-/* Ada Merkez — tasarım jetonları v1 (2026-11-10)
+/* Ada Merkez — tasarım jetonları v1.4.1 (2026-11-11) — logo A kesin; karma palet; semantik durum renkleri
    Kaynak: /workspace/ada-merkez/tasarim/tokens.json
    Kullanım: kökte data-theme="light" | "dark" (varsayılan: light). */
 
 :root,
 [data-theme="light"] {
-  --am-color-background: #f7f4ef;
-  --am-color-surface: #ffffff;
-  --am-color-surface-muted: #ede8e0;
+  --am-color-background: #f8f0e3;
+  --am-color-surface: #fff8f0;
+  --am-color-surface-muted: #e8dcc8;
   --am-color-text: #0f2c44;
-  --am-color-text-muted: #6b665e;
-  --am-color-text-subtle: #8c877e;
-  --am-color-border: #d6d0c6;
+  --am-color-text-muted: #6e5e4e;
+  --am-color-text-subtle: #7a6a58;
+  --am-color-border: #e0d2bc;
 
   --am-color-primary: #0f2c44;
   --am-color-primary-hover: #0a1f31;
   --am-color-on-primary: #ffffff;
-  --am-color-secondary: #1f6a8f;
+  --am-color-secondary: #0e7c78;
+  --am-color-secondary-hover: #0a4f4d;
+  --am-color-secondary-text: #0a4f4d;
+  --am-color-secondary-soft: #d8f1ef;
   --am-color-on-secondary: #ffffff;
   --am-color-accent: #e4572e;
   --am-color-accent-hover: #c2410c;
@@ -38,6 +41,18 @@
   --am-color-focus: #e4572e;
   --am-color-live: #00d26a;
 
+  /* Semantik takvim / istek durumları (v1.4.1) */
+  --am-status-confirmed-bg: #0f2c44;
+  --am-status-confirmed-fg: #fff8f0;
+  --am-status-pending-bg: #fcede8;
+  --am-status-pending-fg: #0f2c44;
+  --am-status-pending-accent: #e4572e;
+  --am-status-pending-text: #c2410c;
+  --am-status-free-bg: #d8f1ef;
+  --am-status-free-fg: #0a4f4d;
+  --am-status-cancelled-bg: #e8dcc8;
+  --am-status-cancelled-fg: #6e5e4e;
+
   --am-shadow-sm: 0 1px 2px rgba(15, 44, 68, 0.06);
   --am-shadow-md: 0 8px 24px rgba(15, 44, 68, 0.1);
   --am-shadow-lg: 0 16px 48px rgba(15, 44, 68, 0.16);
@@ -48,16 +63,19 @@
   --am-color-background: #0a1624;
   --am-color-surface: #0f2c44;
   --am-color-surface-muted: #16344f;
-  --am-color-text: #f7f4ef;
+  --am-color-text: #f8f0e3;
   --am-color-text-muted: #b8b2a8;
-  --am-color-text-subtle: #8c877e;
+  --am-color-text-subtle: #7a6a58;
   --am-color-border: #1a4566;
 
-  --am-color-primary: #f7f4ef;
+  --am-color-primary: #f8f0e3;
   --am-color-primary-hover: #ffffff;
   --am-color-on-primary: #0f2c44;
-  --am-color-secondary: #3e8fb5;
+  --am-color-secondary: #7ec9c3;
   --am-color-on-secondary: #0a1624;
+  --am-color-secondary-hover: #a8ddd8;
+  --am-color-secondary-text: #7ec9c3;
+  --am-color-secondary-soft: #0e3d3b;
   --am-color-accent: #e4572e;
   --am-color-accent-hover: #f07a52;
   --am-color-accent-soft: #5a2618;
@@ -78,6 +96,17 @@
   --am-color-focus: #f07a52;
   --am-color-live: #00d26a;
 
+  --am-status-confirmed-bg: #0f2c44;
+  --am-status-confirmed-fg: #fff8f0;
+  --am-status-pending-bg: #5a2618;
+  --am-status-pending-fg: #fcede8;
+  --am-status-pending-accent: #e4572e;
+  --am-status-pending-text: #f07a52;
+  --am-status-free-bg: #0e3d3b;
+  --am-status-free-fg: #d8f1ef;
+  --am-status-cancelled-bg: #16344f;
+  --am-status-cancelled-fg: #b8b2a8;
+
   --am-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
   --am-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.36);
   --am-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.45);
@@ -90,21 +119,25 @@
   --am-brand-navy-deep: #0a1624;
   --am-brand-navy-mid: #1a4566;
   --am-brand-aegean: #1f6a8f;
+  --am-brand-teal: #0e7c78;
+  --am-brand-teal-dark: #0a4f4d;
+  --am-brand-teal-soft: #d8f1ef;
+  --am-brand-teal-light: #7ec9c3;
   --am-brand-coral: #e4572e;
   --am-brand-coral-dark: #c2410c;
   --am-brand-coral-light: #f07a52;
   --am-brand-coral-soft: #f4d6c8;
-  --am-brand-sand: #f7f4ef;
-  --am-brand-sand-dark: #ede8e0;
-  --am-brand-cream: #fff8f3;
+  --am-brand-sand: #f8f0e3;
+  --am-brand-sand-dark: #e8dcc8;
+  --am-brand-cream: #fff8f0;
   --am-brand-white: #ffffff;
   --am-brand-ink: #12110f;
-  --am-brand-muted: #6b665e;
+  --am-brand-muted: #6e5e4e;
   --am-brand-live: #00d26a;
 
-  --am-neutral-50: #f7f4ef;
-  --am-neutral-100: #ede8e0;
-  --am-neutral-200: #d6d0c6;
+  --am-neutral-50: #f8f0e3;
+  --am-neutral-100: #e8dcc8;
+  --am-neutral-200: #e0d2bc;
   --am-neutral-300: #b8b2a8;
   --am-neutral-400: #8c877e;
   --am-neutral-500: #6b665e;
@@ -207,7 +240,14 @@ h1, h2, h3, h4, h5, h6 {
   --am-z-toast: 80;
 
   --am-focus-ring: 0 0 0 3px #ffffff, 0 0 0 5px var(--am-color-focus);
+
+  /* v1.2 — dil, saat, para birimi gösterimi (geriye uyumlu) */
+  --am-letter-kicker: 0.12em;
+  --am-locale-default: "tr-TR";
+  --am-timezone: "Europe/Nicosia";
+  --am-currency-default: "TL";
 }
+
 @media (max-width: 860px) {
   :root { --am-grid-margin: 20px; --am-grid-gutter: 16px; }
 }
