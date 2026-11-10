@@ -17,7 +17,7 @@ const ROOT = path.resolve(import.meta.dirname, "..");
 const TARGET_DIRS = ["apps", "packages", "docs"];
 
 /** Kullanıcıya giden kopya: iç not sızıntısı yalnızca buradan taranır. */
-const LEAK_DIRS = ["packages/copy", "apps/landing/src"];
+const LEAK_DIRS = ["packages/copy", "apps/landing/src", "apps/customer/src"];
 const LEAK_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs"]);
 
 const EXTENSIONS = new Set([
@@ -77,6 +77,11 @@ const RULES = [
     id: "ilk-super",
     pattern: /\bilk\s+(süper\s+uygulama|uygulama|platform|adres)\b/i,
     hint: "Üstünlük iddiası yasak.",
+  },
+  {
+    id: "gelecek-ortak",
+    pattern: /gelecek\s+ortak/i,
+    hint: "CY Ticket ve Ada Kampüs bizim projelerimiz; ortaklık iddiası yok. 'Yakında: CY Ticket ve Ada Kampüs entegrasyonu'.",
   },
 ];
 
