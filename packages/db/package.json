@@ -9,7 +9,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "migrate": "tsx src/migrate.ts",
-    "seed-test": "tsx src/seed-test-accounts.ts"
+    "seed-test": "tsx src/seed-test-accounts.ts",
+    "seed:isletme": "tsx src/seed-isletme.ts"
   },
   "dependencies": {
     "@ada-merkez/shared": "*",

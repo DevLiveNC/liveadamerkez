@@ -30,6 +30,13 @@ export const waitlistRoleEnum = pgEnum("waitlist_role", [
 
 export const appRoleEnum = pgEnum("app_role", ["customer", "business", "admin"]);
 
+export const businessStatusEnum = pgEnum("business_status", [
+  "draft",
+  "pending",
+  "approved",
+  "rejected",
+]);
+
 export const category = pgTable("category", {
   id: uuid("id").primaryKey().defaultRandom(),
   slug: text("slug").notNull().unique(),
@@ -53,8 +60,17 @@ export const business = pgTable("business", {
   slug: text("slug").notNull().unique(),
   categoryId: uuid("category_id").references(() => category.id),
   locationId: uuid("location_id").references(() => location.id),
-  status: text("status").notNull().default("draft"),
+  status: businessStatusEnum("status").notNull().default("draft"),
   timezone: text("timezone").notNull().default("Europe/Nicosia"),
+  phone: text("phone"),
+  email: text("email"),
+  whatsapp: text("whatsapp"),
+  address: text("address"),
+  description: text("description"),
+  cityName: text("city_name"),
+  sector: text("sector"),
+  inTurkey: boolean("in_turkey").notNull().default(false),
+  ownerUserId: uuid("owner_user_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -78,7 +94,11 @@ export const service = pgTable("service", {
   name: text("name").notNull(),
   durationMinutes: integer("duration_minutes").notNull(),
   staffId: uuid("staff_id").references(() => staff.id),
+  priceLabel: text("price_label"),
+  description: text("description"),
+  active: boolean("active").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const resource = pgTable("resource", {
@@ -134,6 +154,22 @@ export const appAccount = pgTable(
   ],
 );
 
+export const businessMember = pgTable(
+  "business_member",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => appAccount.id),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => business.id),
+    memberRole: text("member_role").notNull().default("owner"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("business_member_user_tenant").on(t.userId, t.tenantId)],
+);
+
 export const customer = pgTable(
   "customer",
   {
@@ -186,6 +222,9 @@ export const booking = pgTable(
     endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
     displayTimezone: text("display_timezone").notNull().default("Europe/Nicosia"),
     notes: text("notes"),
+    channel: text("channel").notNull().default("app"),
+    customerName: text("customer_name"),
+    customerPhone: text("customer_phone"),
     firstTouch: jsonb("first_touch"),
     lastTouch: jsonb("last_touch"),
     referredByCode: text("referred_by_code"),

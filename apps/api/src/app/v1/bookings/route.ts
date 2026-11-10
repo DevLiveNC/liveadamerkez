@@ -5,8 +5,9 @@ import {
   createBooking,
   isDatabaseConfigured,
   listBookingsForTenant,
+  toPublicBooking,
 } from "@ada-merkez/db";
-import { corsHeaders, json, readJson } from "../../../lib/http";
+import { authCors, corsHeaders, json, readJson } from "../../../lib/http";
 import { requireRole, sessionOr401 } from "../../../lib/auth";
 import { dispatchServerEvents, paramsFromAttribution } from "../../../lib/analytics";
 import { parseStoredAttribution } from "@ada-merkez/shared";
@@ -22,6 +23,9 @@ const Body = z.object({
   serviceId: z.string().uuid().optional(),
   customerId: z.string().uuid().optional(),
   locationId: z.string().uuid().optional(),
+  channel: z.enum(["app", "whatsapp"]).optional(),
+  customerName: z.string().trim().max(80).optional(),
+  customerPhone: z.string().trim().max(24).optional(),
   eventId: z.string().uuid().optional(),
   referredByCode: z.string().max(16).optional(),
   analyticsConsent: z.boolean().optional(),
@@ -35,7 +39,7 @@ const Body = z.object({
 });
 
 export async function GET(request: Request) {
-  const headers = corsHeaders(request);
+  const headers = authCors(request);
   const auth = sessionOr401(request, headers);
   if (!auth.ok) return auth.response;
   const role = requireRole(auth.session, ["business", "admin"], headers);
@@ -50,12 +54,28 @@ export async function GET(request: Request) {
       headers,
     );
   }
-  const rows = await listBookingsForTenant(auth.session.tenantId);
+  const url = new URL(request.url);
+  const from = url.searchParams.get("from");
+  const to = url.searchParams.get("to");
+  const channel = url.searchParams.get("channel");
+  const status = url.searchParams.get("status");
+  const rows = await listBookingsForTenant(auth.session.tenantId, {
+    from: from ? new Date(from) : undefined,
+    to: to ? new Date(to) : undefined,
+    channel: channel === "whatsapp" || channel === "app" ? channel : undefined,
+    status:
+      status === "pending" ||
+      status === "confirmed" ||
+      status === "cancelled" ||
+      status === "no_show"
+        ? status
+        : undefined,
+  });
   return json({ ok: true, bookings: rows }, 200, headers);
 }
 
 export async function POST(request: Request) {
-  const headers = corsHeaders(request);
+  const headers = authCors(request);
   const auth = sessionOr401(request, headers);
   if (!auth.ok) return auth.response;
   const role = requireRole(auth.session, ["business", "admin"], headers);
@@ -90,6 +110,9 @@ export async function POST(request: Request) {
       customerId: parsed.data.customerId,
       locationId: parsed.data.locationId,
       status: "pending",
+      channel: parsed.data.channel,
+      customerName: parsed.data.customerName,
+      customerPhone: parsed.data.customerPhone,
       firstTouch: attribution?.first ?? null,
       lastTouch: attribution?.last ?? null,
       referredByCode,
@@ -101,7 +124,7 @@ export async function POST(request: Request) {
       params: paramsFromAttribution(eventId, attribution),
       request,
     });
-    return json({ ok: true, booking: row }, 201, headers);
+    return json({ ok: true, booking: row ? toPublicBooking(row) : row }, 201, headers);
   } catch (error) {
     if (error instanceof BookingConflictError) {
       return json({ ok: false, code: error.code, message: error.message }, 409, headers);

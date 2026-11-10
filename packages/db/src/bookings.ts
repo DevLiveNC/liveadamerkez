@@ -1,4 +1,4 @@
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, gte, lt } from "drizzle-orm";
 import type { BookingKind, BookingStatus } from "@ada-merkez/shared";
 import {
   TenantAccessError,
@@ -43,6 +43,9 @@ export type NewBooking = {
   status?: BookingStatus;
   displayTimezone?: string;
   notes?: string | null;
+  channel?: "app" | "whatsapp";
+  customerName?: string | null;
+  customerPhone?: string | null;
   firstTouch?: unknown;
   lastTouch?: unknown;
   referredByCode?: string | null;
@@ -87,6 +90,9 @@ export async function createBooking(input: NewBooking) {
           status: input.status ?? "pending",
           displayTimezone: input.displayTimezone ?? "Europe/Nicosia",
           notes: input.notes ?? null,
+          channel: input.channel ?? "app",
+          customerName: input.customerName ?? null,
+          customerPhone: input.customerPhone ?? null,
           firstTouch: input.firstTouch ?? null,
           lastTouch: input.lastTouch ?? null,
           referredByCode: input.referredByCode ?? null,
@@ -130,10 +136,52 @@ export async function updateBookingStatus(
   });
 }
 
-export async function listBookingsForTenant(tenantId: string) {
-  return withTenantDb(tenantId, (db) =>
-    db.select().from(booking).where(eq(booking.tenantId, tenantId)),
-  );
+const bookingPublicColumns = {
+  id: booking.id,
+  tenantId: booking.tenantId,
+  locationId: booking.locationId,
+  kind: booking.kind,
+  staffId: booking.staffId,
+  serviceId: booking.serviceId,
+  resourceId: booking.resourceId,
+  customerId: booking.customerId,
+  status: booking.status,
+  startsAt: booking.startsAt,
+  endsAt: booking.endsAt,
+  displayTimezone: booking.displayTimezone,
+  notes: booking.notes,
+  channel: booking.channel,
+  customerName: booking.customerName,
+  firstTouch: booking.firstTouch,
+  lastTouch: booking.lastTouch,
+  referredByCode: booking.referredByCode,
+  eventId: booking.eventId,
+  createdAt: booking.createdAt,
+  updatedAt: booking.updatedAt,
+};
+
+export function toPublicBooking<T extends { customerPhone?: string | null }>(row: T): Omit<T, "customerPhone"> {
+  const { customerPhone: _phone, ...rest } = row;
+  return rest;
+}
+
+export async function listBookingsForTenant(
+  tenantId: string,
+  options?: {
+    from?: Date;
+    to?: Date;
+    channel?: "app" | "whatsapp";
+    status?: "pending" | "confirmed" | "cancelled" | "no_show";
+  },
+) {
+  return withTenantDb(tenantId, (db) => {
+    const filters = [eq(booking.tenantId, tenantId)];
+    if (options?.from) filters.push(gte(booking.startsAt, options.from));
+    if (options?.to) filters.push(lt(booking.startsAt, options.to));
+    if (options?.channel) filters.push(eq(booking.channel, options.channel));
+    if (options?.status) filters.push(eq(booking.status, options.status));
+    return db.select(bookingPublicColumns).from(booking).where(and(...filters));
+  });
 }
 
 export async function getBookingForTenant(tenantId: string, bookingId: string) {

@@ -1,12 +1,12 @@
 import { apiMessages } from "@ada-merkez/copy";
 import { getAccountById, isDatabaseConfigured } from "@ada-merkez/db";
-import { corsHeaders, json } from "../../../../lib/http";
+import { authCors, corsHeaders, json } from "../../../../lib/http";
 import { sessionOr401 } from "../../../../lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const headers = corsHeaders(request);
+  const headers = authCors(request);
   const auth = sessionOr401(request, headers);
   if (!auth.ok) return auth.response;
   if (!isDatabaseConfigured()) {
