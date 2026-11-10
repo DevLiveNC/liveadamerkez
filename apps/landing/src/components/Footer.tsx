@@ -12,7 +12,6 @@ export function Footer() {
           <p>
             {site.regionLine} · Saat dilimi {site.timezone}
           </p>
-          <p className="form-meta">{footer.logoNote}</p>
         </div>
         <nav aria-label="Yasal">
           <Link href="/yasal/aydinlatma">{footer.aydinlatma}</Link>

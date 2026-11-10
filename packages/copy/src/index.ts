@@ -16,10 +16,9 @@ export const site = {
     "Kuzey Kıbrıs ve Türkiye için işletme keşfi, kuaför ve klinik randevusu, restoran masa rezervasyonu. Uygulamayı indirmeden WhatsApp üzerinden de rezervasyon planlanıyor.",
 } as const;
 
-export const placeholders = {
-  domain: "[ALAN ADI]",
-  cta: "[CTA]",
-  account: "[ADA MERKEZ HESABI]",
+export const cta = {
+  customer: "Erken erişime kaydol",
+  business: "Kendi işletmeni ekle",
 } as const;
 
 export const nav = {
@@ -36,9 +35,8 @@ export const hero = {
   kicker: "Kuzey Kıbrıs ve Türkiye için",
   title: "Adada randevu ve rezervasyon dağılmasın.",
   lead: "Kuaför, klinik veya restoranı bul; uygun saati seç. Dilersen uygulama indirmeden WhatsApp’tan hallet.",
-  primaryCta: "[CTA]",
-  secondaryCta: "İşletmeni yaz",
-  note: "Çağrı yönü henüz netleşmedi · [doğrulanacak]",
+  primaryCta: cta.customer,
+  secondaryCta: cta.business,
 } as const;
 
 export const how = {
@@ -101,16 +99,16 @@ export const pilot = {
   title: "İşletmeler için",
   kicker: "İşletmeler için",
   heading: "Defter durmasın, boş saat görünsün.",
-  body: "Müşteri uygun saati kendisi seçer. Gelen istekler — uygulama veya WhatsApp — aynı panelde durur. Hatırlatma gider. Fiyat ve paket buraya yazılmaz; [doğrulanacak].",
-  citiesNote: "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler yakında aynı çatıda.",
+  body: "Müşteri uygun saati kendisi seçer. Gelen istekler — uygulama veya WhatsApp — aynı panelde durur. Hatırlatma gider. Fiyat ve paket burada yoktur.",
+  citiesNote: "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
   previewNote: "Tasarım önizlemesi — uydurma puan, yorum veya işletme sayısı yok.",
 } as const;
 
 export const close = {
   kicker: "Ada'nın merkezi",
   title: "Hazır olunca burada olur.",
-  body: "Alan adı, lansman tarihi ve çağrı yönü henüz net değil. Yer tutucular bilinçli bırakıldı.",
-  meta: "[ALAN ADI] · [ADA MERKEZ HESABI] · tarih [doğrulanacak]",
+  body: "Hazır olduğunda haber veririz. Bu bir rezervasyon veya ücret taahhüdü değildir.",
+  meta: "Erken erişim kaydı rezervasyon değildir.",
 } as const;
 
 export const waitlist = {
@@ -151,12 +149,12 @@ export const waitlist = {
   },
   consentLabel: "Açık rızam vardır.",
   consentLegal:
-    "Aydınlatma metni yer tutucudur; onaylı metin gelince buraya yazılır. KVKK ve Kuzey Kıbrıs mevzuatı — [doğrulanacak].",
+    "Aydınlatma metni onaylanınca burada yer alır. Kayıt, iletişim rızası ile alınır.",
   consentError: "Devam etmek için rıza gerekli.",
-  formMeta: "[CTA] · [ALAN ADI] · Bu bir rezervasyon formu değildir.",
+  formMeta: "Bu bir rezervasyon formu değildir.",
   successTitle: "Kaydınız alındı.",
   successBody: "Gelişmeleri paylaşırız. Ek bir vaat yok. Bu bir rezervasyon değildir.",
-  successMeta: "[ALAN ADI] · [CTA]",
+  successMeta: "Bu bir rezervasyon değildir.",
   whatsappLabel:
     "WhatsApp üzerinden bilgilendirme mesajı almak istiyorum (isteğe bağlı). Aydınlatma metni kullanıcı onayı bekliyor.",
   submit: "Listeye yazıl",
@@ -207,7 +205,7 @@ export const businessApply = {
   submitting: "Gönderiliyor",
   success: "Başvurunuz alındı.",
   successBody: "İnceleme sonrası size döneceğiz. Bu bir kabul değildir. Fiyat veya paket vaadi yoktur.",
-  formMeta: "[CTA] · [ALAN ADI] · Başvuru kabul anlamına gelmez.",
+  formMeta: "Başvuru kabul anlamına gelmez.",
   unavailable: "Başvuru şu anda alınamıyor. Lütfen daha sonra yeniden deneyin.",
   invalid: "Zorunlu alanları ve rızayı kontrol edin.",
   closedTitle: "Başvuru çok yakında açılıyor",
@@ -217,7 +215,7 @@ export const businessApply = {
 export const qrPage = {
   kicker: "QR kanalı",
   lead: "Kuaför ve klinikte randevu, restoranda masa; dilerseniz WhatsApp üzerinden. Uygulama indirmek zorunda değilsiniz.",
-  cta: "Bekleme listesine yazıl",
+  cta: cta.customer,
 } as const;
 
 export const trackingConsent = {
@@ -243,7 +241,7 @@ export const install = {
 export const legal = {
   pendingTitle: "Kullanıcı onayı bekliyor",
   pendingBody:
-    "Bu sayfa yer tutucudur. Aydınlatma metni, gizlilik ve ilgili mevzuat metinleri kullanıcı onayıyla yazılacaktır. Şu an yayımlanmış bir yasal metin yoktur. KVKK metni [doğrulanacak].",
+    "Aydınlatma metni, gizlilik ve ilgili mevzuat metinleri onaylanınca burada yayımlanır. Şu an yayımlanmış bir yasal metin yoktur.",
   aydinlatmaTitle: "Aydınlatma metni",
   gizlilikTitle: "Gizlilik",
   kvkkTitle: "Kişisel veriler",
@@ -254,11 +252,11 @@ export const legal = {
 export const footer = {
   companyLine: "Kırmızıyüz Live Development Software LTD",
   rights: "Tüm hakları saklıdır.",
-  aydinlatma: "Aydınlatma metni [doğrulanacak]",
-  gizlilik: "Gizlilik [doğrulanacak]",
-  kvkk: "Kişisel veriler [doğrulanacak]",
-  contact: "İletişim [doğrulanacak]",
-  logoNote: "Logo kesin değil, yer tutucu.",
+  aydinlatma: "Aydınlatma metni",
+  gizlilik: "Gizlilik",
+  kvkk: "Kişisel veriler",
+  contact: "İletişim",
+  logoNote: "Ada Merkez markası.",
 } as const;
 
 export const apiMessages = {

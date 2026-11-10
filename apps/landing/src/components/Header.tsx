@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { hero, nav, placeholders, site } from "@ada-merkez/copy";
+import { cta, nav, site } from "@ada-merkez/copy";
 import { Logo } from "./Logo";
 
 export function Header() {
@@ -32,14 +32,13 @@ export function Header() {
             <Link href="/#sonra">{nav.later}</Link>
           </nav>
         )}
-        <span className="nav-geo desk-only">{site.regionLine}</span>
         {variant === "landing" ? (
           <div className="nav-cta">
             <Link className="btn btn-ghost btn-sm desk-only" href="/basvuru">
-              {hero.secondaryCta}
+              {cta.business}
             </Link>
-            <Link className="btn btn-coral btn-sm" href="/#bekleme-listesi">
-              {placeholders.cta}
+            <Link className="btn btn-coral btn-sm" href="/#waitlist">
+              {cta.customer}
             </Link>
           </div>
         ) : null}

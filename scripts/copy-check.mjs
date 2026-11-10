@@ -84,7 +84,7 @@ const RULES = [
 const LEAK_RULES = [
   {
     id: "placeholder-brackets",
-    pattern: /\[[^\]\n]{1,80}\]/,
+    pattern: /\[[A-Za-zÇĞİÖŞÜçğıöşü]/,
     hint: "Köşeli parantezli yer tutucu sitede görünmez. '[CTA]', '[doğrulanacak]' vb. kaldırın.",
   },
   {
@@ -113,6 +113,13 @@ const LEAK_RULES = [
     hint: "İç not. Canlıda uydurma yazısı görünmez.",
   },
 ];
+
+/** packages/copy içinde her köşeli parantez yer tutucu sayılır. */
+const COPY_BRACKET_RULE = {
+  id: "placeholder-brackets",
+  pattern: /\[/,
+  hint: "Kopya metninde '[' yer tutucu bırakılmaz.",
+};
 
 function walk(dir, out = []) {
   if (!fs.existsSync(dir)) return out;
@@ -185,10 +192,14 @@ for (const file of leakFiles) {
     const fragments = extractUserFacingFragments(lines[i] ?? "");
     for (const fragment of fragments) {
       const scanned = scanLine(fragment);
-      for (const rule of LEAK_RULES) {
+      const relative = path.relative(ROOT, file);
+      const rules = relative.startsWith(`packages/copy${path.sep}`)
+        ? [COPY_BRACKET_RULE, ...LEAK_RULES.filter((rule) => rule.id !== "placeholder-brackets")]
+        : LEAK_RULES;
+      for (const rule of rules) {
         if (rule.pattern.test(scanned)) {
           hits.push({
-            file: path.relative(ROOT, file),
+            file: relative,
             line: i + 1,
             id: rule.id,
             excerpt: scanned.trim().slice(0, 180),

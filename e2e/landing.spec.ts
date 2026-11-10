@@ -21,11 +21,21 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   await expect(page.getByText("Bekleme listesi").first()).toBeVisible();
   await expect(page.getByText("QR menü")).toBeVisible();
   await expect(page.getByText("Yakında").first()).toBeVisible();
-  await expect(page.getByText("[CTA]").first()).toBeVisible();
-  await expect(page.getByText("[ALAN ADI]").first()).toBeVisible();
+  await expect(
+    page.getByText(
+      "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
+    ),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Erken erişime kaydol" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Kendi işletmeni ekle" }).first()).toBeVisible();
   await expect(page.locator("body")).not.toContainText(/KKTC/i);
   await expect(page.locator("body")).not.toContainText(/ücretsiz kurulum/i);
   await expect(page.locator("body")).not.toContainText(/ilk ve tek/i);
+  await expect(page.locator("body")).not.toContainText("[CTA]");
+  await expect(page.locator("body")).not.toContainText(/doğrulanacak/i);
+  await expect(page.locator("body")).not.toContainText(/netleşmedi/i);
+  await expect(page.locator("body")).not.toContainText(/\bTODO\b/);
+  await expect(page.locator(".nav-geo")).toHaveCount(0);
 
   await expect(page.getByText("Bekleme listesi çok yakında açılıyor")).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Çerez ve ölçüm" })).toBeVisible();
@@ -56,7 +66,7 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
 
   await page.goto("/yasal/aydinlatma");
   await expect(page.getByText("Kullanıcı onayı bekliyor")).toBeVisible();
-  await expect(page.getByText(/KVKK metni \[doğrulanacak\]/)).toBeVisible();
+  await expect(page.locator("body")).not.toContainText(/doğrulanacak/i);
 });
 
 test("QR channel landings return 200 and unknown codes 404", async ({ page }) => {

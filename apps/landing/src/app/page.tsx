@@ -2,7 +2,6 @@ import {
   close,
   hero,
   how,
-  placeholders,
   pilot,
   roadmap,
   whatsapp,
@@ -27,14 +26,13 @@ export default function HomePage() {
             <h1 className="t-display">{hero.title}</h1>
             <p className="t-lede">{hero.lead}</p>
             <div className="hero-cta">
-              <a className="btn btn-coral btn-lg" href="#bekleme-listesi">
-                {placeholders.cta}
+              <a className="btn btn-coral btn-lg" href="#waitlist">
+                {hero.primaryCta}
               </a>
               <a className="btn btn-ghost btn-lg" href="/basvuru">
                 {hero.secondaryCta}
               </a>
             </div>
-            <p className="hero-note">{hero.note}</p>
           </div>
           <div className="span-6 cluster" aria-hidden="false">
             <aside className="cluster-float desk-only">
@@ -339,7 +337,7 @@ export default function HomePage() {
                 <div className="wa-n">3</div>
                 <div>
                   <strong>Onayı al, hatırlatmayı aç</strong>
-                  <p className="t-sm t-muted">Hatırlatma için açık rıza istenir. Metinler [doğrulanacak].</p>
+                  <p className="t-sm t-muted">Hatırlatma için açık rıza istenir.</p>
                 </div>
               </div>
             </div>
@@ -392,8 +390,8 @@ export default function HomePage() {
               <a className="btn btn-coral" href="/basvuru">
                 {hero.secondaryCta}
               </a>
-              <a className="btn btn-ghost on-dark" href="#bekleme-listesi">
-                {placeholders.cta}
+              <a className="btn btn-ghost on-dark" href="#waitlist">
+                {hero.primaryCta}
               </a>
             </div>
           </div>
@@ -487,8 +485,8 @@ export default function HomePage() {
               <p>{close.body}</p>
             </div>
             <div className="close-actions">
-              <a className="btn btn-coral btn-lg" href="#bekleme-listesi">
-                {placeholders.cta}
+              <a className="btn btn-coral btn-lg" href="#waitlist">
+                {hero.primaryCta}
               </a>
               <a className="btn btn-ghost on-dark btn-lg" href="/basvuru">
                 {hero.secondaryCta}
@@ -501,7 +499,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="form-hero" id="bekleme-listesi">
+      <section className="form-hero" id="waitlist">
         <WaitlistForm />
       </section>
     </main>
