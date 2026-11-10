@@ -1,5 +1,5 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME === "edge") return;
-  const { assertProductionSecrets } = await import("@ada-merkez/shared");
+  const { assertProductionSecrets } = await import("@ada-merkez/shared/secrets");
   assertProductionSecrets();
 }
