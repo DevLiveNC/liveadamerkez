@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: lint · typecheck · test · e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ada_merkez_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d ada_merkez_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/ada_merkez_test
+      APP_TIMEZONE: Europe/Nicosia
+      NEXT_PUBLIC_API_URL: ""
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Copy policy
+        run: npm run copy-check
+      - name: Migrate test database
+        run: npm run db:migrate
+      - name: Unit and integration tests
+        run: npm run test
+      - name: Build (landing without relying on DB)
+        run: npm run build
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Landing smoke / e2e
+        run: npm run e2e
+      - name: Upload landing screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: landing-screenshots
+          path: |
+            artifacts/**
+            test-results/**
+          if-no-files-found: ignore

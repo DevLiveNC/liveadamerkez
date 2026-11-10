@@ -1,0 +1,28 @@
+{
+  "name": "@ada-merkez/landing",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start --port 3000",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ada-merkez/brand": "*",
+    "@ada-merkez/copy": "*",
+    "next": "^15.5.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.1",
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "@eslint/eslintrc": "^3.3.1",
+    "eslint": "^9.36.0",
+    "eslint-config-next": "^15.5.6",
+    "typescript": "^5.9.3"
+  }
+}

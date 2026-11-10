@@ -1,0 +1,109 @@
+import { and, eq } from "drizzle-orm";
+import type { BookingKind, BookingStatus } from "@ada-merkez/shared";
+import { TenantAccessError, assertSameTenant } from "@ada-merkez/shared";
+
+export { TenantAccessError };
+import { getDb, getPool } from "./client.js";
+import { booking } from "./schema.js";
+
+export class BookingConflictError extends Error {
+  readonly status = 409;
+  readonly code = "BOOKING_CONFLICT";
+
+  constructor(message = "Bu saat aralığı dolu.") {
+    super(message);
+    this.name = "BookingConflictError";
+  }
+}
+
+export type NewBooking = {
+  tenantId: string;
+  kind: BookingKind;
+  startsAt: Date;
+  endsAt: Date;
+  staffId?: string | null;
+  resourceId?: string | null;
+  serviceId?: string | null;
+  customerId?: string | null;
+  locationId?: string | null;
+  status?: BookingStatus;
+  displayTimezone?: string;
+  notes?: string | null;
+};
+
+function isExclusionViolation(error: unknown): boolean {
+  const seen = new Set<unknown>();
+  let current: unknown = error;
+  while (current && typeof current === "object" && !seen.has(current)) {
+    seen.add(current);
+    const code = "code" in current ? String(current.code) : "";
+    const constraint = "constraint" in current ? String(current.constraint) : "";
+    const message = "message" in current ? String(current.message) : "";
+    if (
+      code === "23P01" ||
+      constraint.includes("overlap_excl") ||
+      /exclusion|23P01|overlap_excl/i.test(message)
+    ) {
+      return true;
+    }
+    current = "cause" in current ? current.cause : undefined;
+  }
+  return false;
+}
+
+export async function createBooking(input: NewBooking) {
+  const db = getDb();
+  try {
+    const [row] = await db
+      .insert(booking)
+      .values({
+        tenantId: input.tenantId,
+        kind: input.kind,
+        startsAt: input.startsAt,
+        endsAt: input.endsAt,
+        staffId: input.staffId ?? null,
+        resourceId: input.resourceId ?? null,
+        serviceId: input.serviceId ?? null,
+        customerId: input.customerId ?? null,
+        locationId: input.locationId ?? null,
+        status: input.status ?? "pending",
+        displayTimezone: input.displayTimezone ?? "Europe/Nicosia",
+        notes: input.notes ?? null,
+      })
+      .returning();
+    return row;
+  } catch (error) {
+    if (isExclusionViolation(error)) {
+      throw new BookingConflictError();
+    }
+    throw error;
+  }
+}
+
+export async function listBookingsForTenant(tenantId: string) {
+  return getDb()
+    .select()
+    .from(booking)
+    .where(eq(booking.tenantId, tenantId));
+}
+
+export async function getBookingForTenant(tenantId: string, bookingId: string) {
+  const [row] = await getDb()
+    .select()
+    .from(booking)
+    .where(and(eq(booking.id, bookingId), eq(booking.tenantId, tenantId)))
+    .limit(1);
+  if (!row) {
+    throw new TenantAccessError();
+  }
+  assertSameTenant(row.tenantId, tenantId);
+  return row;
+}
+
+export async function bookingCountForTenant(tenantId: string): Promise<number> {
+  const result = await getPool().query(
+    "SELECT count(*)::int AS n FROM booking WHERE tenant_id = $1",
+    [tenantId],
+  );
+  return result.rows[0]?.n ?? 0;
+}
