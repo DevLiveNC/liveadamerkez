@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { assertProductionSecrets } from "./secrets.js";
 
 export type SessionRole = "business" | "admin";
 
@@ -18,6 +19,7 @@ function b64url(value: string | Buffer): string {
 }
 
 function signingSecret(explicit?: string): string | null {
+  assertProductionSecrets();
   const secret = (explicit ?? process.env.AUTH_SECRET)?.trim();
   return secret || null;
 }

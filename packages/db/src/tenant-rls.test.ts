@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { migrate } from "./migrate.js";
 import { closePool, getPool, isDatabaseConfigured } from "./client.js";
 import { TenantAccessError } from "@ada-merkez/shared";
-import { getBookingForTenant } from "./bookings.js";
+import { bookingCountForTenant, getBookingForTenant } from "./bookings.js";
 
 const hasDb = isDatabaseConfigured();
 
@@ -43,6 +43,8 @@ describe.skipIf(!hasDb)("tenant isolation at API and DB layers", () => {
     await expect(getBookingForTenant(tenantB, bookingA)).rejects.toBeInstanceOf(
       TenantAccessError,
     );
+    expect(await bookingCountForTenant(tenantA)).toBe(1);
+    expect(await bookingCountForTenant(tenantB)).toBe(0);
   });
 
   it("RLS session variable hides other tenant rows for ada_app role when present", async () => {

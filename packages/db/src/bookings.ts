@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import type { BookingKind, BookingStatus } from "@ada-merkez/shared";
 import {
   TenantAccessError,
@@ -7,7 +7,7 @@ import {
 } from "@ada-merkez/shared";
 
 export { TenantAccessError };
-import { getPool, withTenantDb } from "./client.js";
+import { withTenantDb } from "./client.js";
 import { booking } from "./schema.js";
 
 export class BookingConflictError extends Error {
@@ -145,9 +145,11 @@ export async function getBookingForTenant(tenantId: string, bookingId: string) {
 }
 
 export async function bookingCountForTenant(tenantId: string): Promise<number> {
-  const result = await getPool().query(
-    "SELECT count(*)::int AS n FROM booking WHERE tenant_id = $1",
-    [tenantId],
-  );
-  return result.rows[0]?.n ?? 0;
+  return withTenantDb(tenantId, async (db) => {
+    const [row] = await db
+      .select({ n: count() })
+      .from(booking)
+      .where(eq(booking.tenantId, tenantId));
+    return Number(row?.n ?? 0);
+  });
 }

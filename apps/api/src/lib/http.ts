@@ -39,10 +39,7 @@ export async function readJson<T>(request: Request): Promise<T | null> {
 }
 
 export function clientIp(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
-  }
-  return request.headers.get("x-real-ip")?.trim() || "0.0.0.0";
+  const real = request.headers.get("x-real-ip")?.trim();
+  if (real) return real;
+  return "0.0.0.0";
 }

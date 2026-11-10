@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       headers,
     );
   }
-  const row = await processDeletionRequest(parsed.data.id);
+  const row = await processDeletionRequest(parsed.data.id, phone);
   if (!row) {
     return json({ ok: false, code: "NOT_FOUND", message: apiMessages.notFound }, 404, headers);
   }

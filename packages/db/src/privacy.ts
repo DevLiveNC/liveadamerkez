@@ -2,9 +2,17 @@ import { and, eq, or } from "drizzle-orm";
 import {
   CONSENT_TEXT_VERSION,
   RETENTION_DAYS,
+  toE164,
 } from "@ada-merkez/shared";
 import { getDb } from "./client.js";
-import { booking, consent, customer, deletionRequest, waitlistEntry } from "./schema.js";
+import {
+  booking,
+  consent,
+  customer,
+  deletionRequest,
+  otpChallenge,
+  waitlistEntry,
+} from "./schema.js";
 
 export function retainUntil(days: number, from = new Date()): Date {
   return new Date(from.getTime() + days * 24 * 60 * 60 * 1000);
@@ -83,7 +91,7 @@ export async function anonymizePersonalData(input: {
   const db = getDb();
   const phone = input.phone ?? null;
   const email = input.email ?? null;
-  if (!phone && !email) return { waitlist: 0, customers: 0, bookings: 0 };
+  if (!phone && !email) return { waitlist: 0, customers: 0, bookings: 0, otp: 0 };
 
   const waitlistClauses = [];
   if (phone) waitlistClauses.push(eq(waitlistEntry.phone, phone));
@@ -122,14 +130,27 @@ export async function anonymizePersonalData(input: {
     }
   }
 
-  return { waitlist: waitlistCount, customers: customerCount, bookings: customerCount };
+  let otpCount = 0;
+  if (phone) {
+    const deletedOtp = await db
+      .delete(otpChallenge)
+      .where(eq(otpChallenge.phone, phone))
+      .returning({ id: otpChallenge.id });
+    otpCount = deletedOtp.length;
+  }
+
+  return { waitlist: waitlistCount, customers: customerCount, bookings: customerCount, otp: otpCount };
 }
 
-export async function processDeletionRequest(id: string) {
+export async function processDeletionRequest(id: string, verifiedPhone: string) {
   const db = getDb();
+  const phone = toE164(verifiedPhone);
+  if (!phone) return null;
   const [row] = await db.select().from(deletionRequest).where(eq(deletionRequest.id, id)).limit(1);
   if (!row) return null;
-  await anonymizePersonalData({ phone: row.phone, email: row.email });
+  const requestPhone = toE164(row.phone);
+  if (!requestPhone || requestPhone !== phone) return null;
+  await anonymizePersonalData({ phone: requestPhone, email: row.email });
   const [updated] = await db
     .update(deletionRequest)
     .set({

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { corsHeaders, parseOriginList } from "./http";
+import { clientIp, corsHeaders, parseOriginList } from "./http";
 
 describe("CORS deny-by-default", () => {
   it("parses origin list", () => {
@@ -33,5 +33,22 @@ describe("CORS deny-by-default", () => {
     );
     expect(denied["Access-Control-Allow-Origin"]).toBeUndefined();
     process.env.CORS_ORIGINS = prev;
+  });
+});
+
+describe("trusted client IP", () => {
+  it("uses x-real-ip and ignores x-forwarded-for", () => {
+    const spoofed = new Request("http://api.test/health", {
+      headers: {
+        "x-forwarded-for": "1.2.3.4, 10.0.0.1",
+        "x-real-ip": "198.51.100.9",
+      },
+    });
+    expect(clientIp(spoofed)).toBe("198.51.100.9");
+
+    const onlyForwarded = new Request("http://api.test/health", {
+      headers: { "x-forwarded-for": "1.2.3.4" },
+    });
+    expect(clientIp(onlyForwarded)).toBe("0.0.0.0");
   });
 });

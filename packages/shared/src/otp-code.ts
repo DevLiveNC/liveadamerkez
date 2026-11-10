@@ -1,11 +1,13 @@
 import { createHash, createHmac, randomInt, timingSafeEqual } from "node:crypto";
+import { assertProductionSecrets } from "./secrets.js";
 
 function pepper(): string {
-  return (
-    process.env.OTP_PEPPER?.trim() ||
-    process.env.AUTH_SECRET?.trim() ||
-    "ada-otp-dev-unconfigured"
-  );
+  assertProductionSecrets();
+  const value = process.env.OTP_PEPPER?.trim() || process.env.AUTH_SECRET?.trim();
+  if (!value) {
+    return "ada-otp-dev-unconfigured";
+  }
+  return value;
 }
 
 export function generateOtpCode(length = 6): string {
