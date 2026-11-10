@@ -16,6 +16,11 @@ export const site = {
     "Kuzey Kıbrıs ve Türkiye için işletme keşfi, kuaför ve klinik randevusu, restoran masa rezervasyonu. Uygulamayı indirmeden WhatsApp üzerinden de rezervasyon planlanıyor.",
 } as const;
 
+export const cta = {
+  customer: "Erken erişime kaydol",
+  business: "Kendi işletmeni ekle",
+} as const;
+
 export const nav = {
   features: "Ne sunulacak",
   waitlist: "Bekleme listesi",
@@ -27,8 +32,8 @@ export const hero = {
   kicker: "Yakında",
   title: "Kuzey Kıbrıs ve Türkiye için randevu ve rezervasyon",
   lead: "Kuaför ve klinikte saat seçin, restoranda masa ayırın. Dilerseniz uygulamayı indirmeden WhatsApp üzerinden de rezervasyon yapılabilecek.",
-  primaryCta: "Bekleme listesine yazıl",
-  secondaryCta: "İşletmeler için",
+  primaryCta: cta.customer,
+  secondaryCta: cta.business,
 } as const;
 
 export const how = {
@@ -87,7 +92,7 @@ export const roadmap = {
 
 export const pilot = {
   title: "Pilot",
-  body: "Pilot Lefkoşa, Girne ve Mağusa’da yapılacak. İsimli işletme listesi yoktur; katılım ayrı onaya bağlıdır.",
+  body: "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
 } as const;
 
 export const waitlist = {

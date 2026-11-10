@@ -7,6 +7,7 @@
  * - yasaklı bölge kısaltması (bölge adı: Kuzey Kıbrıs)
  * - üstünlük iddiası (ilk / tek)
  * - onaylanmamış ücretsiz teklif
+ * - sitede görünen iç not / yer tutucu ([CTA], doğrulanacak, TODO, netleşmedi)
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -14,6 +15,10 @@ import path from "node:path";
 const ROOT = path.resolve(import.meta.dirname, "..");
 
 const TARGET_DIRS = ["apps", "packages", "docs"];
+
+/** Kullanıcıya giden kopya: iç not sızıntısı yalnızca buradan taranır. */
+const LEAK_DIRS = ["packages/copy", "apps/landing/src"];
+const LEAK_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs"]);
 
 const EXTENSIONS = new Set([
   ".ts",
@@ -75,6 +80,30 @@ const RULES = [
   },
 ];
 
+/** Render edilen metinde iç not / yer tutucu kalmasın. */
+const LEAK_RULES = [
+  {
+    id: "placeholder-brackets",
+    pattern: /\[[^\]\n]{1,80}\]/,
+    hint: "Köşeli parantezli yer tutucu sitede görünmez. '[CTA]', '[doğrulanacak]' vb. kaldırın.",
+  },
+  {
+    id: "dogrulanacak",
+    pattern: /doğrulanacak/i,
+    hint: "İç not. Kullanıcıya giden metinden çıkarın.",
+  },
+  {
+    id: "todo",
+    pattern: /\bTODO\b/,
+    hint: "TODO kullanıcıya giden metinde kalmasın.",
+  },
+  {
+    id: "netlesmedi",
+    pattern: /netleşmedi/i,
+    hint: "İç not. Kullanıcıya giden metinden çıkarın.",
+  },
+];
+
 function walk(dir, out = []) {
   if (!fs.existsSync(dir)) return out;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -96,6 +125,26 @@ function scanLine(line) {
     .replace(/\[[^\]]*\]\([^)]*\)/g, "");
 }
 
+/**
+ * Alıntılı dizeler ve JSX metin düğümleri — dizi indeksi / CSS seçici yakalanmaz.
+ * @param {string} source
+ * @returns {string[]}
+ */
+function extractUserFacingFragments(source) {
+  const fragments = [];
+  const strRe = /'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`/g;
+  let m;
+  while ((m = strRe.exec(source))) {
+    fragments.push(m[0].slice(1, -1));
+  }
+  const jsxRe = />([^<>{}\n]+)</g;
+  while ((m = jsxRe.exec(source))) {
+    const text = m[1].trim();
+    if (text) fragments.push(text);
+  }
+  return fragments;
+}
+
 for (const file of files) {
   const text = fs.readFileSync(file, "utf8");
   const lines = text.split(/\r?\n/);
@@ -115,6 +164,32 @@ for (const file of files) {
   }
 }
 
+const leakFiles = LEAK_DIRS.flatMap((rel) =>
+  walk(path.join(ROOT, rel)).filter((file) => LEAK_EXTENSIONS.has(path.extname(file))),
+);
+
+for (const file of leakFiles) {
+  const text = fs.readFileSync(file, "utf8");
+  const lines = text.split(/\r?\n/);
+  for (let i = 0; i < lines.length; i += 1) {
+    const fragments = extractUserFacingFragments(lines[i] ?? "");
+    for (const fragment of fragments) {
+      const scanned = scanLine(fragment);
+      for (const rule of LEAK_RULES) {
+        if (rule.pattern.test(scanned)) {
+          hits.push({
+            file: path.relative(ROOT, file),
+            line: i + 1,
+            id: rule.id,
+            excerpt: scanned.trim().slice(0, 180),
+            hint: rule.hint,
+          });
+        }
+      }
+    }
+  }
+}
+
 if (hits.length > 0) {
   console.error("copy-check: yasaklı ifade bulundu:\n");
   for (const hit of hits) {
@@ -126,5 +201,5 @@ if (hits.length > 0) {
 }
 
 console.log(
-  `copy-check: ${files.length} dosya tarandı, yasaklı ifade yok (bölge kısaltması / ilk-tek iddiası / ücretsiz teklif).`,
+  `copy-check: ${files.length} dosya tarandı, yasaklı ifade yok (bölge kısaltması / ilk-tek / ücretsiz / iç not).`,
 );

@@ -11,10 +11,10 @@ export default function HomePage() {
             <h1>{hero.title}</h1>
             <p className="lead">{hero.lead}</p>
             <div className="hero-actions">
-              <a className="button button-primary" href="#bekleme-listesi">
+              <a className="button button-primary" href="#waitlist">
                 {hero.primaryCta}
               </a>
-              <a className="button button-secondary" href="#isletmeler">
+              <a className="button button-secondary" href="#waitlist">
                 {hero.secondaryCta}
               </a>
             </div>
@@ -100,7 +100,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section" id="bekleme-listesi">
+      <section className="section" id="waitlist">
         <div className="shell waitlist-grid">
           <div>
             <h2>{waitlist.title}</h2>

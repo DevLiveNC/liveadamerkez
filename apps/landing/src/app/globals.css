@@ -56,22 +56,6 @@ a {
   margin-inline: auto;
 }
 
-.topbar {
-  background: var(--am-brand-navy);
-  color: var(--am-brand-sand);
-}
-
-.topbar-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--am-space-4);
-  min-height: 36px;
-  font-size: var(--am-text-xs);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
 .site-header {
   position: sticky;
   top: 0;
