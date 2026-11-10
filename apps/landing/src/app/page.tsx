@@ -17,6 +17,7 @@ import {
   waitlist,
   whatsappFlow,
 } from "@ada-merkez/copy";
+import { Dekor } from "@ada-merkez/ui";
 import { SampleBoardDate } from "../components/SampleBoardDate";
 import { SearchWhen } from "../components/SearchWhen";
 import { WaitlistForm } from "../components/WaitlistForm";
@@ -83,6 +84,7 @@ export default function HomePage() {
   return (
     <main id="icerik">
       <section className="hero">
+        <Dekor scene="landing" slot="hero" />
         <svg className="hero-art" viewBox="0 0 400 400" aria-hidden="true">
           <path
             fill="#0F2C44"
@@ -151,6 +153,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <Dekor scene="landing" slot="after-search" />
 
       <section className="section" id="kategoriler">
         <div className="wrap">
@@ -235,6 +239,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <Dekor scene="landing" slot="after-ornekler" />
+
       <section className="section" id="etkinlik">
         <div className="wrap">
           <div className="section-intro">
@@ -265,7 +271,10 @@ export default function HomePage() {
         </div>
       </section>
 
+      <Dekor scene="landing" slot="after-etkinlik" />
+
       <section className="section" id="nasil">
+        <Dekor scene="landing" slot="nasil" />
         <div className="wrap">
           <div className="board-meta">
             <div className="board-lead">
@@ -461,6 +470,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <Dekor scene="landing" slot="after-whatsapp" />
+
       <section className="biz-sec" id="isletmeler">
         <div className="wrap">
           <div className="biz-intro">
@@ -634,6 +645,7 @@ export default function HomePage() {
       </section>
 
       <section className="section" id="araclar">
+        <Dekor scene="landing" slot="araclar" />
         <div className="wrap">
           <div className="section-intro">
             <div className="lead">
@@ -700,6 +712,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <Dekor scene="landing" slot="after-pilot" />
 
       <section className="section" id="sss">
         <div className="wrap">

@@ -13,7 +13,7 @@ body.landing,
 body.form-page,
 body.shot-1440,
 body.shot-390 {
-  background-image: url("svg/kum-grain.svg");
+  background-image: url("./svg/kum-grain.svg");
   background-repeat: repeat;
   background-size: 160px 160px;
 }

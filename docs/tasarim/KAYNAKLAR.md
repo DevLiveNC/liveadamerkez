@@ -76,7 +76,7 @@ Telif satırları `OFL.txt` başındadır. Değişken (variable) woff2 sitede ku
 
 ## 6. Dekor (yeşillik / kabuk 2× WebP; dalga–kum–köpük SVG)
 
-Chat GPT üretimi sprite sheet’lerden kesildi (`tasarim/ui/landing/assets/dekor/gpt/sheet-1-sahil.png`, `sheet-2-yesillik.png`, `sheet-3-detay.png`). Gerçek kişi yoktur. Master PNG: `tasarim/ui/landing/assets/dekor/png/`. Canlı: `packages/ui/dekor/` ve `apps/landing/public/assets/dekor/`. `dekor.css` / `dekor.js` Tasarım v3.3; yerleşim `packages/ui/dekor/YERLESIM.md`.
+Chat GPT üretimi sprite sheet’lerden kesildi (`tasarim/ui/landing/assets/dekor/gpt/sheet-1-sahil.png`, `sheet-2-yesillik.png`, `sheet-3-detay.png`). Gerçek kişi yoktur. Master PNG: `tasarim/ui/landing/assets/dekor/png/`. Canlı tek kaynak: `packages/ui/dekor/` (React `Dekor`, Next import). Yerleşim `packages/ui/dekor/YERLESIM.md`.
 
 Dalga, kum, köpük ve ayak izi SVG’dir. `dalga`, `kopuk-serit`, `kum-tepecigi`, `ayak-izi`, `kemer` WebP kullanılmaz.
 

@@ -8,13 +8,6 @@ export {
   type DekorImgProps,
   type DekorPlacement,
 } from "./dekor/srcset.js";
-
-export const DEKOR_SCENES = [
-  "landing",
-  "app-giris",
-  "app-musteri",
-  "app-isletme",
-  "app-yonetici",
-] as const;
-
-export type DekorScene = (typeof DEKOR_SCENES)[number];
+export { DEKOR_SCENES, type DekorScene } from "./dekor/scenes.js";
+export { Dekor, DekorNavCorner, type LandingSlot } from "./dekor/Dekor.js";
+export { DekorSprite, DekorSvg, DekorBand } from "./dekor/DekorSprite.js";

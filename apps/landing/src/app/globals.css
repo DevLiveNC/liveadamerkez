@@ -2,6 +2,7 @@
 @import "../styles/am.css";
 @import "../styles/landing.css";
 @import "../styles/forms.css";
+@import "@ada-merkez/ui/dekor.css";
 
 html {
   --am-font-display: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
