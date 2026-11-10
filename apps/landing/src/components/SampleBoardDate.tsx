@@ -13,7 +13,7 @@ export function SampleBoardDate() {
 
   return (
     <span suppressHydrationWarning>
-      <span className="chip chip-outline">{examples.badge}</span> {label}
+      <span className="badge-ornek">{examples.badge}</span> {label}
     </span>
   );
 }

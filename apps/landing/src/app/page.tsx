@@ -17,6 +17,8 @@ import {
   waitlist,
   whatsappFlow,
 } from "@ada-merkez/copy";
+import { DekorBand, DekorImg, DekorMotion } from "../components/Dekor";
+import { SampleBoardDate } from "../components/SampleBoardDate";
 import { SearchWhen } from "../components/SearchWhen";
 import { WaitlistForm } from "../components/WaitlistForm";
 
@@ -81,8 +83,8 @@ function Kabuki({
 export default function HomePage() {
   return (
     <main id="icerik">
+      <DekorMotion />
       <section className="hero">
-        <div className="hero-dekor" aria-hidden="true" />
         <svg className="hero-art" viewBox="0 0 400 400" aria-hidden="true">
           <path
             fill="#0F2C44"
@@ -91,20 +93,31 @@ export default function HomePage() {
           <circle cx="200" cy="155" r="14" />
         </svg>
         <div className="wrap g12">
-          <div className="span-6 hero-copy">
-            <p className="t-label">{hero.kicker}</p>
-            <h1 className="t-display">{hero.title}</h1>
-            <p className="t-lede">{hero.lead}</p>
-            <div className="hero-cta">
-              <a className="btn btn-coral btn-lg" href="#waitlist">
-                {hero.primaryCta}
-              </a>
-              <a className="btn btn-ghost btn-lg" href="/basvuru">
-                {hero.secondaryCta}
-              </a>
+          <div className="span-6 hero-left">
+            <div className="hero-copy">
+              <p className="t-label">{hero.kicker}</p>
+              <h1 className="t-display">{hero.title}</h1>
+              <p className="t-lede">{hero.lead}</p>
+              <div className="hero-cta">
+                <a className="btn btn-coral btn-lg" href="#waitlist">
+                  {hero.primaryCta}
+                </a>
+                <a className="btn btn-ghost btn-lg" href="/basvuru">
+                  {hero.secondaryCta}
+                </a>
+              </div>
+            </div>
+            <div className="hero-dekor-left" aria-hidden="true">
+              <DekorImg name="kum-tepecigi" className="dekor dekor-dune" eager speed={0.12} />
+              <DekorImg name="tarak-kabuk" className="dekor dekor-comb dekor-desk" eager speed={0.1} />
+              <DekorImg name="sarmal-kabuk" className="dekor dekor-spiral dekor-desk" eager speed={0.1} />
             </div>
           </div>
           <div className="span-6 hero-stage">
+            <div className="hero-dekor-right" aria-hidden="true">
+              <DekorImg name="palmiye" className="dekor dekor-palm" eager speed={0.22} />
+              <DekorImg name="begonvil" className="dekor dekor-boug dekor-desk" eager speed={0.16} />
+            </div>
             <Kabuki pose="selam" line={kabuki.hero} variant="hero" />
             <div className="device device-shot">
               <div className="device-screen">
@@ -151,6 +164,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <DekorBand kind="dalga" side="zeytin-dali" />
 
       <section className="section" id="kategoriler">
         <div className="wrap">
@@ -234,6 +249,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <DekorBand kind="kopuk-serit" side="deniz-yildizi" />
 
       <section className="section" id="etkinlik">
         <div className="wrap">
@@ -381,7 +398,9 @@ export default function HomePage() {
                 <dt>{howBoard.service}</dt>
                 <dd>{examples.cards[0].service}</dd>
                 <dt>{howBoard.date}</dt>
-                <dd>{howBoard.dateValue}</dd>
+                <dd>
+                  <SampleBoardDate />
+                </dd>
                 <dt>{howBoard.time}</dt>
                 <dd>11:00</dd>
                 <dt>{howBoard.place}</dt>
@@ -395,6 +414,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <DekorBand kind="dalga" className="dekor-band-mobhide" />
 
       <section className="section wa" id="whatsapp">
         <div className="wrap g12">
@@ -631,6 +652,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <DekorBand kind="kopuk-serit" className="dekor-band-mobhide" />
+
       <section className="section" id="araclar">
         <div className="wrap">
           <div className="section-intro">
@@ -749,6 +772,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <DekorBand kind="ayak-izi" />
 
       <section className="close" id="waitlist">
         <div className="wrap">

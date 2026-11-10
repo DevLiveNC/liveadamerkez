@@ -28,10 +28,12 @@ export function sampleBoardDateLabel(now = new Date(), timeZone = site.timezone)
   }).formatToParts(now);
   const num = (type: string) => Number(parts.find((part) => part.type === type)?.value);
   const next = new Date(Date.UTC(num("year"), num("month") - 1, num("day") + 1, 12, 0, 0));
-  return new Intl.DateTimeFormat("tr-TR", {
+  const weekday = new Intl.DateTimeFormat("tr-TR", { timeZone, weekday: "long" }).format(next);
+  const rest = new Intl.DateTimeFormat("tr-TR", {
     timeZone,
-    weekday: "long",
     day: "numeric",
     month: "long",
   }).format(next);
+  const dayName = weekday.charAt(0).toLocaleUpperCase("tr-TR") + weekday.slice(1);
+  return `${dayName}, ${rest}`;
 }

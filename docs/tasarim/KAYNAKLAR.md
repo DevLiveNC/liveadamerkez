@@ -73,3 +73,14 @@ Canlı yol: `apps/landing/public/fonts/`. Lisans metni: `apps/landing/public/fon
 | Plus Jakarta Sans | `PlusJakartaSans-Regular.woff2`, `PlusJakartaSans-SemiBold.woff2`, `PlusJakartaSans-Bold.woff2` | [tokotype/PlusJakartaSans](https://github.com/tokotype/PlusJakartaSans) | [SIL Open Font License 1.1](https://openfontlicense.org) |
 
 Telif satırları `OFL.txt` başındadır. Değişken (variable) woff2 sitede kullanılmaz; dağıtılmaz.
+
+## 6. Landing dekor (kum / deniz / yeşillik)
+
+Chat GPT üretimi sprite sheet’lerden kesildi (`tasarim/ui/landing/assets/dekor/gpt/sheet-1-sahil.png`, `sheet-2-yesillik.png`, `sheet-3-detay.png`). Gerçek kişi yoktur. Master PNG: `tasarim/ui/landing/assets/dekor/png/`. Canlı kopya: `apps/landing/public/landing/dekor/`.
+
+| Paket | Toplam WebP |
+|---|---|
+| Masaüstü (`*.webp`, `*-m.webp` hariç) | ~556 KB (555.8 KB) |
+| Mobil (`*-m.webp`) | ~198 KB (197.5 KB) |
+
+Landing’de kullanılan adlar: `palmiye`, `begonvil`, `kum-tepecigi`, `tarak-kabuk`, `sarmal-kabuk`, `dalga`, `kopuk-serit`, `zeytin-dali`, `deniz-yildizi`, `ayak-izi`. Kesim ve ölçü tablosu: `docs/tasarim/dekor-README.md`. Opaklık canlıda 0.8–1 (README’deki düşük opaklık geçersiz).

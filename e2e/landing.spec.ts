@@ -24,8 +24,17 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   await expect(page.getByText("Yakında açılıyor").first()).toBeVisible();
   await expect(page.getByText("Kabuki").first()).toBeVisible();
   await expect(page.getByText("Boş saat burada durur. Müşteri görür, sen onaylarsın.")).toBeVisible();
-  await expect(page.locator(".hero-dekor")).toHaveCount(1);
+  await expect(page.locator(".hero-dekor-left")).toHaveCount(1);
+  await expect(page.locator(".hero-dekor-right")).toHaveCount(1);
+  await expect(page.locator(".hero-dekor-left img, .hero-dekor-right img")).toHaveCount(5);
+  await expect(page.locator(".dekor-band")).toHaveCount(5);
   await expect(page.locator(".kabuki--hero img")).toBeVisible();
+  await expect(page.getByText("Yakında: CY Ticket ve Ada Kampüs entegrasyonu").first()).toBeVisible();
+  await expect(page.locator("body")).not.toContainText(/gelecek ortak/i);
+  await expect(page.locator(".ticket dd .badge-ornek")).toHaveText("Örnek");
+  await expect(page.locator(".ticket dd").filter({ has: page.locator(".badge-ornek") })).toHaveText(
+    /Örnek\s+\S+,\s+\d{1,2}\s+\S+/,
+  );
   await expect(page.locator("#isletmeler")).toHaveClass(/biz-sec/);
   await expect(
     page.getByText(
