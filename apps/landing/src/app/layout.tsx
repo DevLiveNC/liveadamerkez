@@ -1,16 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { site } from "@ada-merkez/copy";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
 import { InstallHint } from "../components/InstallHint";
 import { ServiceWorkerRegister } from "../components/ServiceWorkerRegister";
+import { Analytics } from "../components/Analytics";
+import { AttributionCapture } from "../components/AttributionCapture";
 import "./globals.css";
 
-const outfit = Outfit({
+const display = Plus_Jakarta_Sans({
   subsets: ["latin", "latin-ext"],
   variable: "--font-outfit",
-  weight: ["600", "700"],
+  weight: ["500", "600", "700"],
   display: "swap",
 });
 
@@ -66,11 +68,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={site.language} data-theme="light" className={`${outfit.variable} ${inter.variable}`}>
+    <html lang={site.language} data-theme="light" className={`${display.variable} ${inter.variable}`}>
       <body>
-        <a className="skip-link" href="#icerik">
+        <a className="skip" href="#icerik">
           İçeriğe geç
         </a>
+        <AttributionCapture />
+        <Analytics />
         <Header />
         {children}
         <InstallHint />

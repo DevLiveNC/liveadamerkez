@@ -25,6 +25,10 @@ Uyarlanan ilkeler:
 - **Paylaşılan paketler** `packages/` altında; Vercel’de “source files outside of root directory” açık olmalı.
 - **Bölge:** Frankfurt (`fra1`), HeyTaksi API ile aynı.
 
+Pazarlama (bu PR): 30 günlük ilk/son UTM+`ref`, bekleme listesi ve işletme başvurusu (CSV), Meta Pixel/CAPI + GA4 (`event_id`), `/q/...` QR yolları, davet kodu kancası. Ayrıntı: `docs/PAZARLAMA-OLCUM.md`.
+
+Logo kesin değil. UI yalnızca `apps/landing/public/brand/logo.svg` yer tutucusunu (`Logo` bileşeni) kullanır.
+
 ## Klasörler
 
 ```
@@ -89,6 +93,9 @@ Ortam değişkenleri:
 | `DATABASE_URL` | Hayır (v1 landing için) | Neon Postgres. Yoksa `/health` `db: disconnected`; bekleme listesi 503 ve düzgün mesaj. |
 | `CORS_ORIGINS` | Evet (prod) | Landing (ve sonra paneller) origin’leri, virgülle. |
 | `APP_TIMEZONE` | Hayır | Varsayılan `Europe/Nicosia`. Slotlar UTC saklanır. |
+| `INTERNAL_EXPORT_TOKEN` | CSV için | `GET /v1/internal/waitlist` (şehir/segment), `/v1/internal/business-applications?inTurkey=true`, `/v1/internal/referrals`. |
+| `META_PIXEL_ID` / `META_CAPI_ACCESS_TOKEN` | Hayır | Yoksa CAPI sessiz atlanır. İsteğe bağlı `META_CAPI_TEST_EVENT_CODE`. |
+| `GA4_MEASUREMENT_ID` / `GA4_API_SECRET` | Hayır | Yoksa Measurement Protocol sessiz atlanır. |
 
 ### `ada-merkez-landing`
 
@@ -105,7 +112,9 @@ Ortam değişkenleri:
 | Değişken | Zorunlu | Not |
 |---|---|---|
 | `NEXT_PUBLIC_API_URL` | Prod’da evet | API origin, örn. `https://ada-merkez-api.vercel.app` (sonda `/` yok). Yoksa bekleme listesi formunda kırılma olmadan “alınamıyor” mesajı. |
-| `NEXT_PUBLIC_SITE_URL` | Hayır | Mutlak OG URL’leri için. |
+| `NEXT_PUBLIC_SITE_URL` | Hayır | Mutlak OG URL’leri için. Yer tutucu alan adı yok; `[ALAN ADI]`. |
+| `NEXT_PUBLIC_META_PIXEL_ID` | Hayır | Yoksa Pixel scripti yüklenmez. |
+| `NEXT_PUBLIC_GA4_MEASUREMENT_ID` | Hayır | Yoksa gtag yüklenmez. |
 
 ### Sonraki paneller
 

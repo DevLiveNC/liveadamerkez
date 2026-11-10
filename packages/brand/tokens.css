@@ -113,7 +113,7 @@
   --am-neutral-800: #1c1a17;
   --am-neutral-900: #12110f;
 
-  --am-font-display: "Outfit", "Inter", system-ui, sans-serif;
+  --am-font-display: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
   --am-font-sans: "Inter", system-ui, sans-serif;
 
   --am-text-xs: 0.75rem;
@@ -180,4 +180,34 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
   line-height: 1.15;
   color: var(--am-color-text);
+}
+
+
+/* Hareket, ızgara, katman — v1.1, geriye uyumlu eklenti */
+:root {
+  --am-motion-fast: 120ms;
+  --am-motion-base: 180ms;
+  --am-motion-medium: 240ms;
+  --am-motion-slow: 320ms;
+  --am-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --am-ease-in-out: cubic-bezier(0.45, 0, 0.15, 1);
+  --am-ease-press: cubic-bezier(0.3, 0, 0.7, 1);
+
+  --am-grid-columns: 12;
+  --am-grid-gutter: 24px;
+  --am-grid-margin: 80px;
+  --am-page-width: 1440px;
+  --am-content-width: 1280px;
+
+  --am-z-nav: 40;
+  --am-z-dropdown: 50;
+  --am-z-overlay: 60;
+  --am-z-modal: 70;
+  --am-z-sheet: 75;
+  --am-z-toast: 80;
+
+  --am-focus-ring: 0 0 0 3px #ffffff, 0 0 0 5px var(--am-color-focus);
+}
+@media (max-width: 860px) {
+  :root { --am-grid-margin: 20px; --am-grid-gutter: 16px; }
 }

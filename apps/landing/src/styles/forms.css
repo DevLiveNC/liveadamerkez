@@ -1,0 +1,247 @@
+/* Logo: tek varlık, forms/assets/logo.svg — kesin değil, yer tutucu.
+   Bu dosyayı değiştirmek E1 ekranlarındaki tüm logoları değiştirir.
+   tokens.json logo.status alanına dokunulmaz. */
+:root {
+  --am-form-logo: url("/brand/logo.svg");
+}
+.brand-logo {
+  display: block;
+  height: 32px;
+  width: auto;
+  max-height: 32px;
+  object-fit: contain;
+}
+.brand-logo.is-sm { height: 24px; max-height: 24px; }
+
+/* Ada Merkez — bekleme listesi ve işletme başvuru formları (E1) */
+
+.form-page { background: var(--am-brand-sand); min-height: 100vh; color: var(--am-brand-navy); }
+
+.form-hero { padding: 56px 0 80px; }
+.form-hero .t-display { font-size: 48px; max-width: 14ch; }
+.form-lede { margin-top: 16px; }
+
+.form-card {
+  background: #fff;
+  border: 1px solid var(--am-color-border);
+  border-radius: 24px;
+  box-shadow: var(--am-shadow-sm);
+  padding: 32px;
+}
+
+.field { margin-bottom: 20px; }
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--am-color-text);
+}
+.field-req { color: var(--am-brand-coral-dark); font-weight: 600; margin-left: 2px; }
+.field-opt { color: var(--am-color-text-subtle); font-weight: 500; margin-left: 6px; font-size: 12px; }
+.field-hint { display: block; margin-top: 6px; font-size: 12px; color: var(--am-color-text-muted); line-height: 1.4; }
+.field-error {
+  display: none;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--am-color-danger);
+}
+
+.input, .textarea {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--am-color-border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--am-color-text);
+  font-family: var(--am-font-sans);
+  font-size: 16px;
+  transition: border-color var(--am-motion-fast) var(--am-ease-out),
+              box-shadow var(--am-motion-fast) var(--am-ease-out),
+              background var(--am-motion-fast) var(--am-ease-out);
+}
+.textarea { height: auto; min-height: 96px; padding: 12px 14px; resize: vertical; line-height: 1.45; }
+.input::placeholder, .textarea::placeholder { color: var(--am-color-text-subtle); }
+.input:hover, .textarea:hover { border-color: #B8B2A8; }
+.input:focus, .textarea:focus, .input.is-focus, .textarea.is-focus {
+  outline: none;
+  border-color: var(--am-brand-navy);
+  box-shadow: 0 0 0 3px rgba(15, 44, 68, 0.12);
+}
+.field.is-error .input, .field.is-error .textarea, .field.is-error .choice-grid {
+  border-color: var(--am-color-danger);
+}
+.field.is-error .input:focus { box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.14); }
+.field.is-error .field-error { display: block; }
+.input:disabled, .textarea:disabled, .choice-grid.is-disabled {
+  background: var(--am-color-surface-muted);
+  color: var(--am-color-text-muted);
+  cursor: not-allowed;
+}
+
+.choice-grid {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.choice {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 40px; padding: 8px 14px;
+  border: 1px solid var(--am-color-border);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 14px; font-weight: 500;
+  color: var(--am-color-text);
+  cursor: pointer;
+  transition: background var(--am-motion-fast) var(--am-ease-out),
+              border-color var(--am-motion-fast) var(--am-ease-out),
+              color var(--am-motion-fast) var(--am-ease-out);
+}
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice:hover { border-color: var(--am-brand-navy); }
+.choice.is-on, .choice:has(input:checked) {
+  background: var(--am-brand-navy);
+  border-color: var(--am-brand-navy);
+  color: #fff;
+}
+.choice.is-tr, .choice.region-tr {
+  border-color: var(--am-brand-aegean);
+}
+.choice.is-tr.is-on, .choice.region-tr:has(input:checked), .choice.is-tr:has(input:checked) {
+  background: var(--am-brand-aegean);
+  border-color: var(--am-brand-aegean);
+  color: #fff;
+}
+
+/* Konum kırılımı: iki net bölge */
+.region {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.region-card {
+  position: relative;
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid var(--am-color-border);
+  border-radius: 16px;
+  background: var(--am-brand-sand);
+  cursor: pointer;
+  transition: border-color var(--am-motion-fast) var(--am-ease-out),
+              background var(--am-motion-fast) var(--am-ease-out),
+              box-shadow var(--am-motion-fast) var(--am-ease-out);
+}
+.region-card input { position: absolute; opacity: 0; }
+.region-card strong {
+  font-family: var(--am-font-display);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.015em;
+}
+.region-card span { font-size: 12px; color: var(--am-color-text-muted); }
+.region-card:hover { border-color: var(--am-brand-navy); }
+.region-card.is-on, .region-card:has(input:checked) {
+  background: #fff;
+  border-color: var(--am-brand-navy);
+  box-shadow: 0 0 0 3px rgba(15, 44, 68, 0.12);
+}
+.region-cities { display: none; margin-top: 4px; }
+.show-cities .region-cities { display: flex; }
+
+.consent {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--am-color-border);
+  border-radius: 16px;
+  background: var(--am-brand-sand);
+  align-items: start;
+}
+.consent input[type="checkbox"] {
+  width: 20px; height: 20px; margin-top: 1px;
+  accent-color: var(--am-brand-navy);
+}
+.consent p { font-size: 13px; line-height: 1.45; }
+.consent .legal {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px dashed var(--am-color-border);
+  font-size: 12px;
+  color: var(--am-color-text-muted);
+  line-height: 1.45;
+}
+.field.is-error .consent { border-color: var(--am-color-danger); }
+
+.form-actions { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
+.form-meta { font-size: 12px; color: var(--am-color-text-subtle); }
+.btn .spin {
+  width: 16px; height: 16px; border-radius: 99px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  animation: am-spin 800ms linear infinite;
+  display: none;
+}
+@keyframes am-spin { to { transform: rotate(360deg); } }
+.btn.is-busy .spin { display: inline-block; }
+.btn.is-busy { pointer-events: none; }
+
+.thanks { display: none; padding: 8px 0 16px; }
+.thanks h1 { font-size: 40px; max-width: 14ch; }
+.thanks .mark {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: var(--am-color-success-subtle);
+  color: var(--am-color-success);
+  display: grid; place-items: center;
+  margin-bottom: 20px;
+}
+.thanks .mark svg { width: 24px; height: 24px; }
+
+/* Durum görünürlüğü */
+.thanks, .busy-label { display: none; }
+[data-state="success"] .form-card { display: none; }
+[data-state="success"] .form-lede-default { display: none; }
+[data-state="success"] .thanks { display: block; }
+[data-state="submitting"] .busy-label { display: inline; }
+[data-state="submitting"] .idle-label { display: none; }
+[data-state="submitting"] .btn { pointer-events: none; }
+[data-state="empty"] .field.is-error .field-error,
+[data-state="empty"] .field.is-error .consent,
+[data-state="focus"] .field.is-error .field-error,
+[data-state="submitting"] .field.is-error .field-error,
+[data-state="success"] .field.is-error .field-error { display: none; }
+[data-state="empty"] .field.is-error,
+[data-state="focus"] .field.is-error,
+[data-state="submitting"] .field.is-error { }
+[data-state="empty"] .field.is-error .input,
+[data-state="focus"] .field.is-error .input,
+[data-state="submitting"] .field.is-error .input,
+[data-state="empty"] .field.is-error .consent,
+[data-state="focus"] .field.is-error .consent,
+[data-state="submitting"] .field.is-error .consent {
+  border-color: var(--am-color-border);
+}
+[data-state="error"] .field.is-error .field-error { display: block; }
+
+@media (max-width: 860px) {
+  .form-hero { padding: 28px 0 56px; }
+  .form-hero .t-display, .thanks h1 { font-size: 32px; }
+  .form-card { padding: 20px; border-radius: 20px; }
+  .region { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn .spin { animation: none; }
+}
+
+@media (max-width: 860px) {
+  .form-page .form-nav-links { display: flex !important; gap: 12px; font-size: 13px; margin-left: auto; }
+}
+
+[data-state="success"] .form-intro { display: none; }
+[data-state="success"] .form-hero .span-5 { grid-column: 1 / 8; }
+[data-state="success"] .thanks { padding-top: 24px; padding-bottom: 80px; }

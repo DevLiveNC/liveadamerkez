@@ -3,6 +3,7 @@ import {
   check,
   index,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   smallint,
@@ -122,6 +123,10 @@ export const customer = pgTable(
       .references(() => business.id),
     phone: text("phone").notNull(),
     name: text("name"),
+    firstTouch: jsonb("first_touch"),
+    lastTouch: jsonb("last_touch"),
+    referralCode: text("referral_code"),
+    referredByCode: text("referred_by_code"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [uniqueIndex("customer_tenant_phone").on(t.tenantId, t.phone)],
@@ -161,6 +166,10 @@ export const booking = pgTable(
     endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
     displayTimezone: text("display_timezone").notNull().default("Europe/Nicosia"),
     notes: text("notes"),
+    firstTouch: jsonb("first_touch"),
+    lastTouch: jsonb("last_touch"),
+    referredByCode: text("referred_by_code"),
+    eventId: text("event_id"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
@@ -170,20 +179,75 @@ export const booking = pgTable(
   ],
 );
 
-export const waitlistEntry = pgTable(
-  "waitlist_entry",
+export const waitlistEntry = pgTable("waitlist_entry", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  role: waitlistRoleEnum("role").notNull(),
+  name: text("name").notNull(),
+  phone: text("phone"),
+  email: text("email"),
+  city: text("city"),
+  segment: text("segment"),
+  consentId: uuid("consent_id")
+    .notNull()
+    .references(() => consent.id),
+  firstTouch: jsonb("first_touch"),
+  lastTouch: jsonb("last_touch"),
+  referralCode: text("referral_code"),
+  referredByCode: text("referred_by_code"),
+  eventId: text("event_id"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const businessApplication = pgTable("business_application", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  businessName: text("business_name").notNull(),
+  sector: text("sector").notNull(),
+  city: text("city"),
+  inTurkey: boolean("in_turkey").notNull().default(false),
+  includeInDiscovery: boolean("include_in_discovery").notNull().default(false),
+  contactName: text("contact_name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email"),
+  whatsapp: text("whatsapp"),
+  notes: text("notes"),
+  consentId: uuid("consent_id")
+    .notNull()
+    .references(() => consent.id),
+  firstTouch: jsonb("first_touch"),
+  lastTouch: jsonb("last_touch"),
+  referralCode: text("referral_code"),
+  referredByCode: text("referred_by_code"),
+  eventId: text("event_id"),
+  status: text("status").notNull().default("received"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const referral = pgTable("referral", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  code: text("code").notNull().unique(),
+  ownerKind: text("owner_kind").notNull(),
+  ownerId: uuid("owner_id").notNull(),
+  clickCount: integer("click_count").notNull().default(0),
+  signupCount: integer("signup_count").notNull().default(0),
+  firstBookingAt: timestamp("first_booking_at", { withTimezone: true }),
+  hookStatus: text("hook_status").notNull().default("issued"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const analyticsDispatch = pgTable(
+  "analytics_dispatch",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    role: waitlistRoleEnum("role").notNull(),
-    name: text("name").notNull(),
-    phone: text("phone").notNull(),
-    city: text("city"),
-    consentId: uuid("consent_id")
-      .notNull()
-      .references(() => consent.id),
+    eventName: text("event_name").notNull(),
+    eventId: text("event_id").notNull(),
+    channel: text("channel"),
+    payload: jsonb("payload"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [uniqueIndex("waitlist_phone_role").on(t.phone, t.role)],
+  (t) => [uniqueIndex("analytics_dispatch_event_id").on(t.eventId, t.eventName)],
 );
 
 export const deletionRequest = pgTable("deletion_request", {

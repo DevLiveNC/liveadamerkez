@@ -29,6 +29,7 @@ export default defineConfig({
           env: {
             ...process.env,
             PORT: String(apiPort),
+            INTERNAL_EXPORT_TOKEN: process.env.INTERNAL_EXPORT_TOKEN ?? "e2e-export-token",
             AUTH_SECRET: process.env.AUTH_SECRET ?? "e2e-auth-secret",
             CORS_ORIGINS: process.env.CORS_ORIGINS ?? baseURL,
             WAITLIST_OPEN: process.env.WAITLIST_OPEN ?? "",

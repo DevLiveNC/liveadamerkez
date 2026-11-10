@@ -12,6 +12,7 @@
   "dependencies": {
     "@ada-merkez/brand": "*",
     "@ada-merkez/copy": "*",
+    "@ada-merkez/shared": "*",
     "next": "^15.5.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

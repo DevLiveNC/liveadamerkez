@@ -7,10 +7,17 @@ import {
 import { getDb } from "./client.js";
 import {
   booking,
+<<<<<<< HEAD
   consent,
   customer,
   deletionRequest,
   otpChallenge,
+=======
+  businessApplication,
+  consent,
+  customer,
+  deletionRequest,
+>>>>>>> 3387df2 (Pazarlama: UTM, formlar, Pixel/GA4, QR ve davet kancası)
   waitlistEntry,
 } from "./schema.js";
 
@@ -48,21 +55,15 @@ export async function recordConsent(input: {
 export async function createWaitlistEntry(input: {
   role: "customer" | "business";
   name: string;
-  phone: string;
+  phone?: string | null;
+  email?: string | null;
   city?: string | null;
+  segment?: string | null;
   consentId: string;
 }) {
-  const [row] = await getDb()
-    .insert(waitlistEntry)
-    .values({
-      role: input.role,
-      name: input.name,
-      phone: input.phone,
-      city: input.city ?? null,
-      consentId: input.consentId,
-    })
-    .returning();
-  return row;
+  const { upsertWaitlistEntry } = await import("./marketing.js");
+  const result = await upsertWaitlistEntry(input);
+  return result.row;
 }
 
 export async function createDeletionRequest(input: {
@@ -95,6 +96,7 @@ export async function anonymizePersonalData(input: {
 
   const waitlistClauses = [];
   if (phone) waitlistClauses.push(eq(waitlistEntry.phone, phone));
+  if (email) waitlistClauses.push(eq(waitlistEntry.email, email));
   const waitlistRows = waitlistClauses.length
     ? await db.select().from(waitlistEntry).where(or(...waitlistClauses))
     : [];
@@ -106,9 +108,29 @@ export async function anonymizePersonalData(input: {
       .set({
         name: ANON_NAME,
         phone: `deleted:${row.id}`,
+        email: null,
       })
       .where(eq(waitlistEntry.id, row.id));
     waitlistCount += 1;
+  }
+
+  const applyClauses = [];
+  if (phone) applyClauses.push(eq(businessApplication.phone, phone));
+  if (email) applyClauses.push(eq(businessApplication.email, email));
+  if (applyClauses.length) {
+    const apps = await db.select().from(businessApplication).where(or(...applyClauses));
+    for (const row of apps) {
+      await db
+        .update(businessApplication)
+        .set({
+          contactName: ANON_NAME,
+          phone: `deleted:${row.id}`,
+          email: null,
+          whatsapp: null,
+          notes: null,
+        })
+        .where(eq(businessApplication.id, row.id));
+    }
   }
 
   let customerCount = 0;
