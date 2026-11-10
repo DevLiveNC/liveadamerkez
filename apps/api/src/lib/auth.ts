@@ -4,7 +4,7 @@ import {
   readBearerToken,
   verifySession,
   type SessionClaims,
-} from "@ada-merkez/shared";
+} from "@ada-merkez/shared/node";
 
 export function sessionOr401(
   request: Request,

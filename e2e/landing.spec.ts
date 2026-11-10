@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const artifactDir = path.join(process.cwd(), "artifacts");
+const apiURL = process.env.PLAYWRIGHT_API_URL ?? "http://127.0.0.1:3001";
 
 test.beforeAll(() => {
   fs.mkdirSync(artifactDir, { recursive: true });
@@ -12,20 +13,21 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   const response = await page.goto("/");
   expect(response?.ok()).toBeTruthy();
 
-  await expect(page.getByRole("heading", { name: /Kuzey Kıbrıs ve Türkiye için/ })).toBeVisible();
-  await expect(page.getByText("Lefkoşa", { exact: true })).toBeVisible();
-  await expect(page.getByText("Girne", { exact: true })).toBeVisible();
-  await expect(page.getByText("Mağusa", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Adada randevu ve rezervasyon/ })).toBeVisible();
+  await expect(page.getByText("Lefkoşa", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Girne", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Mağusa", { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Listeye yazıl." })).toBeVisible();
+  await expect(page.getByText("Bekleme listesi").first()).toBeVisible();
+  await expect(page.getByText("QR menü")).toBeVisible();
+  await expect(page.getByText("Yakında").first()).toBeVisible();
   await expect(
     page.getByText(
       "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
     ),
   ).toBeVisible();
   await expect(page.getByRole("link", { name: "Erken erişime kaydol" }).first()).toBeVisible();
-  await expect(page.getByRole("link", { name: "Kendi işletmeni ekle" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Bekleme listesi" })).toBeVisible();
-  await expect(page.getByText("QR menü")).toBeVisible();
-  await expect(page.getByText("Yakında").first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Kendi işletmeni ekle" }).first()).toBeVisible();
   await expect(page.locator("body")).not.toContainText(/KKTC/i);
   await expect(page.locator("body")).not.toContainText(/ücretsiz kurulum/i);
   await expect(page.locator("body")).not.toContainText(/ilk ve tek/i);
@@ -35,11 +37,14 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   await expect(page.locator("body")).not.toContainText(/\bTODO\b/);
   await expect(page.locator("body")).not.toContainText(/önizleme/i);
   await expect(page.locator("body")).not.toContainText(/uydurma/i);
-  await expect(page.locator(".topbar")).toHaveCount(0);
   await expect(page.locator(".nav-geo")).toHaveCount(0);
 
   await expect(page.getByText("Bekleme listesi çok yakında açılıyor")).toBeVisible();
-  await expect(page.getByRole("link", { name: /KVKK aydınlatma metni yakında/ })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Çerez ve ölçüm" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Reddet" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Kabul" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Ayarlar" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /KVKK aydınlatma metni yakında/ }).first()).toBeVisible();
   await expect(page.getByRole("button", { name: "Listeye yazıl" })).toHaveCount(0);
 
   const manifest = await page.request.get("/manifest.webmanifest");
@@ -63,6 +68,37 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
 
   await page.goto("/yasal/aydinlatma");
   await expect(page.getByText("Kullanıcı onayı bekliyor")).toBeVisible();
+  await expect(page.locator("body")).not.toContainText(/doğrulanacak/i);
+});
+
+test("QR channel landings return 200 and unknown codes 404", async ({ page }) => {
+  const ok = await page.goto("/q/afis");
+  expect(ok?.ok()).toBeTruthy();
+  await expect(page.getByText("Afiş")).toBeVisible();
+  await expect(page.getByText("Bekleme listesi çok yakında açılıyor")).toBeVisible();
+
+  const billboard = await page.goto("/q/billboard/lefkosa");
+  expect(billboard?.ok()).toBeTruthy();
+
+  const unknown = await page.goto("/q/yok-boyle-kanal");
+  expect(unknown?.status()).toBe(404);
+});
+
+test("closed waitlist POST is 503 and UTM persist is skipped while closed", async ({ request }) => {
+  const health = await request.get(`${apiURL}/health`);
+  const healthBody = (await health.json()) as { db?: string; waitlistOpen?: boolean };
+  expect(healthBody.waitlistOpen).toBe(false);
+  const closed = await request.post(`${apiURL}/v1/waitlist`, {
+    data: {
+      name: "Kapalı",
+      email: "closed@example.com",
+      city: "lefkosa",
+      segment: "yerli",
+      consentGranted: true,
+    },
+  });
+  expect(closed.status()).toBe(503);
+  expect((await closed.json()) as { code?: string }).toMatchObject({ code: "waitlist_closed" });
 });
 
 test("desktop screenshot", async ({ page }) => {

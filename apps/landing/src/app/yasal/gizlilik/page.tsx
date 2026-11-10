@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <main id="icerik" className="legal-page shell">
+    <main id="icerik" className="legal-page wrap">
       <p className="notice">{legal.pendingTitle}</p>
       <h1>{legal.gizlilikTitle}</h1>
       <p>{legal.pendingBody}</p>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { install } from "@ada-merkez/copy";
+import { ICON_SRC } from "./Logo";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -11,23 +12,25 @@ type BeforeInstallPromptEvent = Event & {
 export function InstallHint() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [ios, setIos] = useState(false);
-  const [hidden, setHidden] = useState(false);
+  const [hidden, setHidden] = useState(true);
 
   useEffect(() => {
     const standalone =
       window.matchMedia("(display-mode: standalone)").matches ||
       ("standalone" in navigator && Boolean((navigator as Navigator & { standalone?: boolean }).standalone));
-    if (standalone) {
-      setHidden(true);
-      return;
-    }
+    if (standalone) return;
     const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
     setIos(isIos);
     const onPrompt = (event: Event) => {
       event.preventDefault();
       setDeferred(event as BeforeInstallPromptEvent);
+      setHidden(false);
     };
     window.addEventListener("beforeinstallprompt", onPrompt);
+    if (isIos) {
+      const shown = sessionStorage.getItem("am_install_hint");
+      if (!shown) setHidden(false);
+    }
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
   }, []);
 
@@ -35,15 +38,17 @@ export function InstallHint() {
   if (!deferred && !ios) return null;
 
   return (
-    <div className="install-bar">
-      <div className="shell install-inner">
-        <p>
+    <div className="install-sheet" role="dialog" aria-labelledby="install-title">
+      <div className="wrap install-inner">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="install-mark" src={ICON_SRC} alt="" width={56} height={56} />
+        <p id="install-title">
           <strong>{install.title}.</strong> {ios ? install.ios : install.body}
         </p>
-        <div>
+        <div style={{ display: "flex", gap: 8 }}>
           {deferred ? (
             <button
-              className="button button-primary"
+              className="btn btn-coral btn-sm"
               type="button"
               onClick={async () => {
                 await deferred.prompt();
@@ -54,7 +59,14 @@ export function InstallHint() {
               {install.cta}
             </button>
           ) : null}
-          <button className="ghost" type="button" onClick={() => setHidden(true)}>
+          <button
+            className="btn btn-ghost btn-sm"
+            type="button"
+            onClick={() => {
+              setHidden(true);
+              sessionStorage.setItem("am_install_hint", "1");
+            }}
+          >
             {install.dismiss}
           </button>
         </div>

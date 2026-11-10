@@ -28,6 +28,15 @@ export const RETENTION_DAYS = {
 
 export const CONSENT_TEXT_VERSION = "placeholder-pending-approval" as const;
 
+export const WAITLIST_CITIES = ["lefkosa", "girne", "magusa", "diger"] as const;
+export type WaitlistCity = (typeof WAITLIST_CITIES)[number];
+
+export const WAITLIST_SEGMENTS = ["ogrenci", "yerli", "tr_ziyaretci", "diger"] as const;
+export type WaitlistSegment = (typeof WAITLIST_SEGMENTS)[number];
+
+export const BUSINESS_SECTORS = ["kuafor", "klinik", "restoran", "diger"] as const;
+export type BusinessSector = (typeof BUSINESS_SECTORS)[number];
+
 export const OTP_POLICY = {
   maxSendsPerWindow: 3,
   maxSendsPerIpWindow: 8,

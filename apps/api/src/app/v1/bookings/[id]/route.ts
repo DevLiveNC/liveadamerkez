@@ -4,11 +4,13 @@ import {
   TenantAccessError,
   getBookingForTenant,
   isDatabaseConfigured,
+  markReferralFirstBooking,
   updateBookingStatus,
 } from "@ada-merkez/db";
 import { apiMessages } from "@ada-merkez/copy";
 import { corsHeaders, json, readJson } from "../../../../lib/http";
 import { sessionOr401 } from "../../../../lib/auth";
+import { dispatchServerEvents } from "../../../../lib/analytics";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +42,9 @@ export async function GET(
 
 const PatchBody = z.object({
   status: z.enum(["pending", "confirmed", "cancelled", "no_show"]),
+  eventId: z.string().uuid().optional(),
+  analyticsConsent: z.boolean().optional(),
+  marketingConsent: z.boolean().optional(),
 });
 
 export async function PATCH(
@@ -63,6 +68,28 @@ export async function PATCH(
   const { id } = await context.params;
   try {
     const row = await updateBookingStatus(auth.session.tenantId, id, parsed.data.status);
+    const eventId = parsed.data.eventId ?? crypto.randomUUID();
+    if (parsed.data.status === "cancelled") {
+      await dispatchServerEvents({
+        eventName: "booking_cancelled",
+        eventId,
+        params: { event_id: eventId, business_id: auth.session.tenantId },
+        request,
+      });
+    }
+    if (parsed.data.status === "confirmed") {
+      await dispatchServerEvents({
+        eventName: "booking_confirmed",
+        eventId,
+        params: {
+          event_id: eventId,
+          business_id: auth.session.tenantId,
+          ref: row?.referredByCode,
+        },
+        request,
+      });
+      if (row?.referredByCode) await markReferralFirstBooking(row.referredByCode);
+    }
     return json({ ok: true, booking: row }, 200, headers);
   } catch (error: unknown) {
     if (error instanceof TenantAccessError) {

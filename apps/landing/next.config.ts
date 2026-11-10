@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@ada-merkez/copy", "@ada-merkez/brand"],
+  transpilePackages: ["@ada-merkez/copy", "@ada-merkez/brand", "@ada-merkez/shared"],
   poweredByHeader: false,
   reactStrictMode: true,
   webpack: (config) => {

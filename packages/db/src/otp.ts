@@ -3,12 +3,10 @@ import {
   evaluateOtpIpSend,
   evaluateOtpSend,
   evaluateOtpVerify,
-  generateOtpCode,
-  hashOtp,
-  otpHashesEqual,
   type OtpChallengeState,
   type OtpIpState,
 } from "@ada-merkez/shared";
+import { generateOtpCode, hashOtp, otpHashesEqual } from "@ada-merkez/shared/node";
 import { getDb } from "./client.js";
 import { otpChallenge, otpIpWindow } from "./schema.js";
 

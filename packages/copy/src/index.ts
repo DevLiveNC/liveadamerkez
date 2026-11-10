@@ -22,39 +22,43 @@ export const cta = {
 } as const;
 
 export const nav = {
-  features: "Ne sunulacak",
-  waitlist: "Bekleme listesi",
+  how: "Nasıl çalışır",
+  whatsapp: "WhatsApp ile",
   business: "İşletmeler",
-  legal: "Yasal",
+  later: "Sonra",
+  waitlist: "Bekleme listesi",
+  apply: "İşletme başvurusu",
+  menu: "Menü",
 } as const;
 
 export const hero = {
-  kicker: "Yakında",
-  title: "Kuzey Kıbrıs ve Türkiye için randevu ve rezervasyon",
-  lead: "Kuaför ve klinikte saat seçin, restoranda masa ayırın. Dilerseniz uygulamayı indirmeden WhatsApp üzerinden de rezervasyon yapılabilecek.",
+  kicker: "Kuzey Kıbrıs ve Türkiye için",
+  title: "Adada randevu ve rezervasyon dağılmasın.",
+  lead: "Kuaför, klinik veya restoranı bul; uygun saati seç. Dilersen uygulama indirmeden WhatsApp’tan hallet.",
   primaryCta: cta.customer,
   secondaryCta: cta.business,
 } as const;
 
 export const how = {
-  title: "Nasıl çalışacak",
+  kicker: "Nasıl çalışır",
+  title: "Saat sormak için hattı meşgul etmeden.",
   intro:
-    "Ürün henüz açık değil. Aşağıdaki adımlar v1 planıdır; canlı kullanım sayı veya işletme adı içermez.",
+    "Akış üç eşit kart değil: işletmeyi bulur, saati seçer, onaylarsın. Ya da aynı işi WhatsApp’tan yürütürsün.",
   steps: [
     {
       n: "01",
-      title: "İşletmeyi bulun",
-      body: "Şehir ve kategoriye göre kuaför, klinik veya restoran arayın.",
+      title: "İşletmeyi bul",
+      body: "Şehir ve kategori",
     },
     {
       n: "02",
-      title: "Saat veya masa seçin",
-      body: "Kuaför ve klinikte personel ile hizmete göre slot; restoranda masa planı üzerinden rezervasyon.",
+      title: "Saati seç",
+      body: "Europe/Nicosia",
     },
     {
       n: "03",
-      title: "WhatsApp’tan da ilerleyin",
-      body: "Uygulama şart değil. WhatsApp sohbeti üzerinden rezervasyon v1 kapsamında planlanıyor.",
+      title: "Onayla",
+      body: "Onay bekleniyor",
     },
   ],
 } as const;
@@ -74,8 +78,9 @@ export const sectors = {
 } as const;
 
 export const whatsapp = {
-  title: "WhatsApp üzerinden rezervasyon",
-  body: "Uygulamayı indirmek zorunda değilsiniz. Planlanan akış: işletmeyi ve saati sohbet içinde netleştirmek. Bu özellik hazır olduğunda duyurulur; henüz bağlanmış bir hat yoktur.",
+  kicker: "Uygulama indirmeden",
+  title: "WhatsApp’tan söylemen yeter.",
+  body: "Zaten yazıştığın yerden uygun saati söyle, onay gelsin. Aşağıdaki sohbet resmi bir mesajlaşma arayüzünün kopyası değildir; Ada Merkez’in stilize akışıdır.",
 } as const;
 
 export const roadmap = {
@@ -84,64 +89,158 @@ export const roadmap = {
     "Aşağıdakiler v2 yol haritasıdır. v1’de yokmuş gibi sunulmaz.",
   items: [
     { title: "QR menü", badge: "Yakında" },
-    { title: "POS / yazar kasa", badge: "Yakında" },
+    { title: "POS", badge: "Yakında" },
     { title: "Etkinlik bileti", badge: "Yakında" },
     { title: "Öğrenci indirimi", badge: "Yakında" },
   ],
 } as const;
 
 export const pilot = {
-  title: "Pilot",
-  body: "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
+  title: "İşletmeler için",
+  kicker: "İşletmeler için",
+  heading: "Defter durmasın, boş saat görünsün.",
+  body: "Müşteri uygun saati kendisi seçer. Gelen istekler — uygulama veya WhatsApp — aynı panelde durur. Hatırlatma gider. Fiyat ve paket burada yoktur.",
+  citiesNote: "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
+} as const;
+
+export const close = {
+  kicker: "Ada'nın merkezi",
+  title: "Hazır olunca burada olur.",
+  body: "Hazır olduğunda haber veririz. Bu bir rezervasyon veya ücret taahhüdü değildir.",
+  meta: "Erken erişim kaydı rezervasyon değildir.",
 } as const;
 
 export const waitlist = {
   title: "Bekleme listesi",
   intro:
     "Açılışta haber vermemizi isterseniz kaydolun. Bu bir ön satış veya ücret taahhüdü değildir.",
-  roleLabel: "Kayıt türü",
-  roleCustomer: "Müşteri olarak izlemek istiyorum",
-  roleBusiness: "İşletme olarak izlemek istiyorum",
+  heading: "Listeye yazıl.",
+  lede: "Kuaför, klinik veya restoran için hazır olunca haber verelim. Dilersen uygulama indirmeden WhatsApp’tan da halledilir.",
   nameLabel: "Ad",
+  nameOptional: "isteğe bağlı",
   namePlaceholder: "Adınız",
+  nameError: "Ad en az iki karakter olmalı.",
+  emailLabel: "E-posta",
+  emailPlaceholder: "ornek@posta.com",
   phoneLabel: "Telefon",
   phonePlaceholder: "+90 5xx xxx xx xx",
-  cityLabel: "Şehir (isteğe bağlı)",
-  cityPlaceholder: "Lefkoşa, Girne, Mağusa veya diğer",
-  consentLabel:
-    "Aydınlatma metni kullanıcı onayı bekliyor. Bekleme listesi kaydım ve bu amaçla iletişim bilgilerimin saklanması için açık rıza veriyorum.",
+  contactHint: "E-posta veya telefon, en az biri zorunlu.",
+  contactError: "E-posta veya telefon yazın.",
+  emailError: "Geçerli bir e-posta yazın.",
+  phoneError: "Geçerli bir telefon yazın.",
+  cityLabel: "Şehir",
+  cityOtherLabel: "Şehrini yaz",
+  cityHint: "Pilot: Lefkoşa, Girne ve Mağusa’da.",
+  choiceError: "Bir seçim yapın.",
+  cities: {
+    lefkosa: "Lefkoşa",
+    girne: "Girne",
+    magusa: "Mağusa",
+    diger: "Diğer",
+  },
+  segmentLabel: "Sen hangisisin",
+  segmentHint: "Türkiye’den katılıyorsan bu seçenek raporlamayı ayırır.",
+  segments: {
+    ogrenci: "Öğrenci",
+    yerli: "Yerli",
+    tr_ziyaretci: "Türkiye’den ziyaretçi",
+    diger: "Diğer",
+  },
+  consentLabel: "Açık rızam vardır.",
+  consentLegal:
+    "Aydınlatma metni onaylanınca burada yer alır. Kayıt, iletişim rızası ile alınır.",
+  consentError: "Devam etmek için rıza gerekli.",
+  formMeta: "Bu bir rezervasyon formu değildir.",
+  successTitle: "Kaydınız alındı.",
+  successBody: "Gelişmeleri paylaşırız. Ek bir vaat yok. Bu bir rezervasyon değildir.",
+  successMeta: "Bu bir rezervasyon değildir.",
   whatsappLabel:
     "WhatsApp üzerinden bilgilendirme mesajı almak istiyorum (isteğe bağlı). Aydınlatma metni kullanıcı onayı bekliyor.",
   submit: "Listeye yazıl",
-  submitting: "Gönderiliyor…",
-  success: "Kaydınız alındı. Açılış yaklaşınca bu numaradan haber veririz.",
-  duplicate: "Bu telefon bu kayıt türü için zaten listede.",
+  submitting: "Gönderiliyor",
+  success: "Kaydınız alındı.",
+  share: "Davet bağlantısı",
+  shareCopied: "Bağlantı kopyalandı.",
   unavailable:
     "Bekleme listesi kaydı şu anda alınamıyor. Lütfen daha sonra yeniden deneyin.",
-  consentRequired: "Devam etmek için açık rıza kutusunu işaretleyin.",
-  invalid: "Lütfen ad ve telefon alanlarını kontrol edin.",
+  consentRequired: "Devam etmek için rıza gerekli.",
+  invalid: "Lütfen adı, şehri, segmenti ve en az bir iletişim alanını kontrol edin.",
   closedTitle: "Bekleme listesi çok yakında açılıyor",
   closedBody:
     "Yasal metinler onaylanınca kayıt alınacak. Şu an form kapalıdır; veri yazılmaz.",
   retentionNote:
     "Açık rıza ile iletişim bilgileri önerilen 730 gün saklanır; süre yasal metin onayıyla kesinleşir.",
   kvkkPlaceholder: "KVKK aydınlatma metni yakında",
-  consentLegal:
-    "Aydınlatma metni yer tutucudur. Kayıt açılınca iletişim rızası bu kutudan alınır.",
+  marketingConsentLabel: "Pazarlama ve ölçüm iletişimi için ayrı rızam vardır (isteğe bağlı).",
+} as const;
+
+export const businessApply = {
+  title: "İşletme başvurusu",
+  heading: "İşletmeni yaz.",
+  intro:
+    "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler ayrı bakılır; keşif listesine otomatik düşmez. Fiyat burada yoktur.",
+  businessName: "İşletme adı",
+  sector: "Sektör",
+  sectors: {
+    kuafor: "Kuaför/güzellik",
+    klinik: "Klinik",
+    restoran: "Restoran",
+    diger: "Diğer",
+  },
+  inTurkey: "Türkiye’de işletmeyim",
+  inTurkeyHint: "Ayrı değerlendirilir; otomatik yayına girmez",
+  northCyprus: "Kuzey Kıbrıs",
+  northCyprusHint: "Lefkoşa, Girne, Mağusa veya diğer",
+  turkeyHint: "Türkiye’deki işletmeler ayrı değerlendirilir; keşif listesine otomatik düşmez.",
+  locationLabel: "Konum",
+  cityLabel: "Şehir",
+  contactName: "Yetkili adı",
+  phone: "Telefon",
+  email: "E-posta",
+  whatsapp: "WhatsApp hattı",
+  notes: "Kısa not",
+  consent: "Açık rızam vardır.",
+  submit: "Başvuruyu gönder",
+  submitting: "Gönderiliyor",
+  success: "Başvurunuz alındı.",
+  successBody: "İnceleme sonrası size döneceğiz. Bu bir kabul değildir. Fiyat veya paket vaadi yoktur.",
+  formMeta: "Başvuru kabul anlamına gelmez.",
+  unavailable: "Başvuru şu anda alınamıyor. Lütfen daha sonra yeniden deneyin.",
+  invalid: "Zorunlu alanları ve rızayı kontrol edin.",
+  closedTitle: "Başvuru çok yakında açılıyor",
+  closedBody: "Yasal metinler onaylanınca işletme başvurusu alınacak. Şu an form kapalıdır.",
+} as const;
+
+export const qrPage = {
+  kicker: "QR kanalı",
+  lead: "Kuaför ve klinikte randevu, restoranda masa; dilerseniz WhatsApp üzerinden. Uygulama indirmek zorunda değilsiniz.",
+  cta: cta.customer,
+} as const;
+
+export const trackingConsent = {
+  title: "Çerez ve ölçüm",
+  body: "Ölçüm ve pazarlama çerezleri kapalı başlar. Kabul, ikisini de açar; Reddet kapalı tutar. Ayarlar’dan ayrı seçebilirsiniz. İletişim rızası formda ayrıdır.",
+  accept: "Kabul",
+  reject: "Reddet",
+  settings: "Ayarlar",
+  save: "Kaydet",
+  settingsBody: "Ölçüm (GA4) ve pazarlama (Pixel) rızasını ayrı seçin. İletişim rızası formda ayrıdır.",
+  analyticsLabel: "Ölçüm (GA4)",
+  marketingLabel: "Pazarlama (Pixel)",
 } as const;
 
 export const install = {
-  title: "Ana ekrana ekle",
-  body: "Ada Merkez bir PWA’dır. Destekleyen tarayıcılarda ana ekrana eklenebilir.",
-  cta: "Ana ekrana ekle",
+  title: "Ada Merkez’i ana ekrana ekle",
+  body: "Kuzey Kıbrıs ve Türkiye için. Mağaza rozeti yoktur; v1 bir PWA’dır.",
+  cta: "Ekle",
   ios: "iPhone veya iPad’de Paylaş menüsünden “Ana Ekrana Ekle”yi seçin.",
-  dismiss: "Gizle",
+  dismiss: "Şimdi değil",
 } as const;
 
 export const legal = {
   pendingTitle: "Kullanıcı onayı bekliyor",
   pendingBody:
-    "Bu sayfa yer tutucudur. Aydınlatma metni, gizlilik ve ilgili mevzuat metinleri kullanıcı onayıyla yazılacaktır. Şu an yayımlanmış bir yasal metin yoktur.",
+    "Aydınlatma metni, gizlilik ve ilgili mevzuat metinleri onaylanınca burada yayımlanır. Şu an yayımlanmış bir yasal metin yoktur.",
   aydinlatmaTitle: "Aydınlatma metni",
   gizlilikTitle: "Gizlilik",
   kvkkTitle: "Kişisel veriler",
@@ -155,6 +254,8 @@ export const footer = {
   aydinlatma: "Aydınlatma metni",
   gizlilik: "Gizlilik",
   kvkk: "Kişisel veriler",
+  contact: "İletişim",
+  logoNote: "Ada Merkez markası.",
 } as const;
 
 export const apiMessages = {
@@ -164,6 +265,7 @@ export const apiMessages = {
   notFound: "Kayıt bulunamadı.",
   otpLimited: "Çok fazla deneme. Lütfen daha sonra yeniden deneyin.",
   deletionReceived: "Silme talebiniz alındı.",
+  received: "Kaydınız alındı.",
 } as const;
 
 export const offline = {

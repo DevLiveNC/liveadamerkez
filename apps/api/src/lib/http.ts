@@ -24,8 +24,7 @@ export function corsHeaders(request: Request): Record<string, string> {
   };
   if (origin && allowed.includes(origin)) {
     headers["Access-Control-Allow-Origin"] = origin;
-  } else if (allowed.includes("*") && origin) {
-    headers["Access-Control-Allow-Origin"] = origin;
+    headers["Access-Control-Allow-Credentials"] = "true";
   }
   return headers;
 }

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 import pg from "pg";
-import { signSession } from "@ada-merkez/shared";
+import { signSession } from "@ada-merkez/shared/node";
 
 const apiURL = process.env.PLAYWRIGHT_API_URL ?? "http://127.0.0.1:3001";
 const authSecret = process.env.AUTH_SECRET ?? "e2e-auth-secret";

@@ -43,6 +43,10 @@ export type NewBooking = {
   status?: BookingStatus;
   displayTimezone?: string;
   notes?: string | null;
+  firstTouch?: unknown;
+  lastTouch?: unknown;
+  referredByCode?: string | null;
+  eventId?: string | null;
 };
 
 function isExclusionViolation(error: unknown): boolean {
@@ -83,6 +87,10 @@ export async function createBooking(input: NewBooking) {
           status: input.status ?? "pending",
           displayTimezone: input.displayTimezone ?? "Europe/Nicosia",
           notes: input.notes ?? null,
+          firstTouch: input.firstTouch ?? null,
+          lastTouch: input.lastTouch ?? null,
+          referredByCode: input.referredByCode ?? null,
+          eventId: input.eventId ?? null,
         })
         .returning();
       return row;

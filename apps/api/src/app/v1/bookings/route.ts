@@ -8,6 +8,8 @@ import {
 } from "@ada-merkez/db";
 import { corsHeaders, json, readJson } from "../../../lib/http";
 import { sessionOr401 } from "../../../lib/auth";
+import { dispatchServerEvents, paramsFromAttribution } from "../../../lib/analytics";
+import { parseStoredAttribution } from "@ada-merkez/shared";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +22,16 @@ const Body = z.object({
   serviceId: z.string().uuid().optional(),
   customerId: z.string().uuid().optional(),
   locationId: z.string().uuid().optional(),
+  eventId: z.string().uuid().optional(),
+  referredByCode: z.string().max(16).optional(),
+  analyticsConsent: z.boolean().optional(),
+  marketingConsent: z.boolean().optional(),
+  attribution: z
+    .object({
+      first: z.object({}).passthrough().nullable().optional(),
+      last: z.object({}).passthrough().nullable().optional(),
+    })
+    .optional(),
 });
 
 export async function GET(request: Request) {
@@ -53,6 +65,10 @@ export async function POST(request: Request) {
     );
   }
   try {
+    const attribution = parseStoredAttribution(parsed.data.attribution);
+    const eventId = parsed.data.eventId ?? crypto.randomUUID();
+    const referredByCode =
+      parsed.data.referredByCode ?? attribution?.last?.ref ?? attribution?.first?.ref ?? null;
     const row = await createBooking({
       tenantId: auth.session.tenantId,
       kind: parsed.data.kind,
@@ -64,6 +80,16 @@ export async function POST(request: Request) {
       customerId: parsed.data.customerId,
       locationId: parsed.data.locationId,
       status: "pending",
+      firstTouch: attribution?.first ?? null,
+      lastTouch: attribution?.last ?? null,
+      referredByCode,
+      eventId,
+    });
+    await dispatchServerEvents({
+      eventName: "begin_booking",
+      eventId,
+      params: paramsFromAttribution(eventId, attribution),
+      request,
     });
     return json({ ok: true, booking: row }, 201, headers);
   } catch (error) {
