@@ -9,7 +9,7 @@ html {
 }
 
 body.landing {
-  background: var(--am-brand-sand);
+  background-color: var(--am-brand-sand);
   color: var(--am-brand-navy);
 }
 

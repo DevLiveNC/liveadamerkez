@@ -73,3 +73,16 @@ Canlı yol: `apps/landing/public/fonts/`. Lisans metni: `apps/landing/public/fon
 | Plus Jakarta Sans | `PlusJakartaSans-Regular.woff2`, `PlusJakartaSans-SemiBold.woff2`, `PlusJakartaSans-Bold.woff2` | [tokotype/PlusJakartaSans](https://github.com/tokotype/PlusJakartaSans) | [SIL Open Font License 1.1](https://openfontlicense.org) |
 
 Telif satırları `OFL.txt` başındadır. Değişken (variable) woff2 sitede kullanılmaz; dağıtılmaz.
+
+## 6. Dekor (yeşillik / kabuk 2× WebP; dalga–kum–köpük SVG)
+
+Chat GPT üretimi sprite sheet’lerden kesildi (`tasarim/ui/landing/assets/dekor/gpt/sheet-1-sahil.png`, `sheet-2-yesillik.png`, `sheet-3-detay.png`). Gerçek kişi yoktur. Master PNG: `tasarim/ui/landing/assets/dekor/png/`. Canlı: `packages/ui/dekor/` ve `apps/landing/public/assets/dekor/`. `dekor.css` / `dekor.js` Tasarım v3.3; yerleşim `packages/ui/dekor/YERLESIM.md`.
+
+Dalga, kum, köpük ve ayak izi SVG’dir. `dalga`, `kopuk-serit`, `kum-tepecigi`, `ayak-izi`, `kemer` WebP kullanılmaz.
+
+| Paket | Toplam |
+|---|---|
+| Masaüstü 2× (8 sprite) | ~88 KB |
+| Mobil 1× (`*-m.webp`) | ~26 KB |
+
+Kullanılan adlar: `palmiye`, `begonvil`, `zeytin-dali`, `yaprak-kumesi`, `tarak-kabuk`, `sarmal-kabuk`, `deniz-yildizi`, `cakil`. Opaklık 0.85–1 (grain doku 0.16). Eski 0.12–0.35 tablo geçersiz. /app sahneleri: `docs/APP-SOZLESME.md`.

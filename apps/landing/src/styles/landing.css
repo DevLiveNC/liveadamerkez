@@ -3,7 +3,7 @@
    (10 Kasım 2026, Asia/Famagusta)
 */
 
-.landing { background: var(--am-brand-sand); color: var(--am-brand-navy); }
+.landing { background-color: var(--am-brand-sand); color: var(--am-brand-navy); }
 .landing .t-label, .landing .section-kicker { letter-spacing: 0.12em; color: var(--am-color-secondary-text); }
 
 /* —— Üst yardımcı şerit —— */
@@ -123,13 +123,6 @@
 
 /* Hero */
 .hero { padding: 96px 0 16px; position: relative; overflow: hidden; }
-/* Kum / deniz / yeşillik dekoru sonraki PR. Slot boş bırakılır. */
-.hero-dekor {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
 .hero-art {
   position: absolute;
   right: -8%; top: -10%;
@@ -410,6 +403,7 @@
 .ticket dl { margin: 32px 0 0; font-size: 13px; }
 .ticket dt { color: rgba(247,244,239,0.55); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 12px; }
 .ticket dd { margin: 2px 0 0; font-weight: 600; }
+.ticket dd .badge-ornek { margin-right: 8px; vertical-align: middle; }
 .ticket .ok {
   margin-top: auto;
   display: flex; align-items: center; gap: 8px;

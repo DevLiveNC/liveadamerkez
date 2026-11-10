@@ -17,6 +17,7 @@ import {
   waitlist,
   whatsappFlow,
 } from "@ada-merkez/copy";
+import { SampleBoardDate } from "../components/SampleBoardDate";
 import { SearchWhen } from "../components/SearchWhen";
 import { WaitlistForm } from "../components/WaitlistForm";
 
@@ -82,7 +83,6 @@ export default function HomePage() {
   return (
     <main id="icerik">
       <section className="hero">
-        <div className="hero-dekor" aria-hidden="true" />
         <svg className="hero-art" viewBox="0 0 400 400" aria-hidden="true">
           <path
             fill="#0F2C44"
@@ -381,7 +381,9 @@ export default function HomePage() {
                 <dt>{howBoard.service}</dt>
                 <dd>{examples.cards[0].service}</dd>
                 <dt>{howBoard.date}</dt>
-                <dd>{howBoard.dateValue}</dd>
+                <dd>
+                  <SampleBoardDate />
+                </dd>
                 <dt>{howBoard.time}</dt>
                 <dd>11:00</dd>
                 <dt>{howBoard.place}</dt>
