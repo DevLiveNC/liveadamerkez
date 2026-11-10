@@ -1,13 +1,13 @@
-export const CONSENT_COOKIE = "am_consent";
+import {
+  CONSENT_COOKIE,
+  parseTrackingConsentJson,
+  type TrackingConsent,
+} from "@ada-merkez/shared";
+
+export { CONSENT_COOKIE };
+export type { TrackingConsent };
+
 export const CONSENT_STORAGE_KEY = "am_consent_v1";
-
-export type TrackingConsent = {
-  analytics: boolean;
-  marketing: boolean;
-  decided: boolean;
-};
-
-const DENIED: TrackingConsent = { analytics: false, marketing: false, decided: false };
 
 function readCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
@@ -21,24 +21,19 @@ function writeCookie(name: string, value: string) {
 }
 
 export function defaultTrackingConsent(): TrackingConsent {
-  return { ...DENIED };
+  return { analytics: false, marketing: false, decided: false };
 }
 
 export function readTrackingConsent(): TrackingConsent {
   try {
     const fromCookie = readCookie(CONSENT_COOKIE);
-    if (fromCookie) {
-      const parsed = JSON.parse(fromCookie) as TrackingConsent;
-      if (typeof parsed.analytics === "boolean" && typeof parsed.marketing === "boolean") {
-        return { ...parsed, decided: parsed.decided === true };
-      }
-    }
+    if (fromCookie) return parseTrackingConsentJson(fromCookie);
   } catch {
     /* yok say */
   }
   try {
     const raw = localStorage.getItem(CONSENT_STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as TrackingConsent;
+    if (raw) return parseTrackingConsentJson(raw);
   } catch {
     /* yok say */
   }
@@ -64,4 +59,12 @@ export function acceptTrackingConsent() {
 
 export function rejectTrackingConsent() {
   persistTrackingConsent({ analytics: false, marketing: false, decided: true });
+}
+
+export function saveTrackingPreferences(input: { analytics: boolean; marketing: boolean }) {
+  persistTrackingConsent({
+    analytics: input.analytics,
+    marketing: input.marketing,
+    decided: true,
+  });
 }

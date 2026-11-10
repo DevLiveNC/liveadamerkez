@@ -48,18 +48,17 @@ export function trackBrowserEvent(
   }
   if (opts?.clientOnly) return;
   const consent = readTrackingConsent();
-  if (!consent.analytics) return;
+  if (!consent.analytics && !consent.marketing) return;
   const base = apiBase();
   if (!base) return;
   void fetch(`${base}/v1/events`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify({
       eventName,
       eventId,
       ...params,
-      analyticsConsent: consent.analytics,
-      marketingConsent: consent.marketing,
     }),
     keepalive: true,
   }).catch(() => undefined);

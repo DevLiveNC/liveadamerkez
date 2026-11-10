@@ -17,11 +17,10 @@ export function AttributionCapture({ injected }: { injected?: TouchPoint | null 
       void fetch(`${base}/v1/referral/click`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           code: ref,
           eventId: crypto.randomUUID(),
-          analyticsConsent: true,
-          marketingConsent: consent.marketing,
         }),
         keepalive: true,
       }).catch(() => undefined);

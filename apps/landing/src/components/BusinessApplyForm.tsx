@@ -116,6 +116,7 @@ export function BusinessApplyForm() {
       const response = await fetch(`${base}/v1/business-applications`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(payload),
       });
       const body = (await response.json().catch(() => null)) as {

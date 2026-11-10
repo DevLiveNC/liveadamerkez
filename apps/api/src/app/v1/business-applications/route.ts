@@ -15,6 +15,7 @@ import {
 } from "@ada-merkez/db";
 import { corsHeaders, json, readJson } from "../../../lib/http";
 import { dispatchServerEvents, paramsFromAttribution } from "../../../lib/analytics";
+import { RECEIVED_RESPONSE } from "../../../lib/public-received";
 import { limitRequest } from "../../../lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -87,7 +88,6 @@ export async function POST(request: Request) {
   if (!phone) {
     return json({ ok: false, code: "INVALID", message: "Geçerli bir telefon yazın." }, 400, headers);
   }
-  const analyticsConsent = parsed.data.analyticsConsent === true;
   const marketingConsent = parsed.data.marketingConsent === true;
   try {
     const consent = await recordConsent({
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
         retentionDays: RETENTION_DAYS.waitlist,
       });
     }
-    const result = await upsertBusinessApplication({
+    await upsertBusinessApplication({
       businessName: parsed.data.businessName,
       sector: parsed.data.sector,
       city: parsed.data.city,
@@ -128,21 +128,9 @@ export async function POST(request: Request) {
       }),
       email: parsed.data.email,
       phone,
-      analyticsConsent,
-      marketingConsent,
+      request,
     });
-    return json(
-      {
-        ok: true,
-        created: result.created,
-        id: result.row?.id,
-        inTurkey: result.row?.inTurkey,
-        includeInDiscovery: false,
-        eventId,
-      },
-      result.created ? 201 : 200,
-      headers,
-    );
+    return json(RECEIVED_RESPONSE, 200, headers);
   } catch {
     return json(
       { ok: false, code: "SERVICE_UNAVAILABLE", message: apiMessages.dbUnavailable },

@@ -2,9 +2,11 @@ import { createHash } from "node:crypto";
 import {
   META_EVENT_MAP,
   channelFromTouch,
+  consentFromCookieHeader,
   toE164,
   type AnalyticsParams,
   type AttributionState,
+  type TrackingConsent,
 } from "@ada-merkez/shared";
 import { analyticsDispatch, getDb, isDatabaseConfigured } from "@ada-merkez/db";
 
@@ -64,30 +66,33 @@ async function rememberDispatch(eventName: string, eventId: string, channel: str
   }
 }
 
+export function serverTrackingConsent(request?: Request): TrackingConsent {
+  return consentFromCookieHeader(request?.headers.get("cookie") ?? null);
+}
+
 export async function dispatchServerEvents(input: {
   eventName: string;
   eventId: string;
   params: AnalyticsParams;
   email?: string | null;
   phone?: string | null;
-  analyticsConsent?: boolean;
-  marketingConsent?: boolean;
+  request?: Request;
 }): Promise<void> {
-  const analyticsConsent = input.analyticsConsent === true;
-  const marketingConsent = input.marketingConsent === true;
+  const cookie = serverTrackingConsent(input.request);
+  const analyticsConsent = cookie.analytics === true;
+  const marketingConsent = cookie.marketing === true;
   await rememberDispatch(input.eventName, input.eventId, input.params.channel ?? null, {
     params: input.params,
     analyticsConsent,
     marketingConsent,
   });
-  if (!analyticsConsent) return;
   const metaName = META_EVENT_MAP[input.eventName] ?? input.eventName;
   const hashed = marketingConsent
     ? { email: input.email, phone: input.phone }
     : { email: undefined, phone: undefined };
   await Promise.all([
-    sendMetaCapi(metaName, { ...input, ...hashed }),
-    sendGa4(input.eventName, input),
+    marketingConsent ? sendMetaCapi(metaName, { ...input, ...hashed }) : Promise.resolve(),
+    analyticsConsent ? sendGa4(input.eventName, input) : Promise.resolve(),
   ]);
 }
 

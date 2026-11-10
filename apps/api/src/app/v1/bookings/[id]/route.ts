@@ -69,16 +69,12 @@ export async function PATCH(
   try {
     const row = await updateBookingStatus(auth.session.tenantId, id, parsed.data.status);
     const eventId = parsed.data.eventId ?? crypto.randomUUID();
-    const consent = {
-      analyticsConsent: parsed.data.analyticsConsent === true,
-      marketingConsent: parsed.data.marketingConsent === true,
-    };
     if (parsed.data.status === "cancelled") {
       await dispatchServerEvents({
         eventName: "booking_cancelled",
         eventId,
         params: { event_id: eventId, business_id: auth.session.tenantId },
-        ...consent,
+        request,
       });
     }
     if (parsed.data.status === "confirmed") {
@@ -90,7 +86,7 @@ export async function PATCH(
           business_id: auth.session.tenantId,
           ref: row?.referredByCode,
         },
-        ...consent,
+        request,
       });
       if (row?.referredByCode) await markReferralFirstBooking(row.referredByCode);
     }

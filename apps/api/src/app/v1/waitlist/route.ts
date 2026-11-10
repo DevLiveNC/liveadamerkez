@@ -15,6 +15,7 @@ import {
 } from "@ada-merkez/db";
 import { corsHeaders, json, readJson } from "../../../lib/http";
 import { dispatchServerEvents, paramsFromAttribution } from "../../../lib/analytics";
+import { RECEIVED_RESPONSE } from "../../../lib/public-received";
 import { limitRequest } from "../../../lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -101,7 +102,6 @@ export async function POST(request: Request) {
 
   const eventId = parsed.data.eventId ?? crypto.randomUUID();
   const attribution = parseStoredAttribution(parsed.data.attribution);
-  const analyticsConsent = parsed.data.analyticsConsent === true;
   const marketingConsent = parsed.data.marketingConsent === true;
 
   try {
@@ -150,8 +150,7 @@ export async function POST(request: Request) {
       }),
       email: parsed.data.email,
       phone,
-      analyticsConsent,
-      marketingConsent,
+      request,
     });
     if (result.created) {
       await dispatchServerEvents({
@@ -163,8 +162,7 @@ export async function POST(request: Request) {
         }),
         email: parsed.data.email,
         phone,
-        analyticsConsent,
-        marketingConsent,
+        request,
       });
     }
     if (result.created && result.row?.referredByCode) {
@@ -174,21 +172,10 @@ export async function POST(request: Request) {
         params: paramsFromAttribution(`${eventId}-ref`, attribution, {
           ref: result.row.referredByCode,
         }),
-        analyticsConsent,
-        marketingConsent,
+        request,
       });
     }
-    return json(
-      {
-        ok: true,
-        created: result.created,
-        id: result.row?.id,
-        referralCode: result.row?.referralCode,
-        eventId,
-      },
-      result.created ? 201 : 200,
-      headers,
-    );
+    return json(RECEIVED_RESPONSE, 200, headers);
   } catch {
     return json(
       { ok: false, code: "SERVICE_UNAVAILABLE", message: apiMessages.dbUnavailable },

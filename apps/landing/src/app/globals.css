@@ -24,6 +24,17 @@ html {
   flex-wrap: wrap;
 }
 
+.consent-banner-settings {
+  display: grid;
+  gap: 8px;
+}
+
+.consent-banner-settings label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 .legal-page {
   padding: var(--am-space-16) 0 var(--am-space-24);
   max-width: 42rem;

@@ -18,8 +18,6 @@ const Body = z.object({
   business_id: z.string().nullable().optional(),
   ref: z.string().nullable().optional(),
   content: z.string().nullable().optional(),
-  analyticsConsent: z.boolean().optional(),
-  marketingConsent: z.boolean().optional(),
 });
 
 export async function POST(request: Request) {
@@ -37,8 +35,7 @@ export async function POST(request: Request) {
     eventName: parsed.data.eventName,
     eventId,
     params: { ...parsed.data, event_id: eventId },
-    analyticsConsent: parsed.data.analyticsConsent === true,
-    marketingConsent: parsed.data.marketingConsent === true,
+    request,
   });
   return json({ ok: true }, 202, headers);
 }

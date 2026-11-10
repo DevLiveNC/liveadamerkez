@@ -28,14 +28,13 @@ export async function POST(request: Request) {
     return json({ ok: true }, 202, headers);
   }
   const row = await incrementReferralClick(parsed.data.code);
-  if (row && parsed.data.analyticsConsent === true) {
+  if (row) {
     const eventId = parsed.data.eventId ?? crypto.randomUUID();
     await dispatchServerEvents({
       eventName: "cta_click",
       eventId,
       params: { event_id: eventId, ref: row.code, channel: "referral" },
-      analyticsConsent: true,
-      marketingConsent: parsed.data.marketingConsent === true,
+      request,
     });
   }
   return json({ ok: true }, 202, headers);

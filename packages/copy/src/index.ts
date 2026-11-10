@@ -222,9 +222,14 @@ export const qrPage = {
 
 export const trackingConsent = {
   title: "Çerez ve ölçüm",
-  body: "Ölçüm ve pazarlama çerezleri kapalı başlar. Kabul ederseniz Pixel ve GA4 yüklenir; reddederseniz yalnızca gerekli çerezler kalır. İletişim rızası formda ayrıdır.",
-  accept: "Kabul et",
+  body: "Ölçüm ve pazarlama çerezleri kapalı başlar. Kabul, ikisini de açar; Reddet kapalı tutar. Ayarlar’dan ayrı seçebilirsiniz. İletişim rızası formda ayrıdır.",
+  accept: "Kabul",
   reject: "Reddet",
+  settings: "Ayarlar",
+  save: "Kaydet",
+  settingsBody: "Ölçüm (GA4) ve pazarlama (Pixel) rızasını ayrı seçin. İletişim rızası formda ayrıdır.",
+  analyticsLabel: "Ölçüm (GA4)",
+  marketingLabel: "Pazarlama (Pixel)",
 } as const;
 
 export const install = {
@@ -263,6 +268,7 @@ export const apiMessages = {
   notFound: "Kayıt bulunamadı.",
   otpLimited: "Çok fazla deneme. Lütfen daha sonra yeniden deneyin.",
   deletionReceived: "Silme talebiniz alındı.",
+  received: "Kaydınız alındı.",
 } as const;
 
 export const offline = {

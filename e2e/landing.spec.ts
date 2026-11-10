@@ -29,6 +29,9 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
 
   await expect(page.getByText("Bekleme listesi çok yakında açılıyor")).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Çerez ve ölçüm" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Reddet" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Kabul" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Ayarlar" })).toBeVisible();
   await expect(page.getByRole("link", { name: /KVKK aydınlatma metni yakında/ }).first()).toBeVisible();
   await expect(page.getByRole("button", { name: "Listeye yazıl" })).toHaveCount(0);
 

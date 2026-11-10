@@ -115,11 +115,11 @@ export function WaitlistForm() {
       const response = await fetch(`${base}/v1/waitlist`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(payload),
       });
       const body = (await response.json().catch(() => null)) as {
         ok?: boolean;
-        referralCode?: string;
         message?: string;
         code?: string;
       } | null;
@@ -128,12 +128,7 @@ export function WaitlistForm() {
         return;
       }
       if (response.ok && body?.ok) {
-        const code = body.referralCode;
-        if (code) {
-          const url = `${window.location.origin}/?ref=${code}`;
-          setShareUrl(url);
-          trackBrowserEvent("referral_share", { event_id: crypto.randomUUID(), ref: code });
-        }
+        setShareUrl("");
         setState("success");
         return;
       }

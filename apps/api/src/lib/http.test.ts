@@ -28,6 +28,7 @@ describe("CORS deny-by-default", () => {
       new Request("http://api.test/health", { headers: { origin: "https://ada.test" } }),
     );
     expect(ok["Access-Control-Allow-Origin"]).toBe("https://ada.test");
+    expect(ok["Access-Control-Allow-Credentials"]).toBe("true");
     const denied = corsHeaders(
       new Request("http://api.test/health", { headers: { origin: "https://evil.test" } }),
     );

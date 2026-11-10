@@ -89,8 +89,7 @@ export async function POST(request: Request) {
       eventName: "begin_booking",
       eventId,
       params: paramsFromAttribution(eventId, attribution),
-      analyticsConsent: parsed.data.analyticsConsent === true,
-      marketingConsent: parsed.data.marketingConsent === true,
+      request,
     });
     return json({ ok: true, booking: row }, 201, headers);
   } catch (error) {
