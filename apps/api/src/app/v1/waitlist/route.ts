@@ -15,6 +15,7 @@ import {
 } from "@ada-merkez/db";
 import { corsHeaders, json, readJson } from "../../../lib/http";
 import { dispatchServerEvents, paramsFromAttribution } from "../../../lib/analytics";
+import { limitRequest } from "../../../lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -61,6 +62,10 @@ export async function POST(request: Request) {
   const headers = corsHeaders(request);
   if (!isWaitlistOpen()) {
     return json({ ok: false, code: "waitlist_closed" }, 503, headers);
+  }
+  const limited = await limitRequest(request, "waitlist", 10);
+  if (!limited.ok) {
+    return json({ ok: false, code: "RATE_LIMITED", retryAfterMs: limited.retryAfterMs }, 429, headers);
   }
   const raw = await readJson<unknown>(request);
   const parsed = Body.safeParse(raw);

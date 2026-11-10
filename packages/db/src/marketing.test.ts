@@ -69,7 +69,7 @@ describe.skipIf(!hasDb)("waitlist UTM persistence and duplicate handling", () =>
     const storedFirst = updated.row?.firstTouch as { source?: string };
     const storedLast = updated.row?.lastTouch as { source?: string };
     expect(storedFirst.source).toBe("instagram");
-    expect(storedLast.source).toBe("google");
+    expect(storedLast.source).toBe("instagram");
 
     const exportRows = await listWaitlistForExport();
     expect(exportRows.some((row) => row.id === created.row?.id)).toBe(true);

@@ -7,6 +7,7 @@ import { InstallHint } from "../components/InstallHint";
 import { ServiceWorkerRegister } from "../components/ServiceWorkerRegister";
 import { Analytics } from "../components/Analytics";
 import { AttributionCapture } from "../components/AttributionCapture";
+import { ConsentBanner } from "../components/ConsentBanner";
 import "./globals.css";
 
 const display = Plus_Jakarta_Sans({
@@ -69,12 +70,20 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang={site.language} data-theme="light" className={`${display.variable} ${inter.variable}`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{ad_storage:'denied',analytics_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});`,
+          }}
+        />
+      </head>
       <body>
         <a className="skip" href="#icerik">
           İçeriğe geç
         </a>
         <AttributionCapture />
         <Analytics />
+        <ConsentBanner />
         <Header />
         {children}
         <InstallHint />

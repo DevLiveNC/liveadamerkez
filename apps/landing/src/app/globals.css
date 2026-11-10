@@ -7,6 +7,23 @@ html {
   --am-font-sans: var(--font-inter), Inter, system-ui, sans-serif;
 }
 
+.consent-banner {
+  position: sticky;
+  bottom: 0;
+  z-index: 40;
+  margin: 0;
+  padding: 16px 20px 20px;
+  background: #0f2c44;
+  color: #fff;
+  display: grid;
+  gap: 8px;
+}
+.consent-banner-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .legal-page {
   padding: var(--am-space-16) 0 var(--am-space-24);
   max-width: 42rem;

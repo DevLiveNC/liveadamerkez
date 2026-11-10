@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { hashOtp, otpHashesEqual, toE164 } from "./otp-code.js";
+import { hashOtp, otpHashesEqual } from "./otp-code.js";
+import { toE164 } from "./phone.js";
 
 describe("OTP hash compare and E.164", () => {
   it("hashes codes and compares in constant-time equal length", () => {

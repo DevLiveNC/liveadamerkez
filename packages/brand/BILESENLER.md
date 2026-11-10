@@ -156,10 +156,10 @@ Bir kez, kullanıcı hareketinden sonra. Mağaza rozeti yok (v1 PWA).
 
 ## Metin kuralları (tüm arayüz)
 
-- “KKTC” yazılmaz; ülke/bölge: **Kuzey Kıbrıs**. Bölge cümlesi: **Kuzey Kıbrıs ve Türkiye için**.
+- Yasaklı bölge kısaltması yazılmaz; ülke/bölge: **Kuzey Kıbrıs**. Bölge cümlesi: **Kuzey Kıbrıs ve Türkiye için**.
 - Pilot: Lefkoşa, Girne ve Mağusa’da.
 - Sosyal etiket: `#KuzeyKıbrıs`.
-- “Tek”, “ilk”, üstünlük iddiası yok. (UI’da “uygun saat” denir, “ilk uygun / adanın tek uygulaması” denmez.)
+- Üstünlük iddiası yok. (UI’da “uygun saat” denir.)
 - v2 özellikler (QR menü, POS, etkinlik bileti, öğrenci indirimi) **Yakında** rozetiyle.
 - Onaylanmamış fiyat, paket, kampanya, alan adı, tarih yazılmaz; gerekirse `[doğrulanacak]`.
 - Uydurma puan, yorum, işletme sayısı, uptime yüzdesi yok.

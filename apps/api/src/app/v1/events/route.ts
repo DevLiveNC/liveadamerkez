@@ -2,6 +2,7 @@ import { z } from "zod";
 import { corsHeaders, json, readJson } from "../../../lib/http";
 import { dispatchServerEvents } from "../../../lib/analytics";
 import { ANALYTICS_EVENTS } from "@ada-merkez/shared";
+import { limitRequest } from "../../../lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -17,10 +18,16 @@ const Body = z.object({
   business_id: z.string().nullable().optional(),
   ref: z.string().nullable().optional(),
   content: z.string().nullable().optional(),
+  analyticsConsent: z.boolean().optional(),
+  marketingConsent: z.boolean().optional(),
 });
 
 export async function POST(request: Request) {
   const headers = corsHeaders(request);
+  const limited = await limitRequest(request, "events", 60);
+  if (!limited.ok) {
+    return json({ ok: false, code: "RATE_LIMITED", retryAfterMs: limited.retryAfterMs }, 429, headers);
+  }
   const parsed = Body.safeParse(await readJson(request));
   const eventId = parsed.data?.eventId ?? parsed.data?.event_id;
   if (!parsed.success || !eventId || !allowed.has(parsed.data.eventName as never)) {
@@ -30,6 +37,8 @@ export async function POST(request: Request) {
     eventName: parsed.data.eventName,
     eventId,
     params: { ...parsed.data, event_id: eventId },
+    analyticsConsent: parsed.data.analyticsConsent === true,
+    marketingConsent: parsed.data.marketingConsent === true,
   });
   return json({ ok: true }, 202, headers);
 }

@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import {
   META_EVENT_MAP,
   channelFromTouch,
+  toE164,
   type AnalyticsParams,
   type AttributionState,
 } from "@ada-merkez/shared";
@@ -12,6 +13,12 @@ function sha256(value: string | null | undefined): string | undefined {
   const normalized = value.trim().toLowerCase();
   if (!normalized) return undefined;
   return createHash("sha256").update(normalized).digest("hex");
+}
+
+function sha256Phone(value: string | null | undefined): string | undefined {
+  const e164 = toE164(value ?? null);
+  if (!e164) return undefined;
+  return createHash("sha256").update(e164).digest("hex");
 }
 
 function metaEnabled() {
@@ -63,13 +70,23 @@ export async function dispatchServerEvents(input: {
   params: AnalyticsParams;
   email?: string | null;
   phone?: string | null;
+  analyticsConsent?: boolean;
+  marketingConsent?: boolean;
 }): Promise<void> {
-  const metaName = META_EVENT_MAP[input.eventName] ?? input.eventName;
+  const analyticsConsent = input.analyticsConsent === true;
+  const marketingConsent = input.marketingConsent === true;
   await rememberDispatch(input.eventName, input.eventId, input.params.channel ?? null, {
     params: input.params,
+    analyticsConsent,
+    marketingConsent,
   });
+  if (!analyticsConsent) return;
+  const metaName = META_EVENT_MAP[input.eventName] ?? input.eventName;
+  const hashed = marketingConsent
+    ? { email: input.email, phone: input.phone }
+    : { email: undefined, phone: undefined };
   await Promise.all([
-    sendMetaCapi(metaName, input),
+    sendMetaCapi(metaName, { ...input, ...hashed }),
     sendGa4(input.eventName, input),
   ]);
 }
@@ -92,7 +109,7 @@ async function sendMetaCapi(
         event_source_url: process.env.NEXT_PUBLIC_SITE_URL || undefined,
         user_data: {
           em: sha256(input.email),
-          ph: sha256(input.phone),
+          ph: sha256Phone(input.phone),
         },
         custom_data: {
           content_name: input.params.content ?? input.params.channel,

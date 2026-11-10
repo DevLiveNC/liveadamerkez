@@ -4,7 +4,9 @@ import {
   BUSINESS_SECTORS,
   RETENTION_DAYS,
   WAITLIST_CITIES,
+  isWaitlistOpen,
   parseStoredAttribution,
+  toE164,
 } from "@ada-merkez/shared";
 import {
   isDatabaseConfigured,
@@ -13,6 +15,7 @@ import {
 } from "@ada-merkez/db";
 import { corsHeaders, json, readJson } from "../../../lib/http";
 import { dispatchServerEvents, paramsFromAttribution } from "../../../lib/analytics";
+import { limitRequest } from "../../../lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +32,8 @@ const Body = z.object({
   whatsapp: z.string().trim().max(24).optional().or(z.literal("")),
   notes: z.string().trim().max(500).optional(),
   consentGranted: z.literal(true),
+  analyticsConsent: z.boolean().optional(),
+  marketingConsent: z.boolean().optional(),
   eventId: z.string().uuid().optional(),
   attribution: z
     .object({
@@ -40,6 +45,13 @@ const Body = z.object({
 
 export async function POST(request: Request) {
   const headers = corsHeaders(request);
+  if (!isWaitlistOpen()) {
+    return json({ ok: false, code: "waitlist_closed" }, 503, headers);
+  }
+  const limited = await limitRequest(request, "business-apply", 8);
+  if (!limited.ok) {
+    return json({ ok: false, code: "RATE_LIMITED", retryAfterMs: limited.retryAfterMs }, 429, headers);
+  }
   const raw = await readJson<unknown>(request);
   const parsed = Body.safeParse(raw);
   if (!parsed.success) {
@@ -71,6 +83,12 @@ export async function POST(request: Request) {
 
   const eventId = parsed.data.eventId ?? crypto.randomUUID();
   const attribution = parseStoredAttribution(parsed.data.attribution);
+  const phone = toE164(parsed.data.phone);
+  if (!phone) {
+    return json({ ok: false, code: "INVALID", message: "Geçerli bir telefon yazın." }, 400, headers);
+  }
+  const analyticsConsent = parsed.data.analyticsConsent === true;
+  const marketingConsent = parsed.data.marketingConsent === true;
   try {
     const consent = await recordConsent({
       purpose: "business_apply",
@@ -79,13 +97,22 @@ export async function POST(request: Request) {
       retentionDays: RETENTION_DAYS.waitlist,
     });
     if (!consent) throw new Error("consent");
+    if (marketingConsent) {
+      await recordConsent({
+        purpose: "marketing",
+        granted: true,
+        subjectType: "business_application",
+        subjectId: consent.id,
+        retentionDays: RETENTION_DAYS.waitlist,
+      });
+    }
     const result = await upsertBusinessApplication({
       businessName: parsed.data.businessName,
       sector: parsed.data.sector,
       city: parsed.data.city,
       inTurkey: parsed.data.inTurkey,
       contactName: parsed.data.contactName,
-      phone: parsed.data.phone,
+      phone,
       email: parsed.data.email,
       whatsapp: parsed.data.whatsapp,
       notes: parsed.data.notes,
@@ -100,7 +127,9 @@ export async function POST(request: Request) {
         city: parsed.data.inTurkey ? "turkey" : parsed.data.city,
       }),
       email: parsed.data.email,
-      phone: parsed.data.phone,
+      phone,
+      analyticsConsent,
+      marketingConsent,
     });
     return json(
       {

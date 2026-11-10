@@ -2,6 +2,8 @@ import { randomBytes } from "node:crypto";
 import { and, eq, or, sql } from "drizzle-orm";
 import {
   generateReferralCode,
+  isReferralCode,
+  toE164,
   type AttributionState,
   type TouchPoint,
 } from "@ada-merkez/shared";
@@ -9,9 +11,18 @@ import { getDb } from "./client.js";
 import { businessApplication, referral, waitlistEntry } from "./schema.js";
 
 function normalizePhone(input?: string | null): string | null {
-  if (!input) return null;
-  const digits = input.replace(/[^\d+]/g, "");
-  return digits || null;
+  return toE164(input ?? null);
+}
+
+async function validReferredBy(code: string | null | undefined): Promise<string | null> {
+  if (!code || !isReferralCode(code)) return null;
+  const normalized = code.trim().toUpperCase();
+  const [row] = await getDb()
+    .select({ code: referral.code })
+    .from(referral)
+    .where(eq(referral.code, normalized))
+    .limit(1);
+  return row?.code ?? null;
 }
 
 function normalizeEmail(input?: string | null): string | null {
@@ -75,33 +86,13 @@ export async function upsertWaitlistEntry(input: WaitlistInput) {
     .limit(1);
 
   const last = input.attribution?.last ?? null;
-  const first = existing?.firstTouch ?? input.attribution?.first ?? last;
-  const referredBy =
-    (last as TouchPoint | null)?.ref ??
-    (input.attribution?.first as TouchPoint | null)?.ref ??
-    existing?.referredByCode ??
-    null;
+  const first = input.attribution?.first ?? last;
+  const referredBy = await validReferredBy(
+    (last as TouchPoint | null)?.ref ?? (input.attribution?.first as TouchPoint | null)?.ref ?? null,
+  );
 
   if (existing) {
-    const [row] = await db
-      .update(waitlistEntry)
-      .set({
-        name: input.name,
-        phone: phone ?? existing.phone,
-        email: email ?? existing.email,
-        city: input.city ?? existing.city,
-        segment: input.segment ?? existing.segment,
-        lastTouch: last ?? existing.lastTouch,
-        referredByCode: referredBy,
-        eventId: input.eventId ?? existing.eventId,
-        updatedAt: new Date(),
-      })
-      .where(eq(waitlistEntry.id, existing.id))
-      .returning();
-    if (referredBy && referredBy !== existing.referredByCode) {
-      await incrementReferralSignup(referredBy);
-    }
-    return { row, created: false };
+    return { row: existing, created: false };
   }
 
   const [row] = await db
@@ -162,6 +153,7 @@ export async function upsertBusinessApplication(input: BusinessApplicationInput)
 
   const last = input.attribution?.last ?? null;
   const first = existing?.firstTouch ?? input.attribution?.first ?? last;
+  const referredBy = await validReferredBy((last as TouchPoint | null)?.ref ?? null);
   const payload = {
     businessName: input.businessName,
     sector: input.sector,
@@ -179,12 +171,7 @@ export async function upsertBusinessApplication(input: BusinessApplicationInput)
   };
 
   if (existing) {
-    const [row] = await db
-      .update(businessApplication)
-      .set(payload)
-      .where(eq(businessApplication.id, existing.id))
-      .returning();
-    return { row, created: false };
+    return { row: existing, created: false };
   }
 
   const [row] = await db
@@ -193,7 +180,7 @@ export async function upsertBusinessApplication(input: BusinessApplicationInput)
       ...payload,
       consentId: input.consentId,
       firstTouch: first,
-      referredByCode: (last as TouchPoint | null)?.ref ?? null,
+      referredByCode: referredBy,
       status: "received",
     })
     .returning();

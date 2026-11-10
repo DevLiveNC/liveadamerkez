@@ -210,6 +210,8 @@ export const businessApply = {
   formMeta: "[CTA] · [ALAN ADI] · Başvuru kabul anlamına gelmez.",
   unavailable: "Başvuru şu anda alınamıyor. Lütfen daha sonra yeniden deneyin.",
   invalid: "Zorunlu alanları ve rızayı kontrol edin.",
+  closedTitle: "Başvuru çok yakında açılıyor",
+  closedBody: "Yasal metinler onaylanınca işletme başvurusu alınacak. Şu an form kapalıdır.",
 } as const;
 
 export const qrPage = {

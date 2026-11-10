@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { businessApply, waitlist } from "@ada-merkez/copy";
 import { channelFromTouch } from "@ada-merkez/shared";
 import { apiBase } from "../lib/api";
@@ -25,8 +25,21 @@ export function BusinessApplyForm() {
   const [status, setStatus] = useState("");
   const [region, setRegion] = useState<"kuzey" | "turkiye" | "">("");
   const [city, setCity] = useState("");
+  const [open, setOpen] = useState(false);
   const busy = state === "submitting";
   const errorClass = (id: string) => (errors[id] ? "field is-error" : "field");
+
+  useEffect(() => {
+    const base = apiBase();
+    if (!base) {
+      setOpen(false);
+      return;
+    }
+    fetch(`${base}/health`)
+      .then((response) => response.json())
+      .then((body: { waitlistOpen?: boolean }) => setOpen(body.waitlistOpen === true))
+      .catch(() => setOpen(false));
+  }, []);
 
   function validate(form: HTMLFormElement): FieldErrors {
     const data = new FormData(form);
@@ -105,7 +118,15 @@ export function BusinessApplyForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const body = (await response.json().catch(() => null)) as { ok?: boolean; message?: string } | null;
+      const body = (await response.json().catch(() => null)) as {
+        ok?: boolean;
+        message?: string;
+        code?: string;
+      } | null;
+      if (response.status === 503 && body?.code === "waitlist_closed") {
+        setOpen(false);
+        return;
+      }
       if (response.ok && body?.ok) {
         setState("success");
         return;
@@ -142,6 +163,14 @@ export function BusinessApplyForm() {
         </div>
       </div>
       <div className="span-7">
+        {!open ? (
+          <div className="form-card" role="status">
+            <p>
+              <strong>{businessApply.closedTitle}</strong>
+            </p>
+            <p>{businessApply.closedBody}</p>
+          </div>
+        ) : (
         <form className="form-card" onSubmit={onSubmit} noValidate aria-busy={busy}>
           <input type="hidden" name="utm_source" defaultValue={attr?.last?.source ?? ""} />
           <input type="hidden" name="utm_medium" defaultValue={attr?.last?.medium ?? ""} />
@@ -266,6 +295,7 @@ export function BusinessApplyForm() {
             </p>
           </div>
         </form>
+        )}
       </div>
     </div>
   );

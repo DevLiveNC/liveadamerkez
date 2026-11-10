@@ -2,12 +2,14 @@ import {
   ATTRIBUTION_COOKIE,
   ATTRIBUTION_STORAGE_KEY,
   ATTRIBUTION_WINDOW_DAYS,
+  isReferralCode,
   mergeAttribution,
   parseStoredAttribution,
   touchFromSearchParams,
   type AttributionState,
   type TouchPoint,
 } from "@ada-merkez/shared";
+import { readTrackingConsent } from "./tracking-consent";
 
 function readCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
@@ -17,10 +19,20 @@ function readCookie(name: string): string | null {
 
 function writeCookie(name: string, value: string) {
   const maxAge = ATTRIBUTION_WINDOW_DAYS * 24 * 60 * 60;
-  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; SameSite=Lax`;
+  const secure = typeof location !== "undefined" && location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; SameSite=Lax${secure}`;
+}
+
+function sanitizeTouch(touch: TouchPoint | null): TouchPoint | null {
+  if (!touch) return null;
+  if (touch.ref && !isReferralCode(touch.ref)) {
+    return { ...touch, ref: null };
+  }
+  return touch;
 }
 
 function readStored(): AttributionState | null {
+  if (!readTrackingConsent().analytics) return null;
   try {
     const fromCookie = readCookie(ATTRIBUTION_COOKIE);
     if (fromCookie) return parseStoredAttribution(JSON.parse(fromCookie));
@@ -37,7 +49,11 @@ function readStored(): AttributionState | null {
 }
 
 function persist(state: AttributionState) {
-  const json = JSON.stringify(state);
+  if (!readTrackingConsent().analytics) return;
+  const json = JSON.stringify({
+    first: sanitizeTouch(state.first),
+    last: sanitizeTouch(state.last),
+  });
   writeCookie(ATTRIBUTION_COOKIE, json);
   try {
     localStorage.setItem(ATTRIBUTION_STORAGE_KEY, json);
@@ -49,8 +65,10 @@ function persist(state: AttributionState) {
 export function captureAttribution(injected?: TouchPoint | null): AttributionState {
   const stored = readStored();
   const fromUrl = touchFromSearchParams(new URLSearchParams(window.location.search));
-  const incoming = injected ?? fromUrl;
+  const incoming = sanitizeTouch(injected ?? fromUrl);
   const next = mergeAttribution(stored, incoming);
+  next.first = sanitizeTouch(next.first);
+  next.last = sanitizeTouch(next.last);
   persist(next);
   return next;
 }

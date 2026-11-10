@@ -1,5 +1,6 @@
 import { META_EVENT_MAP, type AnalyticsParams } from "@ada-merkez/shared";
 import { apiBase } from "./api";
+import { readTrackingConsent } from "./tracking-consent";
 
 declare global {
   interface Window {
@@ -46,12 +47,20 @@ export function trackBrowserEvent(
     /* sessiz */
   }
   if (opts?.clientOnly) return;
+  const consent = readTrackingConsent();
+  if (!consent.analytics) return;
   const base = apiBase();
   if (!base) return;
   void fetch(`${base}/v1/events`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ eventName, eventId, ...params }),
+    body: JSON.stringify({
+      eventName,
+      eventId,
+      ...params,
+      analyticsConsent: consent.analytics,
+      marketingConsent: consent.marketing,
+    }),
     keepalive: true,
   }).catch(() => undefined);
 }

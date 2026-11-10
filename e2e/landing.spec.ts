@@ -4,7 +4,6 @@ import path from "node:path";
 
 const artifactDir = path.join(process.cwd(), "artifacts");
 const apiURL = process.env.PLAYWRIGHT_API_URL ?? "http://127.0.0.1:3001";
-const exportToken = process.env.INTERNAL_EXPORT_TOKEN ?? "e2e-export-token";
 
 test.beforeAll(() => {
   fs.mkdirSync(artifactDir, { recursive: true });
@@ -29,6 +28,7 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   await expect(page.locator("body")).not.toContainText(/ilk ve tek/i);
 
   await expect(page.getByText("Bekleme listesi çok yakında açılıyor")).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Çerez ve ölçüm" })).toBeVisible();
   await expect(page.getByRole("link", { name: /KVKK aydınlatma metni yakında/ }).first()).toBeVisible();
   await expect(page.getByRole("button", { name: "Listeye yazıl" })).toHaveCount(0);
 
@@ -84,8 +84,6 @@ test("closed waitlist POST is 503 and UTM persist is skipped while closed", asyn
   });
   expect(closed.status()).toBe(503);
   expect((await closed.json()) as { code?: string }).toMatchObject({ code: "waitlist_closed" });
-  test.skip(true, "WAITLIST_OPEN kapalı; UTM persist yasal metin sonrası");
-  void exportToken;
 });
 
 test("desktop screenshot", async ({ page }) => {

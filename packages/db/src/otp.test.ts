@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { OTP_POLICY, hashClientIp } from "@ada-merkez/shared";
+import { OTP_POLICY } from "@ada-merkez/shared";
+import { hashClientIp } from "@ada-merkez/shared/node";
 import { closePool, isDatabaseConfigured } from "./client.js";
 import { migrate } from "./migrate.js";
 import { requestOtp, verifyOtp } from "./otp.js";

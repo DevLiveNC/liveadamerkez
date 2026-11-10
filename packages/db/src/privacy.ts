@@ -7,17 +7,11 @@ import {
 import { getDb } from "./client.js";
 import {
   booking,
-<<<<<<< HEAD
-  consent,
-  customer,
-  deletionRequest,
-  otpChallenge,
-=======
   businessApplication,
   consent,
   customer,
   deletionRequest,
->>>>>>> 3387df2 (Pazarlama: UTM, formlar, Pixel/GA4, QR ve davet kancası)
+  otpChallenge,
   waitlistEntry,
 } from "./schema.js";
 

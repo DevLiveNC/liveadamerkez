@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { apiMessages } from "@ada-merkez/copy";
 import { isDatabaseConfigured, requestOtp } from "@ada-merkez/db";
-import { hashClientIp, toE164 } from "@ada-merkez/shared";
+import { toE164 } from "@ada-merkez/shared";
+import { hashClientIp } from "@ada-merkez/shared/node";
 import { clientIp, corsHeaders, json, readJson } from "../../../../lib/http";
 
 export const dynamic = "force-dynamic";
