@@ -1,4 +1,4 @@
-const CACHE = "ada-merkez-landing-v1";
+const CACHE = "ada-merkez-landing-v31";
 const PRECACHE = [
   "/",
   "/offline",

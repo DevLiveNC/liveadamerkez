@@ -19,12 +19,18 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   await expect(page.getByText("Mağusa", { exact: true }).first()).toBeVisible();
   await expect(page.getByRole("heading", { name: "Listeye yazıl." })).toBeVisible();
   await expect(page.getByText("Bekleme listesi").first()).toBeVisible();
-  await expect(page.getByText("QR menü")).toBeVisible();
+  await expect(page.getByText("QR menü").first()).toBeVisible();
   await expect(page.getByText("Yakında").first()).toBeVisible();
+  await expect(page.getByText("Yakında açılıyor").first()).toBeVisible();
+  await expect(page.getByText("Kabuki").first()).toBeVisible();
+  await expect(page.getByText("Boş saat burada durur. Müşteri görür, sen onaylarsın.")).toBeVisible();
+  await expect(page.locator(".hero-dekor")).toHaveCount(1);
+  await expect(page.locator(".kabuki--hero img")).toBeVisible();
+  await expect(page.locator("#isletmeler")).toHaveClass(/biz-sec/);
   await expect(
     page.getByText(
       "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
-    ),
+    ).first(),
   ).toBeVisible();
   await expect(page.getByRole("link", { name: "Erken erişime kaydol" }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Kendi işletmeni ekle" }).first()).toBeVisible();
@@ -105,6 +111,15 @@ test("desktop screenshot", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
   await page.waitForLoadState("networkidle");
+  const fonts = await page.evaluate(async () => {
+    await document.fonts.ready;
+    return {
+      jakarta: document.fonts.check("700 48px \"Plus Jakarta Sans\""),
+      inter: document.fonts.check("400 16px Inter"),
+    };
+  });
+  expect(fonts.jakarta).toBe(true);
+  expect(fonts.inter).toBe(true);
   await page.screenshot({
     path: path.join(artifactDir, "landing-desktop.png"),
     fullPage: true,

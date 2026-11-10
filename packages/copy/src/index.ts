@@ -11,9 +11,9 @@ export const site = {
   locale: "tr_TR",
   language: "tr",
   timezone: "Europe/Nicosia",
-  title: "Ada Merkez — Kuzey Kıbrıs ve Türkiye için randevu ve rezervasyon",
+  title: "Ada Merkez — Adada randevu ve rezervasyon dağılmasın",
   description:
-    "Kuzey Kıbrıs ve Türkiye için işletme keşfi, kuaför ve klinik randevusu, restoran masa rezervasyonu. Uygulamayı indirmeden WhatsApp üzerinden de rezervasyon planlanıyor.",
+    "Kuzey Kıbrıs ve Türkiye için işletme keşfi, randevu ve rezervasyon. Dilersen uygulama indirmeden WhatsApp’tan hallet.",
 } as const;
 
 export const cta = {
@@ -22,13 +22,19 @@ export const cta = {
 } as const;
 
 export const nav = {
+  discover: "Keşif",
   how: "Nasıl çalışır",
   whatsapp: "WhatsApp ile",
   business: "İşletmeler",
+  pilot: "Pilot",
+  faq: "SSS",
   later: "Sonra",
   waitlist: "Bekleme listesi",
   apply: "İşletme başvurusu",
   menu: "Menü",
+  sections: "Bölümler",
+  lang: "Dil",
+  homeAria: "Ada Merkez ana sayfa",
 } as const;
 
 export const hero = {
@@ -166,6 +172,7 @@ export const waitlist = {
   consentRequired: "Devam etmek için rıza gerekli.",
   invalid: "Lütfen adı, şehri, segmenti ve en az bir iletişim alanını kontrol edin.",
   closedTitle: "Bekleme listesi çok yakında açılıyor",
+  closedShort: "Yakında açılıyor",
   closedBody:
     "Yasal metinler onaylanınca kayıt alınacak. Şu an form kapalıdır; veri yazılmaz.",
   retentionNote:
@@ -208,6 +215,7 @@ export const businessApply = {
   unavailable: "Başvuru şu anda alınamıyor. Lütfen daha sonra yeniden deneyin.",
   invalid: "Zorunlu alanları ve rızayı kontrol edin.",
   closedTitle: "Başvuru çok yakında açılıyor",
+  closedShort: "Yakında açılıyor",
   closedBody: "Yasal metinler onaylanınca işletme başvurusu alınacak. Şu an form kapalıdır.",
 } as const;
 
@@ -272,4 +280,230 @@ export const offline = {
   title: "Çevrimdışı",
   body: "Bu sayfa cihazınıza kaydedildi. Bağlantı gelince bekleme listesi ve güncel içerik yeniden yüklenir.",
   retry: "Yeniden dene",
+} as const;
+
+export const util = {
+  clock: "Yerel saat",
+  currency: "Gösterim",
+  currencyGroup: "Para birimi gösterimi",
+} as const;
+
+export const kabuki = {
+  name: "Kabuki",
+  alt: "Kabuki, Ada Merkez maskotu",
+  hero: "Merhaba, ben Kabuki. Adanın saati, burada.",
+  how: "İşletmeyi bul, saati seç, onayla. Bu kadar.",
+  business: "Boş saat burada durur. Müşteri görür, sen onaylarsın.",
+  faq: "Takıldığın bir yer mi var? Sık sorulanlara bak.",
+} as const;
+
+export const search = {
+  label: "Arama",
+  cityLabel: "Şehir",
+  cityValue: "Lefkoşa",
+  cityMore: "Girne, Mağusa",
+  whatLabel: "Ne arıyorsun",
+  whatValue: "Kuaför, klinik veya restoran",
+  whenLabel: "Ne zaman",
+  whenValue: "Yarın, 11 Kasım",
+  submit: "Saatleri gör",
+  pilot:
+    "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
+} as const;
+
+export const categories = {
+  kicker: "Keşif",
+  title: "Ne arıyorsun?",
+  lede: "Ada Merkez, Kuzey Kıbrıs ve Türkiye için. Şimdilik kuaför, güzellik, klinik ve restoran.",
+  hair: "Kuaför ve güzellik",
+  hairHint: "Kesim, bakım, randevu",
+  hairAlt: "Örnek görsel: kuaför salonu iç mekânı",
+  clinic: "Klinik",
+  clinicHint: "Muayene ve kontrol randevusu",
+  clinicAlt: "Örnek görsel: klinik muayene odası",
+  resto: "Restoran",
+  restoHint: "Masa rezervasyonu",
+  restoAlt: "Örnek görsel: restoranda servis",
+  soon: "Yakında",
+  events: "Etkinlikler",
+  eventsHint: "Bilet, sonraki evrede (CY Ticket)",
+  student: "Öğrenci fırsatları",
+  studentHint: "Ada Kampüs ile, sonraki evrede",
+} as const;
+
+export const examples = {
+  kicker: "Örnekler",
+  title: "Böyle görünecek.",
+  lede: "Aşağıdakiler örnek kartlardır. Gerçek işletme değildir.",
+  badge: "Örnek",
+  cards: [
+    { name: "Örnek Kuaför", city: "Lefkoşa", category: "Kuaför ve güzellik", service: "Kesim ve bakım", image: "kuafor-salon" },
+    { name: "Örnek Güzellik", city: "Lefkoşa", category: "Kuaför ve güzellik", service: "Cilt bakımı", image: "kuafor-makas" },
+    { name: "Örnek Klinik", city: "Girne", category: "Klinik", service: "Muayene randevusu", image: "klinik-muayene" },
+    { name: "Örnek Diş Kliniği", city: "Girne", category: "Klinik", service: "Kontrol randevusu", image: "klinik-muayene" },
+    { name: "Örnek Restoran", city: "Mağusa", category: "Restoran", service: "Masa rezervasyonu", image: "restoran-servis" },
+    { name: "Örnek Sofra", city: "Mağusa", category: "Restoran", service: "Masa rezervasyonu", image: "restoran-sofra" },
+  ],
+} as const;
+
+export const events = {
+  kicker: "Etkinlik ve bilet",
+  title: "Bilet de aynı çatıda olacak.",
+  lede: "Etkinlik bileti sonraki evrede. Aşağıdakiler örnek kartlardır; gerçek etkinlik veya fiyat değildir.",
+  cards: [
+    { name: "Örnek Sahne", city: "Lefkoşa", hint: "Konser bileti, sonraki evrede.", image: "konser-sahne" },
+    { name: "Örnek Gösteri", city: "Girne", hint: "Etkinlik bileti, sonraki evrede.", image: "tiyatro-salon" },
+    { name: "Örnek Açık Hava", city: "Mağusa", hint: "Etkinlik bileti, sonraki evrede.", image: "acik-hava-sahne" },
+  ],
+} as const;
+
+export const howBoard = {
+  kicker: "Nasıl çalışır",
+  title: "Saat sormak için hattı meşgul etmeden.",
+  lede: "İşletmeyi bul, saati veya masayı seç, onayla. Dilersen aynı işi WhatsApp’tan da yürütebilirsin.",
+  s1Title: "İşletmeyi bul",
+  s1Body: "Lefkoşa, Girne veya Mağusa’da kategorine bak.",
+  s2Title: "Saati veya masayı seç",
+  s2Body: "Boş saati veya masayı gör, uygun olanı seç.",
+  s3Title: "Onayla",
+  s3Body: "Onayı al. Dilersen hatırlatma aç.",
+  tz: "Europe/Nicosia",
+  service: "Hizmet",
+  date: "Tarih",
+  dateValue: "Çarşamba, 11 Kasım",
+  time: "Saat",
+  place: "Yer",
+  placeValue: "Lefkoşa · örnek işletme",
+  status: "Onay bekleniyor",
+} as const;
+
+export const whatsappFlow = {
+  kicker: "WhatsApp asistanı",
+  title: "WhatsApp’tan söylemen yeter.",
+  lede: "Uygulama indirmeden, yazışarak randevu veya masa rezervasyonu yapabilirsin.",
+  s1Title: "İhtiyacını yaz",
+  s1Body: "Şehir, gün ve hizmeti kısaca söylemen yeterli.",
+  s2Title: "Uygun saatleri gör",
+  s2Body: "Asistan boş saatleri veya masaları gösterir.",
+  s3Title: "Onayı al",
+  s3Body: "Onay gelince dilersen hatırlatma aç.",
+  footnote: "Sohbet görseli stilizedir; resmi bir mesajlaşma arayüzünün kopyası değildir.",
+  headTitle: "Ada Merkez asistanı",
+  headSub: "Stilize akış · resmi arayüz değil",
+  b1: "Merhaba. Kuaför, klinik veya restoran için saat bakabilirim. Şehir ve gün söylemen yeterli.",
+  b2: "Lefkoşa, yarın kesim. Öğleden önce.",
+  b3: "11 Kasım, Lefkoşa. Öğleden önce boş saatler: 10:30, 11:00. Hangisini ayıralım?",
+  b4: "11:00 olsun.",
+  b5: "11:00 için yer ayırdım. Onay işletmeden gelince yazarım. Hatırlatma ister misin?",
+} as const;
+
+export const businessPanel = {
+  kicker: "İşletmeler için",
+  title: "Defter durmasın, boş saat görünsün.",
+  lede: "Ada Merkez, Kuzey Kıbrıs ve Türkiye için. Pilot Lefkoşa, Girne ve Mağusa’da. Müşteri uygun saati kendisi seçer; istekler panelde durur.",
+  feat1Title: "İşletme paneli",
+  feat1Body: "Hizmet, personel ve istekler aynı yerde.",
+  feat2Title: "Takvim ve masa planı",
+  feat2Body: "Kuaför, klinik ve restorana göre.",
+  feat3Title: "Hatırlatmalar",
+  feat3Body: "Onaylanan randevu için hatırlatma gider.",
+  statsLabel: "Örnek istatistikler",
+  stat1: "Bugünkü randevu",
+  stat2: "Boş saat",
+  stat3: "Onay bekliyor",
+  calPanel: "İşletme paneli",
+  calTitle: "Salı, 10 Kasım",
+  calSub: "Lefkoşa · günlük görünüm",
+  navCal: "Takvim",
+  navReq: "İstekler",
+  navSvc: "Hizmetler",
+  navLabel: "Örnek panel menüsü",
+  inbox: "Gelen istekler",
+  ok: "Onaylı",
+  wait: "Bekliyor",
+  off: "İptal",
+  free: "Boş",
+  freeHint: "Uygun saat",
+  a1: "Kontrol",
+  a2: "Kesim ve sakal",
+  a3: "Cilt bakımı",
+  a4: "Kesim",
+} as const;
+
+export const tools = {
+  kicker: "İşletme araçları",
+  title: "QR menü ve POS, sonraki evrede.",
+  lede: "Aynı çatı altında planlanan araçlar. v1’de menü yalnızca bağlantıdır; tahsilat ve yazar kasa sonraki evrededir.",
+} as const;
+
+export const pilotCities = {
+  kicker: "Pilot şehirler",
+  title: "Lefkoşa, Girne ve Mağusa.",
+  lede: "Ada Merkez, Kuzey Kıbrıs ve Türkiye için. Pilot bu üç şehirde. Türkiye’den gelenler de burada randevu veya masa ayırabilir. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
+  lefkosa: "Başkentte kuaför, klinik ve restoran.",
+  girne: "Girne’de aynı keşif ve rezervasyon akışı.",
+  magusa: "Mağusa’da aynı keşif ve rezervasyon akışı.",
+} as const;
+
+export const faq = {
+  kicker: "SSS",
+  title: "Sık sorulanlar",
+  items: [
+    {
+      q: "Ada Merkez nedir?",
+      a: "Kuzey Kıbrıs ve Türkiye için bir randevu ve rezervasyon uygulaması. İşletmeyi bulur, saati veya masayı seçersin. Dilersen WhatsApp’tan da halledersin.",
+    },
+    {
+      q: "Hangi şehirlerde çalışır?",
+      a: "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’den gelenler de bu şehirlerde randevu veya masa ayırabilir. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
+    },
+    {
+      q: "Uygulama indirmem gerekir mi?",
+      a: "Hayır. Web’den kullanabilirsin. Dilersen uygulama indirmeden WhatsApp’tan da yazışarak rezervasyon yapabilirsin.",
+    },
+    {
+      q: "Hastane veya resmi daire randevusu alınır mı?",
+      a: "Hayır. Ada Merkez kuaför, güzellik, klinik ve restoran içindir. Devlet hastanesi veya resmi randevu bu uygulamada yoktur.",
+    },
+    {
+      q: "WhatsApp’tan nasıl randevu alırım?",
+      a: "Asistana şehir, gün ve ihtiyacını yazarsın. Uygun saatleri görür, seçersin; onay gelince dilersen hatırlatma açarsın.",
+    },
+    {
+      q: "İşletmemi nasıl eklerim?",
+      a: "Pilot Lefkoşa, Girne ve Mağusa’daki kuaför, klinik ve restoranlar içindir. İlgileniyorsan kendi işletmeni ekle. Başvurmak seni bağamaz; önce konuşuruz.",
+    },
+    {
+      q: "Ne zaman açılacak?",
+      a: "Lansman tarihi henüz net değil. Paylaşılacak bir tarih olunca burada yazarız.",
+    },
+    {
+      q: "Ücret var mı?",
+      a: "Fiyat ve paketler henüz yayımlanmadı. Paylaşılınca burada yazarız.",
+    },
+  ],
+} as const;
+
+export const later = {
+  kicker: "Aynı çatıda, sonraki evre",
+  title: "v1 keşif, randevu ve WhatsApp. Diğerleri planlanan evrede.",
+  badge: "Yakında",
+  qrTitle: "QR menü",
+  qrBody: "Masa QR’ı ile menü; v1’de yalnızca bağlantı.",
+  posTitle: "POS",
+  posBody: "Yazar kasa ile tahsilat, aynı çatı altında.",
+  ticketTitle: "Etkinlik bileti",
+  ticketBody: "Konser ve etkinlik bileti, randevunun yanında.",
+  campusTitle: "Öğrenci indirimi",
+  campusBody: "Ada Kampüs kimliğiyle indirim, abartısız sonraki adım.",
+} as const;
+
+export const closeCta = {
+  kicker: "Adanın saati, burada.",
+  title: "Hazır olunca burada olur.",
+  body: "Erken erişim listesi yakında açılıyor.",
+} as const;
+
+export const heroShot = {
+  alt: "Keşif ekranı",
 } as const;

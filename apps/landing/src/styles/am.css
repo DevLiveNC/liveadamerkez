@@ -285,26 +285,26 @@ h1, h2, h3, h4, p { margin: 0; }
 .slot {
   height: 40px;
   border-radius: 10px;
-  border: 1px solid var(--am-color-border);
-  background: #fff;
+  border: 1px solid transparent;
+  background: var(--am-status-free-bg);
   display: grid; place-items: center;
   font-size: 13px; font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: var(--am-brand-navy);
+  color: var(--am-status-free-fg);
   transition: background var(--am-motion-fast) var(--am-ease-out),
               border-color var(--am-motion-fast) var(--am-ease-out),
               color var(--am-motion-fast) var(--am-ease-out),
               transform var(--am-motion-fast) var(--am-ease-press);
 }
-.slot:hover { border-color: var(--am-brand-navy); }
+.slot:hover { border-color: var(--am-status-free-fg); }
 .slot.on {
-  background: var(--am-brand-navy);
-  border-color: var(--am-brand-navy);
-  color: #fff;
+  background: var(--am-status-confirmed-bg);
+  border-color: transparent;
+  color: var(--am-status-confirmed-fg);
 }
 .slot.off {
-  background: var(--am-color-surface-muted);
-  color: var(--am-color-text-subtle);
+  background: var(--am-status-cancelled-bg);
+  color: var(--am-status-cancelled-fg);
   border-color: transparent;
   text-decoration: line-through;
 }

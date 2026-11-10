@@ -1,74 +1,76 @@
-# Ada Merkez — Marka Kiti v1
+> **Logo (10 Kasım 2026):** Logo A (wordmark) **kesinleşti**. Kaynak: `logo-v3/final/`. Dev kılavuzu: `logo-v3/final/LOGO-DEV.md`. Renk paleti henüz seçilmedi (iki seçenek: `palet/`); mevcut renk jetonları geçerlidir, landing palete çekilmedi.
+
+# Ada Merkez — Marka Kiti
 
 **Tarih:** 10 Kasım 2026 (Asia/Famagusta)  
 **Sahip:** KIRMIZIYÜZ Live Development Software LTD  
 **Ürün:** Kuzey Kıbrıs ve Türkiye için süper uygulama (işletme keşfi, randevu/rezervasyon, WhatsApp AI rezervasyonu, QR menü, POS, bilet, öğrenci indirimi)  
-**Bu belge:** Tasarım botu, v1. Dev botu jetonlar için `tokens.json` ve `tokens.css` dosyalarını kullanır.
+**Bu belge:** Tasarım botu, Logo A kesin. Dev botu jetonlar için `tokens.json` ve `tokens.css`, logo için `logo-v3/final/` dosyalarını kullanır.
 
 ## 1. Seçilen yön
 
-**Ada'nın merkez noktası.** İşaret, klasik bir konum pinidir; başının içinde sadeleştirilmiş Kıbrıs adası silueti, Lefkoşa civarına düşen koyu bir nokta ise “merkez”i temsil eder. Ada Kampüs’ün “A harfinin içindeki pin + altta ada + turkuaz/sarı” dilinden ve liveDevelopment’ın yeşil “canlı nokta”sından ayrılır; aynı ailede kalır çünkü ada silueti, konum pini ve (yalnızca başarı/canlı durum rengi olarak) `#00D26A` korunur. Mercan pin + lacivert zemin, keşif/rezervasyon ürününe sıcak bir Akdeniz kimliği verir; işaret sade olduğu için uygulama ikonuna, favicon’a ve tek renk basıma iner.
+**Logo A — wordmark (kesin, 10 Kasım 2026).** «ADA MERKEZ» tek satır, Barlow Condensed 700. İlk A’nın enine çubuğunda, çubuğa oturan mercan kare (`#E4572E`). Yazı lacivert (`#0F2C44`); koyu zeminde yazı krem (`#F7F4EF`), kare mercan kalır. Yazılar SVG’de path’tir.
 
-Üç konsept denendi (klasik ada+pin, pin içinde ada, ada+merkez halka). **Seçilen: varyant B — pin içinde ada.** Karşılaştırma: `marka-kiti/varyantlar/karsilastirma.png`.
+Favicon ve uygulama ikonu wordmark’ın ilk A harfidir: mercan kare zemin, lacivert A, çubuktaki işaret krem (mercan zeminde görünsün diye). Koyu ikon: gece laciverti zemin, krem A, mercan işaret.
+
+Önceki pin/ada ve sembol denemeleri arşivdedir (`logo-v2/`, `logo-v3/varyant-b-monogram/`, `logo-v3/varyant-c-sembol/`). Ürüne uygulanmaz.
+
+İsteğe bağlı slogan (logo kilidine zorunlu değil): **Adanın saati, burada.** Hizmet alanı Kuzey Kıbrıs ve Türkiye'dir; yurt dışında hizmet iddiası yoktur.
 
 ## 2. Yazım
 
 - Marka adı: **Ada Merkez** (iki sözcük, baş harfler büyük).
 - Kullanılmayan yazımlar: Adamerkez, AdaMerkez, ADA MERKEZ (kısa etiket/kicker dışında), Ada merkez, Ada Merkez’i çarpıtmak.
-- İsteğe bağlı slogan (logo kilidine zorunlu değil): **Ada'nın merkezi.**
+- İsteğe bağlı slogan (logo kilidine zorunlu değil): **Adanın saati, burada.**
 - Alan adı ve fiyat uydurulmaz.
 
 ## 3. Logo
 
 ### Hikâye
-Pin = keşif ve konum. Ada = Kıbrıs. Nokta = Lefkoşa / “merkez”: tüm hizmetlerin toplandığı yer.
+Wordmark, marka adını doğrudan taşır. İlk A’daki mercan kare, “merkez” vurgusudur — keşif ve rezervasyonun toplanma noktası. Ada silueti veya konum pini bu kilidin parçası değildir.
 
-### Ana varyantlar
-| Dosya (SVG + aynı adlı PNG) | Kullanım |
-|---|---|
-| `logo/svg/ada-merkez-sembol.svg` | Şeffaf zeminli renkli işaret |
-| `logo/svg/ada-merkez-yatay-acik-zemin.svg` | Açık (kum) zemin, yatay kilit |
-| `logo/svg/ada-merkez-yatay-koyu-zemin.svg` | Koyu zemin, yatay kilit |
-| `logo/svg/ada-merkez-yatay-renk-seffaf-acik.svg` | Şeffaf, lacivert yazı (açık zemine) |
-| `logo/svg/ada-merkez-yatay-renk-seffaf-koyu.svg` | Şeffaf, beyaz yazı (koyu zemine) |
-| `logo/svg/ada-merkez-dikey-acik-zemin.svg` | Dikey kilit, kum zemin |
-| `logo/svg/ada-merkez-dikey-koyu-zemin.svg` | Dikey kilit, koyu zemin |
-| `logo/svg/ada-merkez-ikon.svg` | Uygulama ikonu (yuvarlatılmış kare, lacivert zemin) |
-| `logo/svg/ada-merkez-ikon-kare.svg` | Kare ikon (köşe yuvarlatmasız) |
-| `logo/svg/ada-merkez-ikon-seffaf.svg` | Şeffaf ikon (yalnız işaret) |
-| `logo/svg/ada-merkez-sembol-tek-renk-koyu.svg` | Tek renk lacivert (ada deliklidir) |
-| `logo/svg/ada-merkez-sembol-tek-renk-beyaz.svg` | Tek renk beyaz |
-| `logo/svg/ada-merkez-yatay-tek-renk-koyu.svg` | Yatay, tek renk lacivert |
-| `logo/svg/ada-merkez-yatay-tek-renk-beyaz.svg` | Yatay, tek renk beyaz |
-| `logo/svg/ada-merkez-dikey-tek-renk-koyu.svg` | Dikey, tek renk lacivert |
-| `logo/svg/ada-merkez-dikey-tek-renk-beyaz.svg` | Dikey, tek renk beyaz |
-| `logo/svg/ada-merkez-favicon-512.svg` | Favicon master |
-| `logo/svg/ada-merkez-favicon-32.svg` | 32 px (ada sadeleşir) |
-| `logo/svg/ada-merkez-favicon-16.svg` | 16 px (yalnız pin + krem delik) |
+### Ana varlıklar
+Kaynak: `logo-v3/final/` (SVG + PNG). Dev kılavuzu: `logo-v3/final/LOGO-DEV.md`.
 
-Wordmark fontu Outfit Bold’dur; SVG’lerde yazılar path’e çevrilmiştir (font yüklemeye gerek yoktur).
+| Dosya | Kullanım |
+| --- | --- |
+| `ada-merkez-wordmark-renk-seffaf-acik` | Açık zemin, lacivert yazı |
+| `ada-merkez-wordmark-renk-seffaf-koyu` | Koyu zemin, krem yazı |
+| `ada-merkez-wordmark-acik-zemin` / `…-koyu-zemin` | 1024² hazır sahne |
+| `ada-merkez-a-isaret-renk-seffaf-acik` / `…-koyu` | Yalnız ilk A (şeffaf) |
+| `ada-merkez-ikon-1024` / `…-koyu` | Uygulama ikonu, %22 köşe |
+| `ada-merkez-ikon-kare` | Köşesiz mercan kare |
+| `ada-merkez-ikon-maskable-512` / `…-koyu` | Maskable, güvenli bölge |
+| `ada-merkez-apple-touch-icon` | 180×180, opak mercan |
+| `ada-merkez-favicon-16` / `32` / `48` (+ koyu) ve `favicon.ico` | Sekme |
+
+Paylaşılan kopyalar (arayüz yolları değişmedi): `ui/shared/logo/`. Form / QR / sosyal yer tutucu `assets/logo.svg` wordmark A ile değiştirildi.
+
+Wordmark fontu **Barlow Condensed Bold**’dur. UI başlık fontu Plus Jakarta Sans’tır; wordmark’ı Plus Jakarta veya başka bir fontla yeniden dizmeyin.
 
 ### Koruma alanı
-İşaretin çevresinde **pin başı yarıçapı kadar** (sembol yüksekliğinin yaklaşık %36’sı) boşluk bırakın. Yatay kilitte bu boşluk, “M” harfi yüksekliği kadarıyla da ölçülebilir. Kenar, fotoğraf veya başka logo bu alana girmesin.
+Wordmark’ın çevresinde **mercan karenin kenar uzunluğu kadar** boşluk bırakın (cap yüksekliğinin yaklaşık %10’u). Kenar, fotoğraf veya başka logo bu alana girmesin.
 
 ### En küçük boyut
-- Sembol: 24 px yükseklik (dijital)
-- Yatay kilit: 28 px yükseklik
-- Favicon: 16 px’te sadeleştirilmiş çizim kullanılır; renkli tam adayı 16 px’e küçültmeyin
-- Baskı: sembol en az 8 mm yükseklik
+- Wordmark: 28 px yükseklik (dijital); 24 px’in altına düşmeyin
+- İlk A işareti: 24 px yükseklik
+- Favicon: 16 px’te verilen çizim kullanılır; 1024’ü küçültmeyin
+- Baskı: wordmark en az 8 mm yükseklik
 
 ### Yanlış kullanımlar
 - Logoyu esnetmek, döndürmek, eğmek, 3B gölge veya kontur eklemek
-- Pin, ada ve nokta renklerini değiştirmek (onaylı tek renk versiyonlar hariç)
-- Ada siluetini başka bir ada/ülke haritasıyla değiştirmek
-- Noktayı kaldırmak veya pin’in dışına taşımak
-- Outfit dışında bir fontla wordmark’ı yeniden yazmak
-- Düşük kontrastlı zemine yerleştirmek (ör. mercan pin’i kırmızı/turuncu fotoğrafın üstüne koymak)
+- Çubuktaki mercan kareyi kaldırmak veya başka bir şekle çevirmek
+- Wordmark’ın tamamını uygulama ikonu yapmak
+- Onaylı wordmark fontu dışında bir fontla wordmark’ı yeniden yazmak
+- Düşük kontrastlı zemine yerleştirmek (ör. mercan kare ikonu kırmızı/turuncu fotoğrafın üstüne koymak)
 - LiveDev yeşilini (`#00D26A`) işaretin veya wordmark’ın rengi yapmak
 - Ada Kampüs turkuazı / güneş sarısını Ada Merkez logosuna katmak
-- Eski veya “eğlenceli sticker” stilinde gölgeli ada çizmek
 
 ## 4. Renk paleti
+
+**Seçilen palet (10 Kasım 2026, karma):** Zemin `#F8F0E3`, kart `#FFF8F0` (Sıcak Kum); ikincil turkuaz `#0E7C78` ve yumuşak `#D8F1EF` (Akdeniz Turkuaz). Lacivert `#0F2C44` ve mercan `#E4572E` aynen. Kum altını yok. Jetonlar `tokens.json` / `tokens.css` v1.4.
+
+Karşıtlık (WCAG 2.1, hesaplandı): lacivert / kum 12,68:1 AAA; lacivert / kart 13,62:1 AAA; turkuaz `#0E7C78` / kum **4,45:1** (yalnız büyük yazı / UI — küçük metinde AA tutmaz); turkuaz / kart 4,78:1 AA; turkuaz / beyaz 5,03:1 AA; turkuaz koyu `#0A4F4D` / kum 8,29:1 AAA. **Kural:** kicker, bağlantı ve küçük gövde metninde `#0A4F4D` kullan. `#0E7C78` büyük yazı, dolu düğme ve kart yüzeyi içindir. Mercan / kum 3,26:1 (yalnız büyük CTA). Ayrıntı: `palet/README.md`.
 
 ### Birincil ve vurgu
 | Ad | Hex | Rol |
@@ -80,9 +82,13 @@ Wordmark fontu Outfit Bold’dur; SVG’lerde yazılar path’e çevrilmiştir (
 | Mercan koyu | `#C2410C` | Açık zeminde mercan metin (AA) |
 | Mercan açık | `#F07A52` | Koyu zeminde hover / vurgu |
 | Mercan yumuşak | `#F4D6C8` | Açık zeminde yumuşak dolgu |
-| Kum | `#F7F4EF` | Açık zemin |
-| Kum koyu | `#EDE8E0` | İkincil yüzey |
-| Krem | `#FFF8F3` | Ada silueti (işaretin içinde) |
+| Kum (sıcak) | `#F8F0E3` | Açık zemin |
+| Kart kremi | `#FFF8F0` | Kart ve form yüzeyi |
+| Deniz turkuazı | `#0E7C78` | İkincil, büyük yazı / dolu düğme |
+| Turkuaz koyu | `#0A4F4D` | Küçük metin, kicker, bağlantı |
+| Turkuaz yumuşak | `#D8F1EF` | Yumuşak dolgu |
+| Kum koyu | `#E8DCC8` | İkincil yüzey |
+| Krem | `#FFF8F0` | Kart / yumuşak vurgu |
 
 ### Nötrler
 `#F7F4EF` 50 · `#EDE8E0` 100 · `#D6D0C6` 200 · `#B8B2A8` 300 · `#8C877E` 400 · `#6B665E` 500 · `#4A463F` 600 · `#2F2C28` 700 · `#1C1A17` 800 · `#12110F` 900
@@ -125,7 +131,9 @@ Google Fonts, Türkçe karakterler (ğ, ü, ş, ı, i, ö, ç ve büyükleri) do
 
 | Rol | Font | Ağırlık | Not |
 |---|---|---|---|
-| Başlık / wordmark / buton | **Outfit** | 600–700 | `/workspace/ld-canva/fonts`, `/workspace/fonts` dışındaki kopya: `marka-kiti/sunum/fonts` |
+| Wordmark (Logo A) | **Barlow Condensed** | 700 | Path; kopya: `logo-v3/kaynak/fonts`. UI’de wordmark olarak yeniden dizilmez |
+| Başlık / buton | **Plus Jakarta Sans** | 600–700 | Türkçe glifler doğrulandı |
+| Wordmark (v1 varlıkları) | **Outfit** | 700 | v1 logo ve Marka Kiti v1 sunumunda kaldı; yeni kilitlerde kullanılmaz |
 | Gövde / arayüz / form | **Inter** | 400–600 | `/workspace/fonts/inter319` |
 
 Ölçek (px): 12 / 14 / 16 / 18 / 20 / 24 / 32 / 40 / 48 / 64. Gövde satır yüksekliği 1,5; başlık 1,1–1,2. Harf aralığı başlıkta hafif negatif (−0,02em).
@@ -148,8 +156,10 @@ Ada Kampüs’ün Baloo 2 ve Kaushan Script fontları Ada Merkez’de kullanılm
 
 ## 8. Dev botu için dosyalar
 
-- `/workspace/ada-merkez/tasarim/tokens.json` — renk (açık/koyu), tipografi, aralık, köşe, gölge
+- `/workspace/ada-merkez/tasarim/tokens.json` — renk (açık/koyu), tipografi, aralık, köşe, gölge, logo ve seçilen palet (v1.4)
 - `/workspace/ada-merkez/tasarim/tokens.css` — CSS değişkenleri (`--am-*`), `[data-theme="light"|"dark"]`
+- `/workspace/ada-merkez/tasarim/logo-v3/final/` — kesin logo ve ikon seti
+- `/workspace/ada-merkez/tasarim/logo-v3/final/LOGO-DEV.md` — yollar, min boyut, boşluk
 - Bu belge: kullanım kuralları
 
 Saat dilimi jetonu: `Europe/Nicosia` (PLAN.md ile uyumlu).
@@ -170,6 +180,21 @@ Saat dilimi jetonu: `Europe/Nicosia` (PLAN.md ile uyumlu).
     sunum/ada-merkez-marka-kiti-1920x1080.png
     sunum/ada-merkez-marka-kiti.html
     canva/               (içe aktarım HTML’leri)
+  logo-v2/
+    kaynak/build.py, fonts/, island verisi
+    varyant-a-monogram/  (svg + png: sembol, yatay, dikey, tek renk)
+    varyant-b-pin-ada/
+    varyant-c-pusula/
+    onerilen/            (B kopyası + ikon 1024, maskable, apple-touch 180, favicon 16/32/48 svg+png+ico)
+    karsilastirma/ada-merkez-logo-v2-karsilastirma-1920x1080.png
+    canva/               (v2 içe aktarım HTML’leri)
+  logo-v3/
+    final/               (KESİN Logo A: svg, png, ico, LOGO-DEV.md)
+    varyant-a-wordmark/  (üretim kaynağı)
+    canva/               (Logo v3 sunum ve varlıklar)
+  palet/
+    palet-1.json, palet-2.json, README.md
+    palet-secenekleri-1920x1080.png
 ```
 
 Logolar SVG olarak kodlandı; PNG’ye `cairosvg` ile çevrildi. GPT/AI görsel üretimi kullanılmadı. Ada silueti Natural Earth 10m (`cyprus.geojson`) kaynağından sadeleştirildi.
@@ -178,13 +203,19 @@ Logolar SVG olarak kodlandı; PNG’ye `cairosvg` ile çevrildi. GPT/AI görsel 
 
 Klasör: **Ada Merkez** — https://www.canva.com/folder/FAHaiS-mJdY (`FAHaiS-mJdY`)
 
-HTML (Google Fonts Outfit + Inter, gerçek metin + işaret PNG’leri) yerelde sunulup `import-design-from-url` ile katmanlı içe aktarıldı. Kimlikler: `marka-kiti/canva/canva_ids.json`.
+HTML (Google Fonts Plus Jakarta Sans + Inter, gerçek metin + PNG’ler) yerelde sunulup `import-design-from-url` ile katmanlı içe aktarıldı. Logo SVG’leri `upload-asset-from-url` ile kütüphane varlığı olarak yüklenir (ham SVG `import-design-from-url` invalid_file verir). Kimlikler: `marka-kiti/canva/canva_ids.json`, `logo-v3/canva/canva_ids.json`, `palet/canva/`.
 
-| Tasarım | Boyut | Düzenle | Görüntüle |
-|---|---|---|---|
-| Ada Merkez — Marka Kiti v1 | 1920×1080 (presentation) | https://www.canva.com/d/cUSUjbeVzsfLgl7 | https://www.canva.com/d/qxOxtp6tkyyzgEl |
-| Ada Merkez — Yatay logo (açık zemin) | 1024×1024 | https://www.canva.com/d/AVUEBBUQuCbwPVv | https://www.canva.com/d/vRP2IVwXIEqJLRt |
-| Ada Merkez — Yatay logo (koyu zemin) | 1024×1024 | https://www.canva.com/d/XY004_eXGV3Rm9a | https://www.canva.com/d/t5VmhQXA7cBvvvG |
-| Ada Merkez — Uygulama ikonu | 1024×1024 | https://www.canva.com/d/IDVbCn4Dkktbg2E | https://www.canva.com/d/8WAxlx3dnZ3G3cQ |
+| Tasarım | ID | Boyut | Düzenle | Görüntüle |
+|---|---|---|---|---|
+| Ada Merkez — Marka Kiti v1 | DAHaiQRSwtM | 1920×1080 | https://www.canva.com/d/NbsvQPgNTCJHosz | https://www.canva.com/d/D1eXrnTwi5q2Z9c |
+| Ada Merkez — Yatay logo (açık zemin) | DAHaiWZZbXk | 1024×1024 | https://www.canva.com/d/jbAUFL95uDzVWUm | https://www.canva.com/d/twEFA3jxS2DAJ7z |
+| Ada Merkez — Yatay logo (koyu zemin) | DAHaiVrxx94 | 1024×1024 | https://www.canva.com/d/KRmOO01oTjRBFBS | https://www.canva.com/d/p8z7Y-NjzgeH57l |
+| Ada Merkez — Uygulama ikonu | DAHaiY-8UHQ | 1024×1024 | https://www.canva.com/d/xL-iBvEfJRIeUEv | https://www.canva.com/d/j3bMv9M-SJDEjK9 |
+| Ada Merkez — Logo v2 karşılaştırması | DAHaivEJodI | 1920×1080 | https://www.canva.com/d/j_Gep0NRMgqKDmQ | https://www.canva.com/d/gPNzFofRd2pzgw0 |
+| Ada Merkez — Logo v2 yatay (açık zemin) | DAHaiuP5jhs | 1024×1024 | https://www.canva.com/d/hemMBz--6v1EYNP | https://www.canva.com/d/CinSxaaUvMBemed |
+| Ada Merkez — Logo v2 yatay (koyu zemin) | DAHaih_sNW8 | 1024×1024 | https://www.canva.com/d/oU3hRO8au0HMsyh | https://www.canva.com/d/0jCk1EflP9qYuzC |
+| Ada Merkez — Logo v2 uygulama ikonu | DAHaivHbdkM | 1024×1024 | https://www.canva.com/d/Ntt7rZJh1qZtuiN | https://www.canva.com/d/lWKYKEjEU-zcjYx |
 
-`get-design-content` ile metinler düzenlenebilir göründü; Türkçe karakterler sağlam. Kart etiketlerindeki büyük İ kaybı (ZEMIN/IKONU/LACIVERT) 10 Kasım 2026’da yerinde düzeltildi: ZEMİN, İKONU, LACİVERT.
+Kısa düzenleme bağlantıları API çağrısına göre değişir; kararlı kimlik tasarım ID’sidir. v2 kimlikleri ayrıca `logo-v2/canva/canva_ids.json` içinde.
+
+`get-design-content` ile metinler düzenlenebilir göründü; Türkçe karakterler sağlam (Lefkoşa, Karşılaştırma, Önerilen, İKONU). Kart etiketlerindeki büyük İ kaybı (ZEMIN/IKONU/LACIVERT) 10 Kasım 2026’da yerinde düzeltildi: ZEMİN, İKONU, LACİVERT. Marka Kiti v1 kicker’ı “Kuzey Kıbrıs ve Türkiye için süper uygulama” olarak güncellendi; kısaltılmış ülke kodu metinden çıkarıldı.

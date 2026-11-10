@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { site } from "@ada-merkez/copy";
 import { Footer } from "../components/Footer";
 import { Header } from "../components/Header";
@@ -9,20 +8,6 @@ import { Analytics } from "../components/Analytics";
 import { AttributionCapture } from "../components/AttributionCapture";
 import { ConsentBanner } from "../components/ConsentBanner";
 import "./globals.css";
-
-const display = Plus_Jakarta_Sans({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-outfit",
-  weight: ["500", "600", "700"],
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-inter",
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
 
@@ -69,7 +54,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={site.language} data-theme="light" className={`${display.variable} ${inter.variable}`}>
+    <html lang={site.language} data-theme="light">
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -77,7 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body>
+      <body className="landing">
         <a className="skip" href="#icerik">
           İçeriğe geç
         </a>

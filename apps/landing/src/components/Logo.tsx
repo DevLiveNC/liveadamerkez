@@ -1,7 +1,7 @@
 import { site } from "@ada-merkez/copy";
 
-/** Tek yer tutucu wordmark: /brand/logo.svg — kesin değil. */
 export const LOGO_SRC = "/brand/logo.svg";
+export const LOGO_KOYU_SRC = "/brand/logo-koyu.svg";
 export const ICON_SRC = "/brand/icon.svg";
 
 type Props = {
@@ -11,16 +11,17 @@ type Props = {
   decorative?: boolean;
 };
 
-export function Logo({ className = "brand-logo", height = 32, inverted = false, decorative = false }: Props) {
+export function Logo({ className = "logo-h", height = 32, inverted = false, decorative = false }: Props) {
+  const src = inverted ? LOGO_KOYU_SRC : LOGO_SRC;
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       className={className}
-      src={LOGO_SRC}
+      src={src}
       alt={decorative ? "" : site.name}
       height={height}
-      width={Math.round(height * 2.95)}
-      style={inverted ? { filter: "brightness(0) invert(1)", height, width: "auto" } : { height, width: "auto" }}
+      width={Math.round(height * 6.2)}
+      style={{ height, width: "auto" }}
     />
   );
 }

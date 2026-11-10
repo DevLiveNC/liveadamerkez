@@ -7,7 +7,7 @@ export function Footer() {
     <footer className="foot">
       <div className="wrap foot-in">
         <div>
-          <Logo className="brand-logo is-sm" height={24} />
+          <Logo className="logo-h" height={24} />
           <p>{footer.companyLine}</p>
           <p>
             {site.regionLine} · Saat dilimi {site.timezone}
