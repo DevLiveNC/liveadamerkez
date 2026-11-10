@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "migrate": "tsx src/migrate.ts",
     "seed-test": "tsx src/seed-test-accounts.ts",
-    "seed:isletme": "tsx src/seed-isletme.ts"
+    "seed:isletme": "tsx src/seed-isletme.ts",
+    "seed:yonetim": "tsx src/seed-yonetim.ts"
   },
   "dependencies": {
     "@ada-merkez/shared": "*",

@@ -25,6 +25,7 @@
     "db:migrate": "npm run migrate -w @ada-merkez/db",
     "db:seed-test": "npm run seed-test -w @ada-merkez/db",
     "db:seed:isletme": "npm run seed:isletme -w @ada-merkez/db",
+    "db:seed:yonetim": "npm run seed:yonetim -w @ada-merkez/db",
     "ci": "npm run lint && npm run typecheck && npm run copy-check && npm run test && npm run build && npm run e2e"
   },
   "devDependencies": {

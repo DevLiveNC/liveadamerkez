@@ -10,6 +10,8 @@ import {
   type SessionRole,
 } from "@ada-merkez/shared/node";
 
+export type { SessionClaims, SessionRole };
+
 export function sessionOr401(
   request: Request,
   cors: Record<string, string>,

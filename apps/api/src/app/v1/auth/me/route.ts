@@ -1,6 +1,6 @@
 import { apiMessages } from "@ada-merkez/copy";
 import { getAccountById, isDatabaseConfigured } from "@ada-merkez/db";
-import { authCors, corsHeaders, json } from "../../../../lib/http";
+import { authCors, json } from "../../../../lib/http";
 import { sessionOr401 } from "../../../../lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -37,5 +37,5 @@ export async function GET(request: Request) {
 }
 
 export function OPTIONS(request: Request) {
-  return json({ ok: true }, 204, corsHeaders(request));
+  return json({ ok: true }, 204, authCors(request));
 }
