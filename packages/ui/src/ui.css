@@ -78,6 +78,34 @@ body.am-app .am-ui-main {
   padding: 0 var(--am-page-pad) 16px;
 }
 
+body.am-app .am-ui-main .am-header {
+  margin: 0 calc(-1 * var(--am-page-pad));
+  padding-left: var(--am-page-pad);
+  padding-right: var(--am-page-pad);
+  padding-top: max(8px, var(--am-safe-top));
+}
+
+body.am-app .am-profile-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 8px 0 20px;
+}
+body.am-app .am-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--am-navy);
+  color: var(--am-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--am-font-display);
+  font-weight: 700;
+}
+body.am-app .am-avatar--lg { width: 72px; height: 72px; font-size: 28px; }
+body.am-app .am-card-block { margin-bottom: 12px; }
+
 body.am-app .am-ui-ptr {
   position: relative;
   display: flex;

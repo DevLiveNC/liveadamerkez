@@ -13,7 +13,8 @@ type IconName =
   | "chart"
   | "shield"
   | "server"
-  | "message";
+  | "message"
+  | "chevron";
 
 const PATHS: Record<IconName, ReactNode> = {
   home: (
@@ -62,6 +63,7 @@ const PATHS: Record<IconName, ReactNode> = {
       <path d="M5 18 4 21l3.2-1.2A9 9 0 1 0 5 18z" />
     </>
   ),
+  chevron: <path d="m9 18 6-6-6-6" />,
 };
 
 export function UiIcon({ name, title, className }: { name: IconName; title?: string; className?: string }) {
