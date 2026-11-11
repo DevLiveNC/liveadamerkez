@@ -6,7 +6,6 @@ import {
   events,
   examples,
   faq,
-  hero,
   howBoard,
   kabuki,
   later,
@@ -17,6 +16,7 @@ import {
   whatsappFlow,
 } from "@ada-merkez/copy";
 import { Dekor } from "@ada-merkez/ui";
+import { HeroV3 } from "../components/HeroV3";
 import { SampleBoardDate } from "../components/SampleBoardDate";
 import { SearchWhen } from "../components/SearchWhen";
 import { WaitlistForm } from "../components/WaitlistForm";
@@ -83,34 +83,7 @@ function Kabuki({
 export default function HomePage() {
   return (
     <main id="icerik" className="am-land">
-      <section className="hero">
-        <Dekor scene="landing" slot="hero" />
-        <svg className="hero-art" viewBox="0 0 400 400" aria-hidden="true">
-          <path
-            fill="#0F2C44"
-            d="M320 90 l-28 14 -14 4 -5 6 -30 13 -6-1 -13 8 -25 4 -37-4 -15-5 1 22 -7 10 -4 1 -6-3 -12-2 -10 1 -8 12 -7 5 h-5 l-8-7 -1 1 5 26 5 5 4 12 6 5 24 9 13-3 8 1 4 12 h9 l-2-7 8-9 18-1 12-4 3-4 11-3 4-4 6-1 3-4 1-10 4-5 11-1 7 5 10-6 5 0 9 3 -5-9 -15-16 2-14 5-6 9 0 8-12 45-29z"
-          />
-          <circle cx="200" cy="155" r="14" />
-        </svg>
-        <div className="wrap g12">
-          <div className="span-6 hero-copy">
-            <p className="t-label">{hero.kicker}</p>
-            <h1 className="t-display">{hero.title}</h1>
-            <p className="t-lede">{hero.lead}</p>
-            <div className="hero-cta am-hero-cta">
-              <a className="am-btn am-btn--primary" href="/app">
-                {cta.openApp}
-              </a>
-              <a className="am-btn am-btn--ghost" href="/app/giris?rol=isletme&kayit=1">
-                {hero.secondaryCta}
-              </a>
-            </div>
-          </div>
-          <div className="span-6 hero-stage am-hero-visual">
-            <Kabuki pose="selam" line={kabuki.hero} variant="hero" />
-          </div>
-        </div>
-      </section>
+      <HeroV3 />
 
       <section className="search-band" aria-label={search.label}>
         <div className="wrap">
