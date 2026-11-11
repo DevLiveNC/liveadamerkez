@@ -4,6 +4,7 @@ import { apiMessages } from "@ada-merkez/copy";
 import { SESSION_COOKIE } from "@ada-merkez/shared";
 import { apiBase } from "../../../../../lib/api";
 import { isTrustedSameOrigin } from "../../../../../lib/bff-origin";
+import { isAllowedBffUpstream } from "../../../../../lib/bff-paths";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +37,12 @@ async function proxy(request: Request, context: { params: Promise<{ path: string
   }
   const { path } = await context.params;
   const suffix = path.join("/");
+  if (!isAllowedBffUpstream("isletme", suffix)) {
+    return NextResponse.json(
+      { ok: false, code: "NOT_FOUND", message: apiMessages.notFound },
+      { status: 404, headers },
+    );
+  }
   const search = new URL(request.url).search;
   const token = (await cookies()).get(SESSION_COOKIE)?.value?.trim();
   const upstreamHeaders: Record<string, string> = {};

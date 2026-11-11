@@ -12,14 +12,14 @@ const Body = z.object({
 });
 
 export async function GET(request: Request) {
-  const auth = requireAdminDb(request);
+  const auth = await requireAdminDb(request);
   if (!auth.ok) return auth.response;
   const categories = await listAdminCategories();
   return json({ ok: true, categories }, 200, auth.cors);
 }
 
 export async function POST(request: Request) {
-  const auth = requireAdminDb(request);
+  const auth = await requireAdminDb(request);
   if (!auth.ok) return auth.response;
   const parsed = Body.safeParse(await readJson(request));
   if (!parsed.success) {

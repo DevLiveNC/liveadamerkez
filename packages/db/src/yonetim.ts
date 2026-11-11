@@ -7,7 +7,7 @@ import {
   utcToNicosiaParts,
 } from "@ada-merkez/shared";
 import { BookingStatusError } from "./bookings.js";
-import { checkDatabase, getDb, getPool, type Database } from "./client.js";
+import { checkDatabase, getPool, type Database } from "./client.js";
 import { getAccountById } from "./accounts.js";
 import * as schema from "./schema.js";
 import { appAccount, auditLog, booking, business, businessApplication, category } from "./schema.js";
@@ -17,6 +17,11 @@ export async function withAdminDb<T>(fn: (db: Database) => Promise<T>): Promise<
   try {
     await client.query("BEGIN");
     await client.query("SELECT set_config('app.is_admin', 'true', true)");
+    try {
+      await client.query("SET LOCAL ROLE ada_app");
+    } catch {
+      /* rol yoksa app.is_admin ile devam */
+    }
     const scoped = drizzle(client, { schema });
     const value = await fn(scoped);
     await client.query("COMMIT");
@@ -105,19 +110,21 @@ export async function setBusinessStatus(
 }
 
 export async function listAdminApplications(status?: string) {
-  const rows = await getDb()
-    .select({
-      id: businessApplication.id,
-      businessName: businessApplication.businessName,
-      sector: businessApplication.sector,
-      city: businessApplication.city,
-      inTurkey: businessApplication.inTurkey,
-      contactName: businessApplication.contactName,
-      status: businessApplication.status,
-      createdAt: businessApplication.createdAt,
-    })
-    .from(businessApplication)
-    .orderBy(desc(businessApplication.createdAt));
+  const rows = await withAdminDb((db) =>
+    db
+      .select({
+        id: businessApplication.id,
+        businessName: businessApplication.businessName,
+        sector: businessApplication.sector,
+        city: businessApplication.city,
+        inTurkey: businessApplication.inTurkey,
+        contactName: businessApplication.contactName,
+        status: businessApplication.status,
+        createdAt: businessApplication.createdAt,
+      })
+      .from(businessApplication)
+      .orderBy(desc(businessApplication.createdAt)),
+  );
   if (!status) return rows;
   return rows.filter((row) => row.status === status);
 }
@@ -127,43 +134,45 @@ export async function setApplicationStatus(
   applicationId: string,
   status: "approved" | "rejected" | "review",
 ) {
-  const [existing] = await getDb()
-    .select()
-    .from(businessApplication)
-    .where(eq(businessApplication.id, applicationId))
-    .limit(1);
-  if (!existing) throw new TenantAccessError();
-  const [row] = await getDb()
-    .update(businessApplication)
-    .set({ status, updatedAt: new Date() })
-    .where(eq(businessApplication.id, applicationId))
-    .returning({
-      id: businessApplication.id,
-      businessName: businessApplication.businessName,
-      status: businessApplication.status,
-      updatedAt: businessApplication.updatedAt,
-    });
-  await withAdminDb((db) =>
-    writeAudit(db, actorUserId, `application.${status}`, "business_application", applicationId, {
+  return withAdminDb(async (db) => {
+    const [existing] = await db
+      .select()
+      .from(businessApplication)
+      .where(eq(businessApplication.id, applicationId))
+      .limit(1);
+    if (!existing) throw new TenantAccessError();
+    const [row] = await db
+      .update(businessApplication)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(businessApplication.id, applicationId))
+      .returning({
+        id: businessApplication.id,
+        businessName: businessApplication.businessName,
+        status: businessApplication.status,
+        updatedAt: businessApplication.updatedAt,
+      });
+    await writeAudit(db, actorUserId, `application.${status}`, "business_application", applicationId, {
       from: existing.status,
       to: status,
-    }),
-  );
-  return row;
+    });
+    return row;
+  });
 }
 
 export async function listAdminUsers() {
-  return getDb()
-    .select({
-      id: appAccount.id,
-      phone: appAccount.phone,
-      email: appAccount.email,
-      displayName: appAccount.name,
-      role: appAccount.role,
-      createdAt: appAccount.createdAt,
-    })
-    .from(appAccount)
-    .orderBy(desc(appAccount.createdAt));
+  return withAdminDb((db) =>
+    db
+      .select({
+        id: appAccount.id,
+        phone: appAccount.phone,
+        email: appAccount.email,
+        displayName: appAccount.name,
+        role: appAccount.role,
+        createdAt: appAccount.createdAt,
+      })
+      .from(appAccount)
+      .orderBy(desc(appAccount.createdAt)),
+  );
 }
 
 export async function listAdminBookings() {
@@ -225,7 +234,7 @@ export async function setAdminBookingStatus(
 }
 
 export async function listAdminCategories() {
-  return getDb().select().from(category).orderBy(category.name);
+  return withAdminDb((db) => db.select().from(category).orderBy(category.name));
 }
 
 function slugifyCategory(name: string): string {
@@ -251,17 +260,19 @@ export async function createAdminCategory(
   input: { name: string; kind: string; slug?: string },
 ) {
   const slug = (input.slug?.trim() || slugifyCategory(input.name)).slice(0, 48);
-  const [row] = await getDb()
-    .insert(category)
-    .values({
-      name: input.name.trim(),
-      kind: input.kind.trim(),
-      slug,
-    })
-    .returning();
-  if (!row) throw new Error("Kategori yazılamadı.");
-  await withAdminDb((db) => writeAudit(db, actorUserId, "category.create", "category", row.id));
-  return row;
+  return withAdminDb(async (db) => {
+    const [row] = await db
+      .insert(category)
+      .values({
+        name: input.name.trim(),
+        kind: input.kind.trim(),
+        slug,
+      })
+      .returning();
+    if (!row) throw new Error("Kategori yazılamadı.");
+    await writeAudit(db, actorUserId, "category.create", "category", row.id);
+    return row;
+  });
 }
 
 export async function updateAdminCategory(
@@ -269,23 +280,23 @@ export async function updateAdminCategory(
   categoryId: string,
   patch: { name?: string; kind?: string },
 ) {
-  const [existing] = await getDb().select().from(category).where(eq(category.id, categoryId)).limit(1);
-  if (!existing) throw new TenantAccessError();
-  const [row] = await getDb()
-    .update(category)
-    .set({
-      name: patch.name?.trim() || existing.name,
-      kind: patch.kind?.trim() || existing.kind,
-      updatedAt: new Date(),
-    })
-    .where(eq(category.id, categoryId))
-    .returning();
-  await withAdminDb((db) =>
-    writeAudit(db, actorUserId, "category.update", "category", categoryId, {
+  return withAdminDb(async (db) => {
+    const [existing] = await db.select().from(category).where(eq(category.id, categoryId)).limit(1);
+    if (!existing) throw new TenantAccessError();
+    const [row] = await db
+      .update(category)
+      .set({
+        name: patch.name?.trim() || existing.name,
+        kind: patch.kind?.trim() || existing.kind,
+        updatedAt: new Date(),
+      })
+      .where(eq(category.id, categoryId))
+      .returning();
+    await writeAudit(db, actorUserId, "category.update", "category", categoryId, {
       name: row?.name,
-    }),
-  );
-  return row;
+    });
+    return row;
+  });
 }
 
 function nicosiaTodayWindow(now = new Date()) {
@@ -297,27 +308,23 @@ function nicosiaTodayWindow(now = new Date()) {
 
 export async function adminReports() {
   const { start, end } = nicosiaTodayWindow();
-  const [pendingBiz] = await withAdminDb((db) =>
-    db.select({ n: count() }).from(business).where(eq(business.status, "pending")),
-  );
-  const [approvedBiz] = await withAdminDb((db) =>
-    db.select({ n: count() }).from(business).where(eq(business.status, "approved")),
-  );
-  const [users] = await getDb().select({ n: count() }).from(appAccount);
-  const [todayBookings] = await withAdminDb((db) =>
-    db
+  return withAdminDb(async (db) => {
+    const [pendingBiz] = await db.select({ n: count() }).from(business).where(eq(business.status, "pending"));
+    const [approvedBiz] = await db.select({ n: count() }).from(business).where(eq(business.status, "approved"));
+    const [users] = await db.select({ n: count() }).from(appAccount);
+    const [todayBookings] = await db
       .select({ n: count() })
       .from(booking)
-      .where(and(gte(booking.startsAt, start), lt(booking.startsAt, end))),
-  );
-  const [applications] = await getDb().select({ n: count() }).from(businessApplication);
-  return {
-    businessesPending: Number(pendingBiz?.n ?? 0),
-    businessesApproved: Number(approvedBiz?.n ?? 0),
-    usersTotal: Number(users?.n ?? 0),
-    bookingsToday: Number(todayBookings?.n ?? 0),
-    applicationsTotal: Number(applications?.n ?? 0),
-  };
+      .where(and(gte(booking.startsAt, start), lt(booking.startsAt, end)));
+    const [applications] = await db.select({ n: count() }).from(businessApplication);
+    return {
+      businessesPending: Number(pendingBiz?.n ?? 0),
+      businessesApproved: Number(approvedBiz?.n ?? 0),
+      usersTotal: Number(users?.n ?? 0),
+      bookingsToday: Number(todayBookings?.n ?? 0),
+      applicationsTotal: Number(applications?.n ?? 0),
+    };
+  });
 }
 
 export async function listAuditLog() {

@@ -11,7 +11,7 @@ const PatchBody = z.object({
 });
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
-  const auth = requireAdminDb(request);
+  const auth = await requireAdminDb(request);
   if (!auth.ok) return auth.response;
   const parsed = PatchBody.safeParse(await readJson(request));
   if (!parsed.success) {
