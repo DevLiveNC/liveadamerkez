@@ -47,9 +47,6 @@ export function Header() {
       if (!(target instanceof Node)) return;
       if (headerRef.current?.contains(target)) return;
       setMenuOpen(false);
-      const el = target instanceof Element ? target : null;
-      if (el?.closest("a, button, input, select, textarea")) return;
-      window.setTimeout(() => menuBtnRef.current?.focus(), 0);
     };
     document.addEventListener("keydown", onKey);
     document.addEventListener("pointerdown", onPointer);
@@ -63,7 +60,14 @@ export function Header() {
     <>
       {variant === "landing" ? <UtilBar /> : null}
       {variant === "landing" && menuOpen ? (
-        <div className="am-land-scrim" aria-hidden="true" onPointerDown={closeMenu} />
+        <div
+          className="am-land-scrim"
+          aria-hidden="true"
+          onPointerDown={(event) => {
+            event.preventDefault();
+            closeMenu();
+          }}
+        />
       ) : null}
       <header className="nav" ref={headerRef}>
         <div className="wrap nav-in am-land-nav">
