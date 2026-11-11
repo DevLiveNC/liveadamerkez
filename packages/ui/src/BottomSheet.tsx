@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { cx } from "./cx.js";
 
 const FOCUSABLE =
@@ -27,6 +28,11 @@ export function BottomSheet({
   const lastFocus = useRef<HTMLElement | null>(null);
   const generatedId = useId();
   const headingId = titleId ?? generatedId;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -68,9 +74,9 @@ export function BottomSheet({
     };
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
+  const node = (
     <div className="am-overlay" role="presentation">
       <button type="button" className="am-overlay" style={{ position: "absolute", inset: 0, zIndex: 0 }} aria-label={closeLabel} onClick={onClose} />
       <div
@@ -91,4 +97,7 @@ export function BottomSheet({
       </div>
     </div>
   );
+
+  const host = document.querySelector(".am-shell") ?? document.body;
+  return createPortal(node, host);
 }

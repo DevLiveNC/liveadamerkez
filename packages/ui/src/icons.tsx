@@ -21,7 +21,8 @@ type IconName =
   | "chevron"
   | "back"
   | "close"
-  | "compass";
+  | "compass"
+  | "share";
 
 const PATHS: Record<IconName, ReactNode> = {
   home: (
@@ -96,6 +97,14 @@ const PATHS: Record<IconName, ReactNode> = {
     <>
       <circle cx="12" cy="12" r="9" />
       <path d="m16 8-2.5 6.5L7 17l2.5-6.5z" />
+    </>
+  ),
+  share: (
+    <>
+      <circle cx="18" cy="5" r="2.4" />
+      <circle cx="6" cy="12" r="2.4" />
+      <circle cx="18" cy="19" r="2.4" />
+      <path d="m8.2 13.2 5.6 3.6M13.8 7.2 8.2 10.8" />
     </>
   ),
 };

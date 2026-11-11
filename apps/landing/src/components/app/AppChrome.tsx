@@ -52,7 +52,12 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/app/yonetim/") ||
     pathname.startsWith("/app/yonetici");
   const isAuth = pathname.startsWith("/app/giris");
-  const hideChrome = isPanel || isAuth;
+  const bookingSent = /^\/app\/randevular\/[^/]+$/.test(pathname);
+  const hideChrome = isPanel || isAuth || bookingSent;
+  const hideCustomerTop =
+    hideChrome ||
+    pathname === "/app" ||
+    pathname.startsWith("/app/isletmeler");
 
   const items: BottomNavItem[] = TABS.map((tab) => ({
     href: tab.href,
@@ -72,7 +77,24 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
             : "#icerik"
       }
       skipLabel={ui.skipToContent}
-      header={null}
+      header={
+        hideCustomerTop ? null : (
+          <TopBar className="am-top" blur>
+            <Link href="/app" aria-label={app.title}>
+              <Logo height={28} />
+            </Link>
+            <div className="seg lang am-lang" role="group" aria-label={nav.lang}>
+              <button type="button" aria-pressed="true">
+                TR
+              </button>
+              <button type="button" disabled aria-disabled="true" aria-label={nav.enLabel} title={nav.enSoon}>
+                EN
+                <span className="lang-soon">{nav.enSoon}</span>
+              </button>
+            </div>
+          </TopBar>
+        )
+      }
       footer={
         hideChrome ? null : (
           <BottomNav

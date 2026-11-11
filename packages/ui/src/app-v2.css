@@ -621,6 +621,8 @@ body.am-app {
   overflow-x: auto; scrollbar-width: none;
   margin: 4px 0 16px;
   padding-bottom: 2px;
+  min-height: 68px;
+  flex: none;
 }
 .am-dates::-webkit-scrollbar { display: none; }
 .am-date {
@@ -670,6 +672,15 @@ body.am-app {
   opacity: .7;
 }
 
+button.am-svc,
+button.am-date,
+button.am-slot {
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+}
+button.am-svc { width: 100%; }
 .am-svc {
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px;
