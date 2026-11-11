@@ -11,3 +11,10 @@ export function toE164(input: string | null | undefined): string | null {
   if (digits.length === 10 && digits.startsWith("5")) return `+90${digits}`;
   return `+${digits}`;
 }
+
+/** KVKK veri azaltımı: liste uçlarında tam numara dönülmez. */
+export function maskPhone(phone: string): string {
+  const trimmed = phone.trim();
+  if (trimmed.length <= 4) return "••••";
+  return `${trimmed.slice(0, 2)}•••${trimmed.slice(-2)}`;
+}

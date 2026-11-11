@@ -1,4 +1,4 @@
-import { listAdminBookings } from "@ada-merkez/db";
+import { adminBookingRangeError, listAdminBookings } from "@ada-merkez/db";
 import { authCors, json } from "../../../../lib/http";
 import { requireAdminDb } from "../../../../lib/admin-guard";
 
@@ -19,8 +19,14 @@ export async function GET(request: Request) {
   if (from === "invalid" || to === "invalid") {
     return json({ ok: false, code: "invalid_range" }, 400, auth.cors);
   }
-  const bookings = await listAdminBookings({ from, to });
-  return json({ ok: true, bookings }, 200, auth.cors);
+  const fromAt = from instanceof Date ? from : undefined;
+  const toAt = to instanceof Date ? to : undefined;
+  const rangeErr = adminBookingRangeError(fromAt, toAt);
+  if (rangeErr) {
+    return json({ ok: false, code: rangeErr }, 400, auth.cors);
+  }
+  const result = await listAdminBookings({ from: fromAt, to: toAt });
+  return json({ ok: true, ...result }, 200, auth.cors);
 }
 
 export function OPTIONS(request: Request) {

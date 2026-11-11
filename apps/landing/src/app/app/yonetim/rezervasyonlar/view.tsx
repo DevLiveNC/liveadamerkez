@@ -8,12 +8,14 @@ import { fetchBookings, patchBooking, type AdminBooking } from "../../../../lib/
 
 export function RezervasyonlarView() {
   const [rows, setRows] = useState<AdminBooking[] | null>(null);
+  const [truncated, setTruncated] = useState(false);
   const [error, setError] = useState(false);
 
   const load = useCallback(async () => {
     try {
       const data = await fetchBookings();
       setRows(data.bookings);
+      setTruncated(Boolean(data.truncated));
       setError(false);
     } catch {
       setError(true);
@@ -40,6 +42,7 @@ export function RezervasyonlarView() {
         <p className="t-label">{yonetimApp.who}</p>
         <h1>{yonetimApp.bookingsTitle}</h1>
         <p className="t-sm t-muted">{yonetimApp.bookingsLead}</p>
+        {truncated ? <p className="t-sm t-muted">{yonetimApp.listTruncated}</p> : null}
       </div>
       {rows.length === 0 ? (
         <EmptyState

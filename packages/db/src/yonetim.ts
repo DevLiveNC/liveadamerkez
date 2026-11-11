@@ -1,8 +1,9 @@
-import { and, count, desc, eq, gte, lt } from "drizzle-orm";
+import { and, count, desc, eq, gte, lt, notInArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import {
   TenantAccessError,
   canTransitionBookingStatus,
+  maskPhone,
   nicosiaWallTimeToUtc,
   utcToNicosiaParts,
 } from "@ada-merkez/shared";
@@ -155,8 +156,21 @@ export async function setApplicationStatus(
   });
 }
 
+export const ADMIN_BOOKING_LIST_LIMIT = 200;
+export const ADMIN_BOOKING_MAX_RANGE_MS = 31 * 24 * 60 * 60 * 1000;
+
+export function adminBookingRangeError(
+  from?: Date,
+  to?: Date,
+): "invalid_range" | "range_too_large" | null {
+  if (!from || !to) return null;
+  if (from.getTime() >= to.getTime()) return "invalid_range";
+  if (to.getTime() - from.getTime() > ADMIN_BOOKING_MAX_RANGE_MS) return "range_too_large";
+  return null;
+}
+
 export async function listAdminUsers() {
-  return withAdminDb((db) =>
+  const rows = await withAdminDb((db) =>
     db
       .select({
         id: appAccount.id,
@@ -169,14 +183,35 @@ export async function listAdminUsers() {
       .from(appAccount)
       .orderBy(desc(appAccount.createdAt)),
   );
+  return rows.map((row) => ({ ...row, phone: maskPhone(row.phone) }));
 }
 
 export async function listAdminBookings(range?: { from?: Date; to?: Date }) {
-  return withAdminDb((db) => {
+  return withAdminDb(async (db) => {
     const filters = [];
     if (range?.from) filters.push(gte(booking.startsAt, range.from));
     if (range?.to) filters.push(lt(booking.startsAt, range.to));
-    return db
+    const where = filters.length ? and(...filters) : undefined;
+    const active = notInArray(booking.status, ["cancelled", "no_show"]);
+    const countedWhere = where ? and(where, active) : active;
+
+    const [totalRow] = await db
+      .select({ n: count() })
+      .from(booking)
+      .innerJoin(business, eq(booking.tenantId, business.id))
+      .where(where);
+    const [activeRow] = await db
+      .select({ n: count() })
+      .from(booking)
+      .innerJoin(business, eq(booking.tenantId, business.id))
+      .where(countedWhere);
+    const [waRow] = await db
+      .select({ n: count() })
+      .from(booking)
+      .innerJoin(business, eq(booking.tenantId, business.id))
+      .where(and(countedWhere, eq(booking.channel, "whatsapp")));
+
+    const bookings = await db
       .select({
         id: booking.id,
         tenantId: booking.tenantId,
@@ -192,9 +227,19 @@ export async function listAdminBookings(range?: { from?: Date; to?: Date }) {
       })
       .from(booking)
       .innerJoin(business, eq(booking.tenantId, business.id))
-      .where(filters.length ? and(...filters) : undefined)
+      .where(where)
       .orderBy(desc(booking.startsAt))
-      .limit(200);
+      .limit(ADMIN_BOOKING_LIST_LIMIT);
+
+    const total = Number(totalRow?.n ?? 0);
+    const countedTotal = Number(activeRow?.n ?? 0);
+    const wa = Number(waRow?.n ?? 0);
+    return {
+      bookings,
+      total,
+      truncated: total > bookings.length,
+      counted: { total: countedTotal, wa, app: countedTotal - wa },
+    };
   });
 }
 

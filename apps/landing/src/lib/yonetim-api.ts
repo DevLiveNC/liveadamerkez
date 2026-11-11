@@ -128,13 +128,25 @@ export async function fetchUsers() {
   return parse<{ ok: boolean; users: AdminUser[] }>(res);
 }
 
+export type AdminBookingCounted = {
+  total: number;
+  wa: number;
+  app: number;
+};
+
 export async function fetchBookings(query?: { from?: string; to?: string }) {
   const params = new URLSearchParams();
   if (query?.from) params.set("from", query.from);
   if (query?.to) params.set("to", query.to);
   const suffix = params.toString() ? `?${params}` : "";
   const res = await yonetimFetch(`/v1/admin/bookings${suffix}`);
-  return parse<{ ok: boolean; bookings: AdminBooking[] }>(res);
+  return parse<{
+    ok: boolean;
+    bookings: AdminBooking[];
+    total?: number;
+    truncated?: boolean;
+    counted?: AdminBookingCounted;
+  }>(res);
 }
 
 export async function patchBooking(id: string, status: "confirmed" | "cancelled") {

@@ -17,10 +17,14 @@ export const site = {
 } as const;
 
 export const cta = {
-  customer: "Erken erişime kaydol",
+  customer: "Erken erişim yakında",
   business: "Kendi işletmeni ekle",
   signIn: "Giriş",
   openApp: "Uygulamayı aç",
+} as const;
+
+export const ctaEn = {
+  customer: "Early access soon",
 } as const;
 
 export const nav = {
@@ -516,6 +520,7 @@ export const yonetimApp = {
   weekVolume: "Haftalık hacim",
   weekVolumeSample: "Örnek haftalık hacim",
   reportsChartNote: "Örnek veri. Gerçek ciro, büyüme veya kullanıcı sayısı iddiası yoktur.",
+  listTruncated: "Liste 200 kayıtla sınırlı; toplam sayı sunucuda sayılır.",
   healthTitle: "Sistem durumu",
   healthLead: "Bileşenler gerçek kontrolden doldurulur. Yüzde veya kestirme kesinti yazılmaz.",
   healthWaitlistBody: "Ürün kuralı — liste açık değil",
@@ -897,6 +902,7 @@ export const isletmeApp = {
   start: "Başlangıç",
   end: "Bitiş",
   addHours: "Saat ekle",
+  formError: "Kayıt kaydedilemedi. Alanları kontrol edip tekrar deneyin.",
   save: "Kaydet",
   saved: "Kaydedildi.",
   statsTitle: "İstatistik",

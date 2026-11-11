@@ -65,7 +65,16 @@ test("işletme paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar", 
   ]);
   await page.goto("/app/isletme");
   await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-isletme");
+  await expect(page.locator("body.landing")).toHaveCount(0);
+  await expect(page.locator("body.am-app")).toHaveCount(1);
   await expect(page.getByRole("heading", { name: "Genel bakış" })).toBeVisible();
+  const panelIcon = page.locator(".am-icon").first();
+  await expect(panelIcon).toBeVisible();
+  expect(await panelIcon.evaluate((el) => getComputedStyle(el).flexShrink)).toBe("0");
+  const kicker = page.locator(".am-kicker").first();
+  if (await kicker.count()) {
+    expect(await kicker.evaluate((el) => getComputedStyle(el).fontSize)).toBe("12px");
+  }
   await expect(page.getByText("Örnek").first()).toBeVisible();
   await expect(page.locator(".am-dash-tabbar")).toHaveCount(1);
   await expect(page.getByRole("button", { name: "Menü" })).toHaveCount(0);

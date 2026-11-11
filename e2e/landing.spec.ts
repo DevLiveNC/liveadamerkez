@@ -39,7 +39,7 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
       "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
     ).first(),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "Erken erişime kaydol" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Erken erişim yakında" }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Kendi işletmeni ekle" }).first()).toBeVisible();
   await expect(page.locator(".search-field").filter({ hasText: "Ne zaman" }).locator("strong")).toHaveText(
     /^Yarın, \d{1,2} \S+$/,
@@ -177,4 +177,24 @@ test("mobile screenshot and PWA meta", async ({ page }) => {
     path: path.join(artifactDir, "landing-mobile.png"),
     fullPage: true,
   });
+});
+
+test("mobil menü Esc ve dışarı tıklayınca kapanır, odak döner", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Reddet" }).click();
+  const menu = page.getByRole("button", { name: "Menü" });
+  await expect(menu).toBeVisible();
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await menu.click();
+  await expect(menu).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator("#am-land-menu a").first()).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await expect(menu).toBeFocused();
+  await menu.click();
+  await expect(menu).toHaveAttribute("aria-expanded", "true");
+  await page.locator("main").click({ position: { x: 8, y: 8 } });
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await expect(menu).toBeFocused();
 });
