@@ -44,11 +44,17 @@ test("dekor sahnesi tüm landing sayfalarında; dalga/kum/köpük bitmap yok", a
   }
 });
 
+/** v3 hero kendi sahnesini çizer; masaüstünde kalan spritelar zeytin + yaprak + yıldız. */
+const DESKTOP_DEKOR_ITEMS = 3;
+
 test("landing YERLESIM: svg şeritler ve spritelar", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
-  await page.waitForFunction(() => document.querySelectorAll(".am-dekor-item").length === 8);
-  await expect(page.locator(".am-dekor-item")).toHaveCount(8);
+  await page.waitForFunction(
+    (n) => document.querySelectorAll(".am-dekor-item").length === n,
+    DESKTOP_DEKOR_ITEMS,
+  );
+  await expect(page.locator(".am-dekor-item")).toHaveCount(DESKTOP_DEKOR_ITEMS);
   await expect(page.locator(".am-dekor--zeytin.am-dekor--desk-only")).toHaveCount(1);
   await expect(page.locator(".am-dekor-band--foam")).toHaveCount(2);
   await expect(page.locator(".am-dekor-band--wave")).toHaveCount(2);
@@ -61,13 +67,20 @@ test("landing YERLESIM: svg şeritler ve spritelar", async ({ page }) => {
 test("dekor sprite: renderedWidth * DPR ≤ naturalWidth", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
-  await page.waitForFunction(() => document.querySelectorAll("section.hero img[data-am-dekor-sprite]").length >= 2);
-  await page.locator("section.hero img[data-am-dekor-sprite]").evaluateAll(async (imgs) => {
+  await page.waitForFunction(() => document.querySelectorAll("img[data-am-dekor-sprite]").length >= 1);
+  await page.locator("img[data-am-dekor-sprite]").evaluateAll(async (imgs) => {
     await Promise.all(
       imgs.map((img) => {
         const el = img as HTMLImageElement;
+        el.loading = "eager";
+        el.scrollIntoView({ block: "nearest", inline: "nearest" });
         if (el.complete) return Promise.resolve();
-        return el.decode().catch(() => undefined);
+        return Promise.race([
+          el.decode().catch(() => undefined),
+          new Promise<void>((resolve) => {
+            window.setTimeout(resolve, 1500);
+          }),
+        ]);
       }),
     );
   });
@@ -115,7 +128,10 @@ test("masaüstü 1x ekranda 2x palmiye inmez", async ({ page }) => {
   page.on("request", (req) => urls.push(req.url()));
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
-  await page.waitForFunction(() => document.querySelectorAll(".am-dekor-item").length === 8);
+  await page.waitForFunction(
+    (n) => document.querySelectorAll(".am-dekor-item").length === n,
+    DESKTOP_DEKOR_ITEMS,
+  );
   const palmiye2x = urls.filter(
     (url) => /palmiye/.test(url) && !/palmiye-1x/.test(url) && !/palmiye-m/.test(url) && /\.webp(?:\?|$)/.test(url),
   );
@@ -125,12 +141,12 @@ test("masaüstü 1x ekranda 2x palmiye inmez", async ({ page }) => {
 test("landing yatay taşma yok", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
-  await page.waitForSelector(".am-dekor-item");
+  await page.waitForSelector(".am-dekor-band");
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
   expect(overflow).toBe(false);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();
-  await page.waitForSelector(".am-dekor-item");
+  await page.waitForSelector(".am-dekor-band");
   const overflowMob = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
   expect(overflowMob).toBe(false);
 });
@@ -138,7 +154,10 @@ test("landing yatay taşma yok", async ({ page }) => {
 test("dekor metin/kart/düğme ile çakışmaz", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");
-  await page.waitForFunction(() => document.querySelectorAll(".am-dekor-item").length === 8);
+  await page.waitForFunction(
+    (n) => document.querySelectorAll(".am-dekor-item").length === n,
+    DESKTOP_DEKOR_ITEMS,
+  );
   const hits = await page.evaluate((textSel) => {
     const overlap = (a: DOMRect, b: DOMRect) => {
       const x = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
@@ -170,7 +189,8 @@ test("dekor metin/kart/düğme ile çakışmaz", async ({ page }) => {
 test("mobilde desk-only DOM'da yok", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.waitForSelector(".am-dekor-item");
+  await page.waitForSelector(".am-dekor-band");
+  await expect(page.locator(".am-dekor-item")).toHaveCount(0);
   await expect(page.locator(".am-dekor--desk-only")).toHaveCount(0);
   await expect(page.locator(".am-dekor--sarmal")).toHaveCount(0);
   await expect(page.locator(".am-dekor--begonvil")).toHaveCount(0);
