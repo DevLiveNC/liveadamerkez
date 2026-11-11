@@ -78,6 +78,13 @@ body.am-app .am-ui-main {
   padding: 0 var(--am-page-pad) 16px;
 }
 
+body.am-app .am-ui-main .am-header {
+  margin: 0 calc(-1 * var(--am-page-pad));
+  padding-left: var(--am-page-pad);
+  padding-right: var(--am-page-pad);
+  padding-top: max(8px, var(--am-safe-top));
+}
+
 body.am-app .am-ui-ptr {
   position: relative;
   display: flex;
