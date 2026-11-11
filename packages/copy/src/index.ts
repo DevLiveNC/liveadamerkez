@@ -48,10 +48,21 @@ export const nav = {
 
 export const hero = {
   kicker: "Kuzey Kıbrıs ve Türkiye için",
+  displayTitle: "Adanın saati, burada.",
+  displayWord1: "Adanın",
+  displayWord2: "saati,",
+  displayWord3: "burada.",
   title: "Adada randevu ve rezervasyon dağılmasın.",
   lead: "Kuaför, klinik veya restoranı bul; uygun saati seç. Dilersen uygulama indirmeden WhatsApp’tan hallet.",
   primaryCta: cta.openApp,
   secondaryCta: cta.business,
+  chipHair: "Kuaför",
+  chipBeauty: "Güzellik",
+  chipWhatsapp: "WhatsApp’tan hallet",
+  sampleAria: "Örnek randevu kartı",
+  sampleSlotA: "10:30",
+  sampleSlotB: "11:00",
+  pilotLabel: "Pilot:",
 } as const;
 
 export const how = {

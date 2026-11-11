@@ -1,8 +1,10 @@
 @import "../styles/landing-fonts.css";
 @import "../styles/tokens-v2-local.css";
+@import "../styles/tokens-v3.css";
 @import "../styles/am.css";
 @import "../styles/landing.css";
 @import "../styles/landing-v2.css";
+@import "../styles/hero-v3.css";
 @import "../styles/forms.css";
 @import "../styles/app.css";
 @import "@ada-merkez/ui/ui.css";

@@ -13,7 +13,14 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   const response = await page.goto("/");
   expect(response?.ok()).toBeTruthy();
 
-  await expect(page.getByRole("heading", { name: /Adada randevu ve rezervasyon/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Adanın saati/ })).toBeVisible();
+  await expect(page.getByText("Adada randevu ve rezervasyon dağılmasın.")).toBeVisible();
+  await expect(page.locator(".am-hero-v3 a.h3-btn--coral")).toHaveAttribute("href", "/app");
+  await expect(page.locator(".am-hero-v3 a.h3-btn--sticker")).toHaveAttribute(
+    "href",
+    "/app/giris?rol=isletme&kayit=1",
+  );
+  await expect(page.getByRole("link", { name: "Erken erişim yakında" })).toHaveCount(0);
   await expect(page.getByText("Lefkoşa", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Girne", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Mağusa", { exact: true }).first()).toBeVisible();
@@ -213,4 +220,14 @@ test("mobil menü Esc ve dışarı tıklayınca kapanır, odak döner", async ({
   await page.locator(".am-land-scrim").click({ position: { x: 8, y: 8 } });
   await expect(menu).toHaveAttribute("aria-expanded", "false");
   await expect(menu).toBeFocused();
+});
+
+test("landing v3 hero reduced-motion stops decorative loops", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: /Adanın saati/ })).toBeVisible();
+  const waveAnim = await page.locator(".am-hero-v3 .h3-wave.w1").evaluate((el) => getComputedStyle(el).animationName);
+  expect(waveAnim).toBe("none");
+  const petalDisplay = await page.locator(".am-hero-v3 .h3-petal.p1").evaluate((el) => getComputedStyle(el).display);
+  expect(petalDisplay).toBe("none");
 });
