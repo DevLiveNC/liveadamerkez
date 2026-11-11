@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { app } from "@ada-merkez/copy";
+import { DiscoverSkeleton } from "../../components/app/DiscoverSkeleton";
 import { EmptyState } from "../../components/app/EmptyState";
 import { loadDiscover } from "../../lib/discover";
 
@@ -12,14 +14,13 @@ const FILTERS = [
   { id: "resto", label: app.resto, category: "restoran" },
 ] as const;
 
-export default async function AppHomePage({
-  searchParams,
+async function HomeInner({
+  q,
+  category,
 }: {
-  searchParams: Promise<{ q?: string; category?: string }>;
+  q: string;
+  category: string;
 }) {
-  const params = await searchParams;
-  const q = params.q?.trim() ?? "";
-  const category = params.category?.trim() ?? "";
   const { cards, fromExamples } = await loadDiscover({ q, category });
 
   return (
@@ -77,5 +78,23 @@ export default async function AppHomePage({
         <EmptyState kind="sonuc-yok" />
       )}
     </>
+  );
+}
+
+export default async function AppHomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; category?: string; iskelet?: string }>;
+}) {
+  const params = await searchParams;
+  const q = params.q?.trim() ?? "";
+  const category = params.category?.trim() ?? "";
+  if (params.iskelet === "1") {
+    return <DiscoverSkeleton />;
+  }
+  return (
+    <Suspense fallback={<DiscoverSkeleton />}>
+      <HomeInner q={q} category={category} />
+    </Suspense>
   );
 }
