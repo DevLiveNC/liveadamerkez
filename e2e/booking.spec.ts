@@ -13,6 +13,15 @@ test("booking endpoints require a session and reject overlap", async ({ request 
   expect(body.waitlistOpen).toBe(false);
   test.skip(body.db !== "connected", "DATABASE_URL gerekli");
 
+  const customerToken = signSession(
+    { role: "customer", sub: "e2e-customer" },
+    { secret: authSecret, ttlMs: 60 * 60 * 1000 },
+  );
+  const asCustomer = await request.get(`${apiURL}/v1/bookings`, {
+    headers: { Authorization: `Bearer ${customerToken}` },
+  });
+  expect(asCustomer.status()).toBe(403);
+
   const unauth = await request.post(`${apiURL}/v1/bookings`, {
     data: {
       kind: "slot",

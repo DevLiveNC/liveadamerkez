@@ -6,6 +6,7 @@ export default defineConfig({
     include: [
       "packages/**/*.test.ts",
       "apps/api/**/*.test.ts",
+      "apps/landing/src/lib/**/*.test.ts",
       "scripts/**/*.test.ts",
     ],
     environment: "node",

@@ -19,6 +19,8 @@ export const site = {
 export const cta = {
   customer: "Erken erişime kaydol",
   business: "Kendi işletmeni ekle",
+  signIn: "Giriş",
+  openApp: "Uygulamayı aç",
 } as const;
 
 export const nav = {
@@ -240,11 +242,117 @@ export const trackingConsent = {
 } as const;
 
 export const install = {
-  title: "Ada Merkez’i ana ekrana ekle",
+  title: "Uygulamayı ana ekrana ekle",
   body: "Kuzey Kıbrıs ve Türkiye için. Mağaza rozeti yoktur; v1 bir PWA’dır.",
   cta: "Ekle",
   ios: "iPhone veya iPad’de Paylaş menüsünden “Ana Ekrana Ekle”yi seçin.",
   dismiss: "Şimdi değil",
+} as const;
+
+export const addToHome = {
+  kicker: "Uygulama",
+  title: "Uygulamayı ana ekrana ekle",
+  lede: "Kuzey Kıbrıs ve Türkiye için. Mağaza indirmeden, tarayıcıdan. Web uygulaması olarak açılır.",
+  kabuki: "Ana ekranda durayım; randevu unutulmasın.",
+  iosTitle: "iPhone ve iPad",
+  ios1: "Safari ile uygulamayı aç.",
+  ios2: "Paylaş düğmesine dokun.",
+  ios3: "Ana Ekrana Ekle’yi seç.",
+  androidTitle: "Android",
+  androidBody: "Chrome, uygulamayı eklemeni önerince Ekle’ye dokun.",
+  androidCta: "Ana ekrana ekle",
+  androidFallback: "Uygulamayı aç; Chrome menüsünden Ana ekrana ekle’yi seç.",
+  openApp: "Uygulamayı aç",
+  shotAlt:
+    "Ada Merkez’i ana ekrana ekleme adımları: iOS’ta Paylaş, ardından Ana Ekrana Ekle; Android’de menü, ardından Ana ekrana ekle",
+} as const;
+
+export const emptyState = {
+  "rezervasyon-yok": {
+    title: "Henüz rezervasyonun yok",
+    body: "Uygun bir saat seç, işletme onaylasın. Dilersen WhatsApp’tan da halledebilirsin.",
+    alt: "Kabuki, Ada Merkez maskotu, selam veriyor",
+  },
+  "favori-yok": {
+    title: "Favorin henüz yok",
+    body: "Beğendiğin işletmeleri kaydet, sonra buradan kolayca ulaş.",
+    alt: "Kabuki, Ada Merkez maskotu, sağa işaret ediyor",
+  },
+  "sonuc-yok": {
+    title: "Buna uygun sonuç çıkmadı",
+    body: "Farklı bir arama veya tarih dene. İşletme adını ya da semti değiştirmeyi de deneyebilirsin.",
+    alt: "Kabuki, Ada Merkez maskotu, düşünüyor",
+  },
+  "onay-bekliyor": {
+    title: "Onay bekleniyor",
+    body: "İşletme talebini gördü. Cevap gelince burada görünür.",
+    alt: "Kabuki, Ada Merkez maskotu, düşünüyor",
+  },
+  hata: {
+    title: "Bir şey ters gitti",
+    body: "Sayfayı yenilemeyi dene. Sorun sürerse biraz sonra tekrar bak.",
+    alt: "Kabuki, Ada Merkez maskotu, düşünüyor",
+  },
+} as const;
+
+export const app = {
+  title: "Ada Merkez",
+  description: "Kuzey Kıbrıs ve Türkiye için keşif, randevu ve rezervasyon.",
+  kicker: "Kuzey Kıbrıs ve Türkiye için",
+  homeTitle: "Yarın için uygun saat",
+  searchPlaceholder: "Kuaför, klinik, restoran",
+  discover: "Keşif",
+  bookings: "Randevu",
+  favorites: "Favori",
+  account: "Hesap",
+  signIn: "Giriş",
+  signUp: "Kayıt",
+  signOut: "Çıkış",
+  customer: "Müşteri",
+  business: "İşletme",
+  admin: "Yönetici",
+  roleTabs: "Hesap türü",
+  phone: "Telefon",
+  phonePlaceholder: "05xx xxx xx xx",
+  name: "Ad",
+  namePlaceholder: "Adınız",
+  code: "Doğrulama kodu",
+  sendCode: "Kod gönder",
+  sendingCode: "Gönderiliyor",
+  verify: "Doğrula",
+  verifying: "Doğrulanıyor",
+  adminNoRegister: "Yönetici kaydı yoktur. Rol sunucuda atanır; yalnızca giriş yapılır.",
+  guestHint: "Keşif ve işletme sayfaları girişsiz görünür. Randevu ve favori için giriş gerekir.",
+  nextHint: "Girişten sonra kaldığın yere dönersin.",
+  example: "Örnek",
+  exampleNote: "Örnek işletme. Gerçek işletme değildir. Puan veya yorum yoktur.",
+  demoBanner: "Gösterilen işletmeler örnektir; gerçek işletme verisi yoktur.",
+  emptyTitle: "Şimdilik boş",
+  emptyDiscover: "Yayımlanmış işletme yok. Örnek kartlar aşağıda, gerçek işletme değildir.",
+  emptyBookings: "Henüz randevun yok.",
+  emptyFavorites: "Favorin yok.",
+  loginToBook: "Randevu için giriş yap.",
+  loginToFavorite: "Favori için giriş yap.",
+  book: "Saat ayır",
+  profileGuest: "Randevuların ve favorilerin için giriş yap.",
+  forbiddenTitle: "Bu panele yetkin yok",
+  forbiddenBody: "Bu sayfa başka bir rol içindir. Doğru hesapla giriş yap.",
+  businessStub: "İşletme paneli burada açılacak.",
+  adminStub: "Yönetici paneli burada açılacak.",
+  soon: "Yakında",
+  eventsSoon: "Etkinlik bileti sonraki evrede.",
+  all: "Tümü",
+  hair: "Kuaför",
+  clinic: "Klinik",
+  resto: "Restoran",
+  events: "Etkinlik",
+  back: "Geri",
+  invalidPhone: "Geçerli bir telefon yaz.",
+  invalidCode: "Kodu kontrol et.",
+  invalidName: "Ad en az iki karakter olmalı.",
+  authUnavailable: "Giriş şu anda alınamıyor. Lütfen sonra yeniden dene.",
+  codeSent: "Kod gönderildi. Telefonuna gelen kodu yaz.",
+  codeDev: "Geliştirme kodu (yalnız bu ortam):",
 } as const;
 
 export const legal = {
@@ -282,6 +390,9 @@ export const apiMessages = {
   rateLimited: "Çok fazla istek. Lütfen sonra yeniden dene.",
   slotTaken: "Bu saat aralığı dolu.",
   slotUnavailable: "Bu saat artık boş değil.",
+  invalidAuth: "Telefon ve kodu kontrol et.",
+  adminRegisterDisabled: "Yönetici kaydı yoktur. Rol sunucuda atanır.",
+  accountNotFound: "Bu rolde hesap yok. Müşteri veya işletme için kayıt ol.",
 } as const;
 
 export const customerApp = {

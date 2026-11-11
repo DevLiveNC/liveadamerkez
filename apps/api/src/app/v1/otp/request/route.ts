@@ -13,8 +13,9 @@ const Body = z.object({
 });
 
 function mayReturnCode(): boolean {
+  if (process.env.OTP_RETURN_CODE === "true") return true;
   if (process.env.NODE_ENV === "production") return false;
-  return process.env.OTP_RETURN_CODE === "true" || process.env.NODE_ENV === "test";
+  return process.env.NODE_ENV === "test";
 }
 
 export async function POST(request: Request) {

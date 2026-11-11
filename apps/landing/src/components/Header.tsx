@@ -57,8 +57,11 @@ export function Header() {
           ) : null}
           {variant === "landing" ? (
             <div className="nav-cta">
-              <Link className="btn btn-coral btn-sm" href="/#waitlist">
-                {cta.customer}
+              <Link className="btn btn-ghost btn-sm" href="/app">
+                {cta.openApp}
+              </Link>
+              <Link className="btn btn-coral btn-sm" href="/app/giris">
+                {cta.signIn}
               </Link>
             </div>
           ) : null}

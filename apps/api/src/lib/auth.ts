@@ -1,9 +1,11 @@
 import { json } from "./http";
 import {
   isAuthConfigured,
+  isSessionRole,
   readBearerToken,
   verifySession,
   type SessionClaims,
+  type SessionRole,
 } from "@ada-merkez/shared/node";
 
 export function sessionOr401(
@@ -33,4 +35,23 @@ export function sessionOr401(
     };
   }
   return { ok: true, session };
+}
+
+export function requireRole(
+  session: SessionClaims,
+  roles: SessionRole | SessionRole[],
+  cors: Record<string, string>,
+): { ok: true } | { ok: false; response: ReturnType<typeof json> } {
+  const allowed = Array.isArray(roles) ? roles : [roles];
+  if (!allowed.includes(session.role) || !isSessionRole(session.role)) {
+    return {
+      ok: false,
+      response: json(
+        { ok: false, code: "FORBIDDEN", message: "Bu işlem için yetkin yok." },
+        403,
+        cors,
+      ),
+    };
+  }
+  return { ok: true };
 }

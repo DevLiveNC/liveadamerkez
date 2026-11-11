@@ -8,7 +8,8 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "migrate": "tsx src/migrate.ts"
+    "migrate": "tsx src/migrate.ts",
+    "seed-test": "tsx src/seed-test-accounts.ts"
   },
   "dependencies": {
     "@ada-merkez/shared": "*",
