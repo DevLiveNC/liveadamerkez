@@ -81,7 +81,7 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   const landingOverflow = await page.evaluate(() => getComputedStyle(document.body).overflow);
   expect(landingOverflow).not.toBe("hidden");
   const landingBtnTrack = await page
-    .getByRole("link", { name: "Erken erişime kaydol" })
+    .getByRole("link", { name: "Uygulamayı aç" })
     .first()
     .evaluate((el) => getComputedStyle(el).letterSpacing);
   expect(landingBtnTrack).not.toBe("-0.01em");

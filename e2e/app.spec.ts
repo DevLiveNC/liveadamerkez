@@ -22,6 +22,17 @@ async function cacheDump(page: Page): Promise<{ names: string[]; urls: string[];
   });
 }
 
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem("am_onboarding_v3", "1");
+      sessionStorage.setItem("am_splash_v3", "1");
+    } catch {
+      /* gizli */
+    }
+  });
+});
+
 test("PWA app shell is guest-visible and login is role-tabbed", async ({ page }) => {
   const home = await page.goto("/app");
   expect(home?.ok()).toBeTruthy();
