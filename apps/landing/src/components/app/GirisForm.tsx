@@ -73,6 +73,29 @@ export function GirisForm({
     });
   }, []);
 
+  useEffect(() => {
+    const root = document.querySelector(".am-auth--page");
+    if (!(root instanceof HTMLElement)) return;
+    const viewport = window.visualViewport;
+    const sync = () => {
+      const layoutH = window.innerHeight;
+      const visH = viewport?.height ?? layoutH;
+      const offset = viewport?.offsetTop ?? 0;
+      const inset = Math.max(0, Math.round(layoutH - visH - offset));
+      root.style.setProperty("--am-keyboard-inset", `${inset}px`);
+    };
+    viewport?.addEventListener("resize", sync);
+    viewport?.addEventListener("scroll", sync);
+    window.addEventListener("resize", sync);
+    sync();
+    return () => {
+      viewport?.removeEventListener("resize", sync);
+      viewport?.removeEventListener("scroll", sync);
+      window.removeEventListener("resize", sync);
+      root.style.removeProperty("--am-keyboard-inset");
+    };
+  }, []);
+
   function selectRole(nextRole: SessionRole) {
     setRole(nextRole);
     setError(null);
@@ -173,7 +196,7 @@ export function GirisForm({
   }
 
   return (
-    <div className="am-auth">
+    <div className="am-auth am-auth--page">
       <aside className="am-auth-aside">
         <Logo className="wordmark" height={36} />
         <p className="am-kicker">{hero.kicker}</p>
@@ -238,81 +261,89 @@ export function GirisForm({
             </button>
           </div>
 
-          <h2>{mode === "register" ? app.signUp : app.signIn}</h2>
-          <p className="sub">{adminInvite ? app.adminNoRegister : subFor(role)}</p>
+          <div className="am-auth-body">
+            <h2>{mode === "register" ? app.signUp : app.signIn}</h2>
+            <p className="sub">{adminInvite ? app.adminNoRegister : subFor(role)}</p>
+
+            {adminInvite ? null : (
+              <>
+                {error ? (
+                  <p className="am-error" role="alert">
+                    {error}
+                  </p>
+                ) : null}
+
+                {isRegister ? (
+                  <div className="am-field">
+                    <label htmlFor="ad">{app.nameOptional}</label>
+                    <input
+                      id="ad"
+                      name="ad"
+                      className="am-input"
+                      autoComplete="name"
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                      placeholder={app.namePlaceholder}
+                    />
+                  </div>
+                ) : null}
+
+                <div className="am-field">
+                  <label htmlFor="telefon">{app.phone}</label>
+                  <input
+                    id="telefon"
+                    name="telefon"
+                    className="am-input"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={phone}
+                    aria-invalid={invalid || undefined}
+                    onChange={(event) => setPhone(event.target.value)}
+                    placeholder={app.phonePlaceholder}
+                  />
+                  <p className="am-subtle">{app.phoneHint}</p>
+                </div>
+
+                {sent ? (
+                  <div className="am-field">
+                    <label htmlFor="kod">{app.code}</label>
+                    <input
+                      id="kod"
+                      name="kod"
+                      className="am-input"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      maxLength={OTP_POLICY.codeLength}
+                      pattern="\d{6}"
+                      value={code}
+                      aria-invalid={invalid || undefined}
+                      onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, OTP_POLICY.codeLength))}
+                    />
+                    <p className="am-subtle">{app.codeSent}</p>
+                    {debugCode ? (
+                      <p className="am-subtle">
+                        {app.codeDev} {debugCode}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
+              </>
+            )}
+          </div>
 
           {adminInvite ? (
-            <button
-              className="am-btn am-btn--ghost am-btn--block"
-              type="button"
-              onClick={() => selectMode("login")}
-            >
-              {app.backToSignIn}
-            </button>
+            <div className="am-auth-actions">
+              <button
+                className="am-btn am-btn--ghost am-btn--block"
+                type="button"
+                onClick={() => selectMode("login")}
+              >
+                {app.backToSignIn}
+              </button>
+            </div>
           ) : (
-            <>
-              {error ? (
-                <p className="am-error" role="alert">
-                  {error}
-                </p>
-              ) : null}
-
-              {isRegister ? (
-                <div className="am-field">
-                  <label htmlFor="ad">{app.nameOptional}</label>
-                  <input
-                    id="ad"
-                    name="ad"
-                    className="am-input"
-                    autoComplete="name"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    placeholder={app.namePlaceholder}
-                  />
-                </div>
-              ) : null}
-
-              <div className="am-field">
-                <label htmlFor="telefon">{app.phone}</label>
-                <input
-                  id="telefon"
-                  name="telefon"
-                  className="am-input"
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  value={phone}
-                  aria-invalid={invalid || undefined}
-                  onChange={(event) => setPhone(event.target.value)}
-                  placeholder={app.phonePlaceholder}
-                />
-                <p className="am-subtle">{app.phoneHint}</p>
-              </div>
-
-              {sent ? (
-                <div className="am-field">
-                  <label htmlFor="kod">{app.code}</label>
-                  <input
-                    id="kod"
-                    name="kod"
-                    className="am-input"
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                    maxLength={OTP_POLICY.codeLength}
-                    pattern="\d{6}"
-                    value={code}
-                    aria-invalid={invalid || undefined}
-                    onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, OTP_POLICY.codeLength))}
-                  />
-                  <p className="am-subtle">{app.codeSent}</p>
-                  {debugCode ? (
-                    <p className="am-subtle">
-                      {app.codeDev} {debugCode}
-                    </p>
-                  ) : null}
-                </div>
-              ) : null}
-
+            <div className="am-auth-actions">
               <button
                 className="am-btn am-btn--accent am-btn--block"
                 type="submit"
@@ -323,7 +354,7 @@ export function GirisForm({
                 {busy ? (sent ? app.verifying : app.sendingCode) : sent ? app.verify : app.sendCode}
               </button>
               <p className="am-subtle">{app.guestHint}</p>
-            </>
+            </div>
           )}
         </form>
       </div>
