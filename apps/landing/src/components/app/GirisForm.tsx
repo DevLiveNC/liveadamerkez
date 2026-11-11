@@ -1,9 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { app } from "@ada-merkez/copy";
-import { readNextParam, safeAppPath, type SessionRole } from "@ada-merkez/shared";
+import { app, hero, kabuki } from "@ada-merkez/copy";
+import {
+  authPageUrl,
+  readNextParam,
+  safeAppPath,
+  type AuthMode,
+  type SessionRole,
+} from "@ada-merkez/shared";
+import { Logo } from "../Logo";
 import { apiBase } from "../../lib/api";
 
 const ROLES: { id: SessionRole; label: string }[] = [
@@ -11,6 +18,25 @@ const ROLES: { id: SessionRole; label: string }[] = [
   { id: "business", label: app.business },
   { id: "admin", label: app.admin },
 ];
+
+function balloonFor(role: SessionRole): string {
+  if (role === "business") return app.businessBalloon;
+  if (role === "admin") return app.adminBalloon;
+  return kabuki.hero;
+}
+
+function subFor(role: SessionRole): string {
+  if (role === "business") return app.businessAuthSub;
+  if (role === "admin") return app.adminAuthSub;
+  return app.authSub;
+}
+
+function syncQuery(role: SessionRole, mode: AuthMode, nextPath: string) {
+  if (typeof window === "undefined") return;
+  const next =
+    readNextParam(new URLSearchParams(window.location.search), nextPath) || nextPath;
+  window.history.replaceState(null, "", authPageUrl({ role, mode, next }));
+}
 
 export function GirisForm({
   defaultRole,
@@ -23,9 +49,7 @@ export function GirisForm({
 }) {
   const router = useRouter();
   const [role, setRole] = useState<SessionRole>(defaultRole);
-  const [mode, setMode] = useState<"login" | "register">(
-    defaultRole === "admin" ? "login" : registerDefault ? "register" : "login",
-  );
+  const [mode, setMode] = useState<AuthMode>(registerDefault ? "register" : "login");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
@@ -34,17 +58,39 @@ export function GirisForm({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const canRegister = role !== "admin";
-  const isRegister = canRegister && mode === "register";
+  const adminInvite = role === "admin" && mode === "register";
+  const isRegister = role !== "admin" && mode === "register";
+  const invalid = Boolean(error);
+
+  useEffect(() => {
+    void document.fonts?.ready.then(() => {
+      const ok =
+        document.fonts.check('700 22px "Plus Jakarta Sans"') &&
+        document.fonts.check("400 16px Inter");
+      document.documentElement.dataset.fonts = ok ? "ready" : "missing";
+    });
+  }, []);
+
+  function selectRole(nextRole: SessionRole) {
+    setRole(nextRole);
+    setError(null);
+    setSent(false);
+    setCode("");
+    syncQuery(nextRole, mode, nextPath);
+  }
+
+  function selectMode(nextMode: AuthMode) {
+    setMode(nextMode);
+    setError(null);
+    setSent(false);
+    setCode("");
+    syncQuery(role, nextMode, nextPath);
+  }
 
   async function sendCode() {
     setError(null);
     if (phone.trim().length < 10) {
       setError(app.invalidPhone);
-      return;
-    }
-    if (isRegister && name.trim().length < 2) {
-      setError(app.invalidName);
       return;
     }
     const base = apiBase();
@@ -59,7 +105,11 @@ export function GirisForm({
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ phone: phone.trim(), purpose: "login" }),
       });
-      const body = (await res.json().catch(() => null)) as { ok?: boolean; debugCode?: string; message?: string } | null;
+      const body = (await res.json().catch(() => null)) as {
+        ok?: boolean;
+        debugCode?: string;
+        message?: string;
+      } | null;
       if (!res.ok || !body?.ok) {
         setError(body?.message ?? app.authUnavailable);
         return;
@@ -76,7 +126,7 @@ export function GirisForm({
   async function verify() {
     setError(null);
     if (code.trim().length < 4) {
-      setError(app.invalidCode);
+      setError(app.codeMismatch);
       return;
     }
     setBusy(true);
@@ -89,12 +139,22 @@ export function GirisForm({
           code: code.trim(),
           role,
           mode: isRegister ? "register" : "login",
-          name: isRegister ? name.trim() : undefined,
+          name: isRegister && name.trim().length >= 2 ? name.trim() : undefined,
         }),
       });
-      const body = (await res.json().catch(() => null)) as { ok?: boolean; message?: string } | null;
+      const body = (await res.json().catch(() => null)) as {
+        ok?: boolean;
+        message?: string;
+        code?: string;
+      } | null;
       if (!res.ok || !body?.ok) {
-        setError(body?.message ?? app.invalidCode);
+        if (body?.code === "ACCOUNT_NOT_FOUND") {
+          setError(body.message ?? app.invalidCode);
+        } else if (res.status === 401 || body?.code === "INVALID") {
+          setError(app.codeMismatch);
+        } else {
+          setError(body?.message ?? app.codeMismatch);
+        }
         return;
       }
       const next =
@@ -111,104 +171,157 @@ export function GirisForm({
   }
 
   return (
-    <form
-      className="am-auth"
-      onSubmit={(event) => {
-        event.preventDefault();
-        if (sent) void verify();
-        else void sendCode();
-      }}
-    >
-      <div className="am-seg" role="tablist" aria-label={app.roleTabs}>
-        {ROLES.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            role="tab"
-            aria-selected={role === item.id}
-            onClick={() => {
-              setRole(item.id);
-              if (item.id === "admin") setMode("login");
-            }}
-          >
-            {item.label}
-          </button>
-        ))}
+    <div className="am-auth">
+      <aside className="am-auth-aside">
+        <Logo className="wordmark" height={36} />
+        <p className="am-kicker">{hero.kicker}</p>
+        <h1>{app.authTitle}</h1>
+        <p className="lede">{app.authLead}</p>
+        <div className="am-greet">
+          <div className="am-greet-img">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/landing/maskot/kabuki-selam-512.webp"
+              width={280}
+              height={280}
+              alt={kabuki.alt}
+            />
+          </div>
+          <div className="am-balloon">
+            <p>{balloonFor(role)}</p>
+          </div>
+        </div>
+      </aside>
+      <div className="am-auth-card">
+        <form
+          className="am-auth-panel"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (adminInvite) return;
+            if (sent) void verify();
+            else void sendCode();
+          }}
+        >
+          <div className="am-seg" role="tablist" aria-label={app.roleTabs}>
+            {ROLES.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                className={role === item.id ? "is-on" : undefined}
+                aria-selected={role === item.id}
+                onClick={() => selectRole(item.id)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="am-seg" role="group" aria-label={app.signIn}>
+            <button
+              type="button"
+              className={mode === "login" ? "is-on" : undefined}
+              aria-pressed={mode === "login"}
+              onClick={() => selectMode("login")}
+            >
+              {app.signIn}
+            </button>
+            <button
+              type="button"
+              className={mode === "register" ? "is-on" : undefined}
+              aria-pressed={mode === "register"}
+              onClick={() => selectMode("register")}
+            >
+              {app.signUp}
+            </button>
+          </div>
+
+          <h2>{mode === "register" ? app.signUp : app.signIn}</h2>
+          <p className="sub">{adminInvite ? app.adminNoRegister : subFor(role)}</p>
+
+          {adminInvite ? (
+            <button
+              className="am-btn am-btn--ghost am-btn--block"
+              type="button"
+              onClick={() => selectMode("login")}
+            >
+              {app.backToSignIn}
+            </button>
+          ) : (
+            <>
+              {error ? (
+                <p className="am-error" role="alert">
+                  {error}
+                </p>
+              ) : null}
+
+              {isRegister ? (
+                <div className="am-field">
+                  <label htmlFor="ad">{app.nameOptional}</label>
+                  <input
+                    id="ad"
+                    name="ad"
+                    className="am-input"
+                    autoComplete="name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    placeholder={app.namePlaceholder}
+                  />
+                </div>
+              ) : null}
+
+              <div className="am-field">
+                <label htmlFor="telefon">{app.phone}</label>
+                <input
+                  id="telefon"
+                  name="telefon"
+                  className="am-input"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  value={phone}
+                  aria-invalid={invalid || undefined}
+                  onChange={(event) => setPhone(event.target.value)}
+                  placeholder={app.phonePlaceholder}
+                />
+              </div>
+
+              {sent ? (
+                <div className="am-field">
+                  <label htmlFor="kod">{app.code}</label>
+                  <input
+                    id="kod"
+                    name="kod"
+                    className="am-input"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    value={code}
+                    aria-invalid={invalid || undefined}
+                    onChange={(event) => setCode(event.target.value)}
+                  />
+                  <p className="am-subtle">{app.codeSent}</p>
+                  {debugCode ? (
+                    <p className="am-subtle">
+                      {app.codeDev} {debugCode}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
+
+              <button
+                className="am-btn am-btn--accent am-btn--block"
+                type="submit"
+                disabled={busy}
+                aria-busy={busy}
+              >
+                {busy ? <span className="am-spinner" aria-hidden="true" /> : null}
+                {busy ? (sent ? app.verifying : app.sendingCode) : sent ? app.verify : app.sendCode}
+              </button>
+              <p className="am-subtle">{app.guestHint}</p>
+            </>
+          )}
+        </form>
       </div>
-
-      {canRegister ? (
-        <div className="am-seg" role="group" aria-label={app.signIn} style={{ gridTemplateColumns: "1fr 1fr" }}>
-          <button type="button" aria-pressed={mode === "login"} onClick={() => setMode("login")}>
-            {app.signIn}
-          </button>
-          <button type="button" aria-pressed={mode === "register"} onClick={() => setMode("register")}>
-            {app.signUp}
-          </button>
-        </div>
-      ) : (
-        <p className="am-note">{app.adminNoRegister}</p>
-      )}
-
-      <p className="am-note">{app.guestHint}</p>
-
-      {isRegister ? (
-        <div className="am-field">
-          <label htmlFor="ad">{app.name}</label>
-          <input
-            id="ad"
-            name="ad"
-            autoComplete="name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            placeholder={app.namePlaceholder}
-          />
-        </div>
-      ) : null}
-
-      <div className="am-field">
-        <label htmlFor="telefon">{app.phone}</label>
-        <input
-          id="telefon"
-          name="telefon"
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          value={phone}
-          onChange={(event) => setPhone(event.target.value)}
-          placeholder={app.phonePlaceholder}
-        />
-      </div>
-
-      {sent ? (
-        <div className="am-field">
-          <label htmlFor="kod">{app.code}</label>
-          <input
-            id="kod"
-            name="kod"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            value={code}
-            onChange={(event) => setCode(event.target.value)}
-          />
-          <p className="am-note">{app.codeSent}</p>
-          {debugCode ? (
-            <p className="am-note">
-              {app.codeDev} {debugCode}
-            </p>
-          ) : null}
-        </div>
-      ) : null}
-
-      {error ? (
-        <p className="am-error" role="alert">
-          {error}
-        </p>
-      ) : null}
-
-      <button className="btn btn-coral" type="submit" disabled={busy} aria-busy={busy}>
-        {busy ? (sent ? app.verifying : app.sendingCode) : sent ? app.verify : app.sendCode}
-      </button>
-    </form>
+    </div>
   );
 }
-

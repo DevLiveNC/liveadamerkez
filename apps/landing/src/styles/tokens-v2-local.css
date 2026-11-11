@@ -1,0 +1,67 @@
+/* Token v2 aliases used by panel/auth CSS while packages/brand remains v1.4.1.
+   Additive only — existing --am-radius-* / --am-text-* are not overwritten. */
+
+:root,
+[data-theme="light"] {
+  --am-navy: #0f2c44;
+  --am-coral: #e4572e;
+  --am-teal: #0e7c78;
+  --am-teal-dark: #0a4f4d;
+  --am-teal-soft: #d8f1ef;
+  --am-sand: #f8f0e3;
+  --am-cream: #fff8f0;
+  --am-white: #ffffff;
+
+  --am-color-surface-raised: #ffffff;
+  --am-color-border-subtle: rgba(224, 210, 188, 0.7);
+  --am-color-divider: rgba(15, 44, 68, 0.08);
+  --am-color-link: #0a4f4d;
+  --am-color-icon: #0f2c44;
+  --am-color-icon-muted: #6e5e4e;
+  --am-color-warning-text: #8a5308;
+
+  --am-elev-0: none;
+  --am-elev-1: 0 1px 2px rgba(15, 44, 68, 0.05);
+  --am-elev-2: 0 4px 12px rgba(15, 44, 68, 0.07), 0 1px 2px rgba(15, 44, 68, 0.04);
+  --am-elev-3: 0 8px 24px rgba(15, 44, 68, 0.1), 0 2px 4px rgba(15, 44, 68, 0.04);
+  --am-elev-4: 0 16px 40px rgba(15, 44, 68, 0.16), 0 4px 8px rgba(15, 44, 68, 0.06);
+  --am-elev-5: 0 24px 56px rgba(15, 44, 68, 0.22);
+
+  --am-fs-xs: 12px;
+  --am-lh-xs: 16px;
+  --am-fs-sm: 14px;
+  --am-lh-sm: 20px;
+  --am-fs-md: 16px;
+  --am-lh-md: 24px;
+  --am-fs-lg: 18px;
+  --am-lh-lg: 28px;
+  --am-fs-xl: 20px;
+  --am-lh-xl: 28px;
+  --am-fs-title: 22px;
+  --am-lh-title: 28px;
+
+  --am-radius-button: 14px;
+  --am-radius-input: 14px;
+  --am-radius-card: 20px;
+  --am-radius-sheet: 24px;
+
+  --am-dur-fast: 120ms;
+  --am-dur-base: 180ms;
+  --am-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --am-ease-press: cubic-bezier(0.3, 0, 0.7, 1);
+
+  --am-touch: 44px;
+  --am-btn-h: 52px;
+  --am-input-h: 48px;
+  --am-chip-h: 40px;
+  --am-tab-h: 56px;
+  --am-home-ind: 20px;
+  --am-z-tab: 50;
+}
+
+[data-theme="dark"] {
+  --am-color-surface-raised: #16344f;
+  --am-color-border-subtle: rgba(26, 69, 102, 0.8);
+  --am-color-divider: rgba(248, 240, 227, 0.1);
+  --am-color-link: #7ec9c3;
+}
