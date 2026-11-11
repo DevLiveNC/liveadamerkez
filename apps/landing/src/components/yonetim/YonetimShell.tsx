@@ -6,6 +6,7 @@ import { site, yonetimApp } from "@ada-merkez/copy";
 import { DekorNavCorner } from "@ada-merkez/ui";
 import { ICON_SRC } from "../Logo";
 import type { AppSession } from "../../lib/app-auth";
+import { clearAppCaches } from "../../lib/clear-app-caches";
 import { LocalClock } from "../panel/LocalClock";
 import {
   IconApprove,
@@ -63,6 +64,7 @@ export function YonetimShell({
 
   async function logout() {
     await fetch("/app/api/oturum", { method: "DELETE", credentials: "same-origin" });
+    await clearAppCaches();
     router.replace("/app/giris?rol=yonetici");
     router.refresh();
   }

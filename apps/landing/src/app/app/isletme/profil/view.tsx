@@ -6,11 +6,13 @@ import {
   createAvailability,
   fetchAvailability,
   fetchMe,
+  fetchStaff,
   minutesToLabel,
   patchBusiness,
   removeAvailability,
   type AvailabilityRow,
   type BusinessMe,
+  type StaffRow,
 } from "../../../../lib/isletme-api";
 
 const WEEKDAYS = [
@@ -32,13 +34,15 @@ function sectorLabel(sector: string | null | undefined) {
 
 export function ProfilView() {
   const [me, setMe] = useState<BusinessMe | null>(null);
+  const [staff, setStaff] = useState<StaffRow[]>([]);
   const [rules, setRules] = useState<AvailabilityRow[]>([]);
   const [saved, setSaved] = useState(false);
 
   const load = useCallback(async () => {
-    const [mine, hours] = await Promise.all([fetchMe(), fetchAvailability()]);
+    const [mine, hours, people] = await Promise.all([fetchMe(), fetchAvailability(), fetchStaff()]);
     setMe(mine.me);
     setRules(hours.rules);
+    setStaff(people.staff);
   }, []);
 
   useEffect(() => {
@@ -68,6 +72,7 @@ export function ProfilView() {
     const [sh, sm] = start.split(":").map(Number);
     const [eh, em] = end.split(":").map(Number);
     await createAvailability({
+      staffId: String(form.get("hourStaff") ?? "") || null,
       weekday: Number(form.get("weekday")),
       startsAtMinutes: (sh ?? 9) * 60 + (sm ?? 0),
       endsAtMinutes: (eh ?? 18) * 60 + (em ?? 0),
@@ -139,6 +144,17 @@ export function ProfilView() {
             {WEEKDAYS.map((day) => (
               <option key={day.v} value={day.v}>
                 {day.l}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="am-field">
+          <label htmlFor="hourStaff">{isletmeApp.staffTitle}</label>
+          <select className="am-input" id="hourStaff" name="hourStaff">
+            <option value="">—</option>
+            {staff.map((person) => (
+              <option key={person.id} value={person.id}>
+                {person.name}
               </option>
             ))}
           </select>

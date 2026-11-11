@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { isletmeApp, site } from "@ada-merkez/copy";
 import { DekorNavCorner } from "@ada-merkez/ui";
 import { ICON_SRC } from "../Logo";
+import { clearAppCaches } from "../../lib/clear-app-caches";
 import { fetchMe, type BusinessMe } from "../../lib/isletme-api";
 import { LocalClock } from "../panel/LocalClock";
 import {
@@ -72,6 +73,7 @@ export function IsletmeShell({
 
   async function logout() {
     await fetch("/app/api/oturum", { method: "DELETE", credentials: "same-origin" });
+    await clearAppCaches();
     router.replace("/app/giris?rol=isletme");
     router.refresh();
   }
