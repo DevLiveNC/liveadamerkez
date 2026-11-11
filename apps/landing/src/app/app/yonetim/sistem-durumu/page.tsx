@@ -1,9 +1,5 @@
-import { requireYonetimPanel } from "../guard";
-import { SistemDurumuView } from "./view";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
-export default async function SistemDurumuPage() {
-  await requireYonetimPanel("/app/yonetim/sistem-durumu");
-  return <SistemDurumuView />;
+export default function SistemDurumuRedirect() {
+  redirect("/app/yonetim/sistem");
 }

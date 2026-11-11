@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { yonetimApp } from "@ada-merkez/copy";
 import { requireRole } from "../../../lib/app-auth";
 import { YonetimShell } from "../../../components/yonetim/YonetimShell";
+import "../../../styles/tokens-v2-local.css";
+import "../../../styles/panel-v2.css";
 import "../../../styles/yonetim.css";
 
 export const dynamic = "force-dynamic";

@@ -6,7 +6,7 @@ import { signSession } from "@ada-merkez/shared/node";
 const apiURL = process.env.PLAYWRIGHT_API_URL ?? "http://127.0.0.1:3001";
 const authSecret = process.env.AUTH_SECRET ?? "e2e-auth-secret";
 
-test("yönetici paneli sunucuda kilitli, KKTC yazmaz, boş durumda Kabuki gösterir", async ({
+test("yönetici paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar", async ({
   page,
   request,
 }) => {
@@ -55,16 +55,23 @@ test("yönetici paneli sunucuda kilitli, KKTC yazmaz, boş durumda Kabuki göste
   ]);
   await page.goto("/app/yonetim");
   await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-yonetici");
-  await expect(page.getByRole("heading", { name: "İşletme onayları" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Genel bakış" })).toBeVisible();
+  await expect(page.getByText("Kapalı", { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "Menü" })).toHaveCount(0);
+  await expect(page.locator("body")).not.toContainText(/KKTC/i);
+  await expect(page.locator("body")).not.toContainText("localStorage");
+
+  await page.goto("/app/yonetim/onaylar");
+  await expect(page.getByRole("heading", { name: "İşletme onayları", level: 1 })).toBeVisible();
   await page.getByRole("button", { name: "Reddedilen" }).click();
   await expect(page.getByRole("heading", { name: "Bekleyen işletme yok" })).toBeVisible();
   const emptyImg = page.getByAltText("Kabuki, Ada Merkez maskotu, düşünüyor");
   await expect(emptyImg).toBeVisible();
   await expect(emptyImg).toHaveAttribute("width", "320");
   await expect(emptyImg).toHaveAttribute("height", "320");
-  await expect(page.locator("body")).not.toContainText(/KKTC/i);
-  await expect(page.locator("body")).not.toContainText("localStorage");
 
   await page.goto("/app/yonetim/sistem-durumu");
-  await expect(page.getByRole("heading", { name: "Sistem durumu" })).toBeVisible();
+  await expect(page).toHaveURL(/\/app\/yonetim\/sistem$/);
+  await expect(page.getByRole("heading", { name: "Sistem", exact: true, level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Sistem durumu", level: 2 })).toBeVisible();
 });

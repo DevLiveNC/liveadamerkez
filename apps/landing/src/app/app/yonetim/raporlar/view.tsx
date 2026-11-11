@@ -1,70 +1,107 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { yonetimApp } from "@ada-merkez/copy";
+import { nicosiaWallTimeToUtc, utcToNicosiaParts } from "@ada-merkez/shared";
 import { EmptyState } from "../../../../components/app/EmptyState";
-import { fetchReports, type AdminReports } from "../../../../lib/yonetim-api";
+import { SampleBadge } from "../../../../components/panel/SampleBadge";
+import { WeekChart } from "../../../../components/panel/WeekChart";
+import {
+  fetchBookings,
+  type AdminBooking,
+} from "../../../../lib/yonetim-api";
+
+const SAMPLE_KPI = { week: 41, wa: 11, app: 30 };
+const SAMPLE_WEEK = [5, 7, 6, 8, 9, 4, 2];
+
+function weekStart(day: Date) {
+  const parts = utcToNicosiaParts(day);
+  const asUtc = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day, 12, 0);
+  const weekday = (asUtc.getUTCDay() + 6) % 7;
+  return nicosiaWallTimeToUtc(parts.year, parts.month, parts.day - weekday, 0, 0);
+}
+
+function inThisWeek(iso: string, startMs: number, endMs: number) {
+  const at = new Date(iso).getTime();
+  return at >= startMs && at < endMs;
+}
 
 export function RaporlarView() {
-  const [reports, setReports] = useState<AdminReports | null>(null);
+  const [bookings, setBookings] = useState<AdminBooking[] | null>(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetchReports()
-      .then((data) => setReports(data.reports))
+    fetchBookings()
+      .then((data) => setBookings(data.bookings))
       .catch(() => setError(true));
   }, []);
 
-  if (error) return <EmptyState kind="hata" />;
-  if (!reports) {
-    return (
-      <div className="yonetim-head">
-        <h1>{yonetimApp.reportsTitle}</h1>
-      </div>
-    );
-  }
+  const week = useMemo(() => {
+    const start = weekStart(new Date());
+    const startMs = start.getTime();
+    const endMs = startMs + 7 * 24 * 60 * 60 * 1000;
+    const counts = [0, 0, 0, 0, 0, 0, 0];
+    let wa = 0;
+    let app = 0;
+    for (const row of bookings ?? []) {
+      if (row.status === "cancelled" || row.status === "no_show") continue;
+      if (!inThisWeek(row.startsAt, startMs, endMs)) continue;
+      const parts = utcToNicosiaParts(new Date(row.startsAt));
+      const asUtc = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day, 12, 0);
+      const idx = (asUtc.getUTCDay() + 6) % 7;
+      counts[idx] = (counts[idx] ?? 0) + 1;
+      if (row.channel === "whatsapp") wa += 1;
+      else app += 1;
+    }
+    return { counts, wa, app, total: wa + app };
+  }, [bookings]);
 
-  const empty =
-    reports.businessesPending +
-      reports.businessesApproved +
-      reports.usersTotal +
-      reports.bookingsToday +
-      reports.applicationsTotal ===
-    0;
+  if (error) return <EmptyState kind="hata" />;
+  if (!bookings) return null;
+
+  const live = week.total > 0;
 
   return (
-    <div>
-      <div className="yonetim-head">
-        <p className="t-label">{yonetimApp.who}</p>
-        <h1>{yonetimApp.reportsTitle}</h1>
-        <p className="t-sm t-muted">{yonetimApp.reportsLead}</p>
+    <>
+      <div className="am-kpis">
+        <article className="am-kpi">
+          <p className="am-kicker">{live ? yonetimApp.statWeekBookings : yonetimApp.statWeekBookingsSample}</p>
+          <p className="am-kpi-val">{live ? week.total : SAMPLE_KPI.week}</p>
+          <p className="hint">{yonetimApp.statWeekBookingsHint}</p>
+          {live ? null : <SampleBadge />}
+        </article>
+        <article className="am-kpi">
+          <p className="am-kicker">{yonetimApp.statWaRequests}</p>
+          <p className="am-kpi-val">{live ? week.wa : SAMPLE_KPI.wa}</p>
+          <p className="hint">{yonetimApp.statWaHint}</p>
+          {live ? null : <SampleBadge />}
+        </article>
+        <article className="am-kpi">
+          <p className="am-kicker">{yonetimApp.statAppRequests}</p>
+          <p className="am-kpi-val">{live ? week.app : SAMPLE_KPI.app}</p>
+          <p className="hint">{yonetimApp.statAppHint}</p>
+          {live ? null : <SampleBadge />}
+        </article>
+        <article className="am-kpi">
+          <p className="am-kicker">{yonetimApp.statEvents}</p>
+          <p className="am-kpi-val is-text">{yonetimApp.eventsSoon}</p>
+          <p className="hint">{yonetimApp.eventsSoonHint}</p>
+          <span className="am-badge am-badge--soon">{yonetimApp.eventsSoon}</span>
+        </article>
       </div>
-      {empty ? (
-        <EmptyState kind="sonuc-yok" title={yonetimApp.emptyReportsTitle} body={yonetimApp.emptyReportsBody} />
-      ) : (
-        <div className="yonetim-stats">
-          <article className="yonetim-stat">
-            <p className="t-xs t-muted">{yonetimApp.statPendingBiz}</p>
-            <strong>{reports.businessesPending}</strong>
-          </article>
-          <article className="yonetim-stat">
-            <p className="t-xs t-muted">{yonetimApp.statApprovedBiz}</p>
-            <strong>{reports.businessesApproved}</strong>
-          </article>
-          <article className="yonetim-stat">
-            <p className="t-xs t-muted">{yonetimApp.statUsers}</p>
-            <strong>{reports.usersTotal}</strong>
-          </article>
-          <article className="yonetim-stat">
-            <p className="t-xs t-muted">{yonetimApp.statTodayBookings}</p>
-            <strong>{reports.bookingsToday}</strong>
-          </article>
-          <article className="yonetim-stat">
-            <p className="t-xs t-muted">{yonetimApp.statApplications}</p>
-            <strong>{reports.applicationsTotal}</strong>
-          </article>
-        </div>
-      )}
-    </div>
+      <section className="am-panel-card">
+        <h2>
+          {live ? yonetimApp.weekVolume : yonetimApp.weekVolumeSample} {live ? null : <SampleBadge />}
+        </h2>
+        <WeekChart values={live ? week.counts : SAMPLE_WEEK} label={yonetimApp.weekVolumeSample} />
+        {live ? null : <p className="am-chart-caption">{yonetimApp.reportsChartNote}</p>}
+      </section>
+      <section className="am-panel-card mt-4">
+        <h2>
+          {yonetimApp.statEvents} <span className="am-badge am-badge--soon">{yonetimApp.eventsSoon}</span>
+        </h2>
+        <p className="am-muted">{yonetimApp.eventsBody}</p>
+      </section>
+    </>
   );
 }

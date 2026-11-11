@@ -267,3 +267,18 @@ body:has(.yonetim-app) .am-main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.am-kpi-val.is-text {
+  font-size: 22px;
+  line-height: 28px;
+}
+
+.am-sec-link {
+  font-size: var(--am-fs-sm, 14px);
+  font-weight: 600;
+  color: var(--am-color-link, #0a4f4d);
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 12px;
+}
