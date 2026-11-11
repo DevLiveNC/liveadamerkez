@@ -45,7 +45,7 @@ test("uygulama kabuğu mobil ve masaüstünde durur", async ({ page }) => {
 test("giriş kabuğu sekmesiz kalır ve sayfa geçişi çalışır", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/app/giris");
-  await expect(page.getByRole("heading", { name: "Giriş" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Adada randevu ve rezervasyon dağılmasın." })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Müşteri gezinme" })).toHaveCount(0);
   await expect(page.getByRole("tab", { name: "Müşteri" })).toBeVisible();
   await page.screenshot({ path: "artifacts/app-giris-mobile-390.png", fullPage: false });
