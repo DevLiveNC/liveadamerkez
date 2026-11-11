@@ -31,6 +31,11 @@ test("uygulama kabuğu mobil ve masaüstünde durur", async ({ page }) => {
 
   await page.screenshot({ path: "artifacts/app-shell-mobile-390.png", fullPage: false });
 
+  await page.goto("/app?iskelet=1");
+  await expect(page.getByRole("status")).toBeVisible();
+  await page.screenshot({ path: "artifacts/app-skeleton-mobile-390.png", fullPage: false });
+  await page.goto("/app");
+
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/app");
   await expect(page.getByRole("navigation", { name: "Müşteri gezinme" })).toBeVisible();
