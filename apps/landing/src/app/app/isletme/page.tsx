@@ -1,7 +1,7 @@
 import { requireIsletmePanel } from "./guard";
-import { TodayView } from "./today-view";
+import { GenelView } from "./genel-view";
 
 export default async function IsletmePage() {
   await requireIsletmePanel("/app/isletme");
-  return <TodayView />;
+  return <GenelView />;
 }

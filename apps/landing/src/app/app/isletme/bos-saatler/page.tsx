@@ -1,7 +1,5 @@
-import { requireIsletmePanel } from "../guard";
-import { BosSaatlerView } from "./view";
+import { redirect } from "next/navigation";
 
-export default async function BosSaatlerPage() {
-  await requireIsletmePanel("/app/isletme/bos-saatler");
-  return <BosSaatlerView />;
+export default function BosSaatlerRedirect() {
+  redirect("/app/isletme/takvim");
 }

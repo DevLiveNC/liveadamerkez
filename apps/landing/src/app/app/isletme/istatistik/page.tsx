@@ -1,7 +1,5 @@
-import { requireIsletmePanel } from "../guard";
-import { IstatistikView } from "./view";
+import { redirect } from "next/navigation";
 
-export default async function IstatistikPage() {
-  await requireIsletmePanel("/app/isletme/istatistik");
-  return <IstatistikView />;
+export default function IstatistikRedirect() {
+  redirect("/app/isletme");
 }
