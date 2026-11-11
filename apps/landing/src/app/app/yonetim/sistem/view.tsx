@@ -1,10 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { yonetimApp } from "@ada-merkez/copy";
 import { EmptyState } from "../../../../components/app/EmptyState";
 import { SampleBadge } from "../../../../components/panel/SampleBadge";
 import { fetchHealth, type AdminHealth } from "../../../../lib/yonetim-api";
+
+const MORE_LINKS = [
+  { href: "/app/yonetim/kiracilar", label: yonetimApp.navTenants },
+  { href: "/app/yonetim/denetim", label: yonetimApp.navAudit },
+  { href: "/app/yonetim/rezervasyonlar", label: yonetimApp.navBookings },
+  { href: "/app/yonetim/icerik", label: yonetimApp.navContent },
+] as const;
 
 export function SistemView() {
   const [health, setHealth] = useState<AdminHealth | null>(null);
@@ -58,6 +66,13 @@ export function SistemView() {
         <strong>{yonetimApp.healthPwaValue}</strong>
         <SampleBadge />
       </div>
+      {MORE_LINKS.map((link) => (
+        <Link key={link.href} className="am-entity" href={link.href}>
+          <div className="am-entity-body">
+            <h3>{link.label}</h3>
+          </div>
+        </Link>
+      ))}
     </section>
   );
 }

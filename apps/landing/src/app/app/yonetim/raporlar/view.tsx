@@ -31,7 +31,9 @@ export function RaporlarView() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetchBookings()
+    const start = weekStart(new Date());
+    const end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
+    fetchBookings({ from: start.toISOString(), to: end.toISOString() })
       .then((data) => setBookings(data.bookings))
       .catch(() => setError(true));
   }, []);

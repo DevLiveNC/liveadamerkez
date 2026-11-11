@@ -126,7 +126,7 @@ export function GirisForm({
   async function verify() {
     setError(null);
     if (code.trim().length < 4) {
-      setError(app.codeMismatch);
+      setError(app.invalidCode);
       return;
     }
     setBusy(true);

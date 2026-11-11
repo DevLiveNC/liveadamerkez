@@ -128,8 +128,12 @@ export async function fetchUsers() {
   return parse<{ ok: boolean; users: AdminUser[] }>(res);
 }
 
-export async function fetchBookings() {
-  const res = await yonetimFetch("/v1/admin/bookings");
+export async function fetchBookings(query?: { from?: string; to?: string }) {
+  const params = new URLSearchParams();
+  if (query?.from) params.set("from", query.from);
+  if (query?.to) params.set("to", query.to);
+  const suffix = params.toString() ? `?${params}` : "";
+  const res = await yonetimFetch(`/v1/admin/bookings${suffix}`);
   return parse<{ ok: boolean; bookings: AdminBooking[] }>(res);
 }
 

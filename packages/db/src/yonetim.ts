@@ -171,9 +171,12 @@ export async function listAdminUsers() {
   );
 }
 
-export async function listAdminBookings() {
-  return withAdminDb((db) =>
-    db
+export async function listAdminBookings(range?: { from?: Date; to?: Date }) {
+  return withAdminDb((db) => {
+    const filters = [];
+    if (range?.from) filters.push(gte(booking.startsAt, range.from));
+    if (range?.to) filters.push(lt(booking.startsAt, range.to));
+    return db
       .select({
         id: booking.id,
         tenantId: booking.tenantId,
@@ -189,9 +192,10 @@ export async function listAdminBookings() {
       })
       .from(booking)
       .innerJoin(business, eq(booking.tenantId, business.id))
+      .where(filters.length ? and(...filters) : undefined)
       .orderBy(desc(booking.startsAt))
-      .limit(200),
-  );
+      .limit(200);
+  });
 }
 
 export async function setAdminBookingStatus(

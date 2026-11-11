@@ -74,4 +74,8 @@ test("yönetici paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar",
   await expect(page).toHaveURL(/\/app\/yonetim\/sistem$/);
   await expect(page.getByRole("heading", { name: "Sistem", exact: true, level: 1 })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Sistem durumu", level: 2 })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Kiracılar" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Denetim" })).toBeVisible();
+  await page.getByRole("link", { name: "Kiracılar" }).click();
+  await expect(page).toHaveURL(/\/app\/yonetim\/kiracilar$/);
 });

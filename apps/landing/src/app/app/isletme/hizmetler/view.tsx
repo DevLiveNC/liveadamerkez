@@ -18,6 +18,7 @@ export function HizmetlerView() {
   const [staff, setStaff] = useState<StaffRow[]>([]);
   const [addingService, setAddingService] = useState(false);
   const [addingStaff, setAddingStaff] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const [svc, people] = await Promise.all([fetchServices(), fetchStaff()]);
@@ -32,23 +33,33 @@ export function HizmetlerView() {
   async function onService(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    await createService({
-      name: String(form.get("serviceName") ?? ""),
-      durationMinutes: Number(form.get("durationMinutes") ?? 30),
-      staffId: String(form.get("staffId") ?? "") || null,
-    });
-    event.currentTarget.reset();
-    setAddingService(false);
-    await load();
+    setFormError(null);
+    try {
+      await createService({
+        name: String(form.get("serviceName") ?? ""),
+        durationMinutes: Number(form.get("durationMinutes") ?? 30),
+        staffId: String(form.get("staffId") ?? "") || null,
+      });
+      event.currentTarget.reset();
+      setAddingService(false);
+      await load();
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "İstek başarısız.");
+    }
   }
 
   async function onStaff(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    await createStaff(String(form.get("staffName") ?? ""));
-    event.currentTarget.reset();
-    setAddingStaff(false);
-    await load();
+    setFormError(null);
+    try {
+      await createStaff(String(form.get("staffName") ?? ""));
+      event.currentTarget.reset();
+      setAddingStaff(false);
+      await load();
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "İstek başarısız.");
+    }
   }
 
   function staffName(id: string | null) {
@@ -58,6 +69,11 @@ export function HizmetlerView() {
 
   return (
     <div className="am-grid-2">
+      {formError ? (
+        <p className="am-error" role="alert" style={{ gridColumn: "1 / -1" }}>
+          {formError}
+        </p>
+      ) : null}
       <section className="am-panel-card">
         <h2>{isletmeApp.navServices}</h2>
         <p className="am-chart-caption" style={{ marginTop: -8, marginBottom: 8 }}>

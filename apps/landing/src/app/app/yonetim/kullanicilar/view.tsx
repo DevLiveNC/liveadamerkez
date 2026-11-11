@@ -14,6 +14,17 @@ function roleLabel(role: string) {
   return role;
 }
 
+function maskPhone(phone: string) {
+  const trimmed = phone.trim();
+  if (trimmed.length <= 4) return "••••";
+  return `${trimmed.slice(0, 2)}•••${trimmed.slice(-2)}`;
+}
+
+function accountLabel(row: AdminUser) {
+  const name = row.displayName?.trim();
+  return name ? name : maskPhone(row.phone);
+}
+
 function shortDate(iso: string) {
   return new Intl.DateTimeFormat("tr-TR", {
     timeZone: "Europe/Nicosia",
@@ -83,7 +94,7 @@ export function KullanicilarView() {
               <tbody>
                 {shown.map((row) => (
                   <tr key={row.id}>
-                    <td data-th={yonetimApp.colAccount}>{row.displayName || row.phone}</td>
+                    <td data-th={yonetimApp.colAccount}>{accountLabel(row)}</td>
                     <td data-th={yonetimApp.colRole}>{roleLabel(row.role)}</td>
                     <td data-th={yonetimApp.colRegistered}>{shortDate(row.createdAt)}</td>
                   </tr>

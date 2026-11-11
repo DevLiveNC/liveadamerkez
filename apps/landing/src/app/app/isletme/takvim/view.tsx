@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { isletmeApp } from "@ada-merkez/copy";
 import { nicosiaWallTimeToUtc, utcToNicosiaParts } from "@ada-merkez/shared";
 import { EmptyKabuki } from "../../../../components/isletme/EmptyKabuki";
-import { SampleBadge } from "../../../../components/panel/SampleBadge";
 import {
   fetchBookings,
   fetchServices,
@@ -85,6 +84,9 @@ export function TakvimView() {
 
   const days = useMemo(() => weekDays(day), [day]);
   const selected = utcToNicosiaParts(day);
+  const today = utcToNicosiaParts(new Date());
+  const isToday =
+    selected.year === today.year && selected.month === today.month && selected.day === today.day;
   const heading = formatNicosiaDate(day.toISOString(), {
     weekday: "long",
     day: "numeric",
@@ -121,9 +123,7 @@ export function TakvimView() {
         })}
       </div>
       <section className="am-panel-card">
-        <h2>
-          {isletmeApp.todayFlow} {empty ? <SampleBadge /> : null}
-        </h2>
+        <h2>{isToday ? isletmeApp.todayFlow : heading}</h2>
         {empty ? (
           <EmptyKabuki kind="rezervasyon-yok" title={isletmeApp.todayEmptyTitle} body={isletmeApp.todayEmptyBody} />
         ) : (
