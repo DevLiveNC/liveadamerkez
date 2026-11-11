@@ -40,7 +40,8 @@ async function emulateAndroidStandalone(page: Page) {
 
 async function expectAppShell(page: Page) {
   await expect(page).toHaveURL(/\/app\/?(\?|$)/);
-  await expect(page.getByRole("heading", { name: "Yarın için uygun saat" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Müşteri gezinme" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Keşif" })).toHaveAttribute("aria-current", "page");
   await expect(page.locator("body")).not.toContainText(/Adada randevu ve rezervasyon dağılmasın/i);
 }
 
@@ -185,7 +186,7 @@ test("landing SW cache of / does not shadow /app", async ({ page }) => {
     return res.text();
   });
   expect(appHtml).not.toContain("LANDING_SHADOW_PROBE");
-  expect(appHtml).toContain("Yarın için uygun saat");
+  expect(appHtml).toContain("Keşif");
   expect(appHtml).toContain('data-dekor="app-musteri"');
 });
 

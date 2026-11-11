@@ -256,7 +256,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root {
+  :root,
+  [data-theme="light"],
+  [data-theme="dark"] {
     --am-dur-fast: 80ms;
     --am-dur-base: 80ms;
     --am-dur-medium: 80ms;
