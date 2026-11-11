@@ -5,4 +5,6 @@ export * from "./privacy.js";
 export * from "./otp.js";
 export * from "./marketing.js";
 export * from "./accounts.js";
+export * from "./isletme.js";
 export { migrate } from "./migrate.js";
+export { seedIsletme } from "./seed-isletme.js";

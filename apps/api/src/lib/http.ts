@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 
+export function noStore(headers: Record<string, string> = {}): Record<string, string> {
+  return { ...headers, "Cache-Control": "no-store" };
+}
+
 export function json(body: unknown, status = 200, extra?: HeadersInit) {
   return NextResponse.json(body, {
     status,
@@ -19,7 +23,7 @@ export function corsHeaders(request: Request): Record<string, string> {
   const origin = request.headers.get("origin");
   const headers: Record<string, string> = {
     Vary: "Origin",
-    "Access-Control-Allow-Methods": "GET,POST,PATCH,OPTIONS",
+    "Access-Control-Allow-Methods": "GET,POST,PATCH,DELETE,OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, X-Tenant-Id, Authorization, X-Internal-Token",
   };
   if (origin && allowed.includes(origin)) {
@@ -27,6 +31,10 @@ export function corsHeaders(request: Request): Record<string, string> {
     headers["Access-Control-Allow-Credentials"] = "true";
   }
   return headers;
+}
+
+export function authCors(request: Request): Record<string, string> {
+  return noStore(corsHeaders(request));
 }
 
 export async function readJson<T>(request: Request): Promise<T | null> {

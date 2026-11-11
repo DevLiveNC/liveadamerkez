@@ -8,7 +8,7 @@ import {
 } from "@ada-merkez/db";
 import { isSessionRole, toE164 } from "@ada-merkez/shared";
 import { isAuthConfigured, signSession } from "@ada-merkez/shared/node";
-import { corsHeaders, json, readJson } from "../../../../lib/http";
+import { authCors, corsHeaders, json, readJson } from "../../../../lib/http";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +22,7 @@ const Body = z.object({
 });
 
 export async function POST(request: Request) {
-  const headers = corsHeaders(request);
+  const headers = authCors(request);
   if (!isAuthConfigured()) {
     return json(
       { ok: false, code: "AUTH_REQUIRED", message: apiMessages.authRequired },

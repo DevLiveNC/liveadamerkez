@@ -5,10 +5,11 @@ import {
   getBookingForTenant,
   isDatabaseConfigured,
   markReferralFirstBooking,
+  toPublicBooking,
   updateBookingStatus,
 } from "@ada-merkez/db";
 import { apiMessages } from "@ada-merkez/copy";
-import { corsHeaders, json, readJson } from "../../../../lib/http";
+import { authCors, corsHeaders, json, readJson } from "../../../../lib/http";
 import { requireRole, sessionOr401 } from "../../../../lib/auth";
 import { dispatchServerEvents } from "../../../../lib/analytics";
 
@@ -18,7 +19,7 @@ export async function GET(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const headers = corsHeaders(request);
+  const headers = authCors(request);
   const auth = sessionOr401(request, headers);
   if (!auth.ok) return auth.response;
   const role = requireRole(auth.session, ["business", "admin"], headers);
@@ -36,7 +37,7 @@ export async function GET(
   const { id } = await context.params;
   try {
     const row = await getBookingForTenant(auth.session.tenantId, id);
-    return json({ ok: true, booking: row }, 200, headers);
+    return json({ ok: true, booking: toPublicBooking(row) }, 200, headers);
   } catch (error: unknown) {
     if (error instanceof TenantAccessError) {
       return json({ ok: false, code: error.code, message: apiMessages.notFound }, 404, headers);
@@ -56,7 +57,7 @@ export async function PATCH(
   request: Request,
   context: { params: Promise<{ id: string }> },
 ) {
-  const headers = corsHeaders(request);
+  const headers = authCors(request);
   const auth = sessionOr401(request, headers);
   if (!auth.ok) return auth.response;
   const role = requireRole(auth.session, ["business", "admin"], headers);
@@ -100,7 +101,7 @@ export async function PATCH(
       });
       if (row?.referredByCode) await markReferralFirstBooking(row.referredByCode);
     }
-    return json({ ok: true, booking: row }, 200, headers);
+    return json({ ok: true, booking: row ? toPublicBooking(row) : row }, 200, headers);
   } catch (error: unknown) {
     if (error instanceof TenantAccessError) {
       return json({ ok: false, code: error.code, message: apiMessages.notFound }, 404, headers);

@@ -1,8 +1,16 @@
 import { emptyState } from "@ada-merkez/copy";
 
-type Kind = keyof typeof emptyState;
+export type EmptyStateKind = keyof typeof emptyState;
 
-export function EmptyState({ kind }: { kind: Kind }) {
+export function EmptyState({
+  kind,
+  title,
+  body,
+}: {
+  kind: EmptyStateKind;
+  title?: string;
+  body?: string;
+}) {
   const item = emptyState[kind];
   const src = `/app/bos-durum/${kind}.webp`;
   const src2x = `/app/bos-durum/${kind}@2x.webp`;
@@ -20,8 +28,8 @@ export function EmptyState({ kind }: { kind: Kind }) {
         loading="lazy"
         decoding="async"
       />
-      <h2>{item.title}</h2>
-      <p className="t-sm t-muted">{item.body}</p>
+      <h2>{title ?? item.title}</h2>
+      <p className="t-sm t-muted">{body ?? item.body}</p>
     </div>
   );
 }

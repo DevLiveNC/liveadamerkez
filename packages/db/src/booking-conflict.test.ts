@@ -140,6 +140,25 @@ describe.skipIf(!hasDb)("DB-level double booking protection", () => {
     const onlyA = await listBookingsForTenant(a.tenantId);
     expect(onlyA.every((row) => row.tenantId === a.tenantId)).toBe(true);
     expect(onlyA.some((row) => row.tenantId === b.tenantId)).toBe(false);
+    expect(onlyA.every((row) => !("customerPhone" in row))).toBe(true);
+  });
+
+  it("does not return customerPhone on tenant booking lists", async () => {
+    const { tenantId, staffId } = await seedTenant("kvkk");
+    await createBooking({
+      tenantId,
+      kind: "slot",
+      staffId,
+      startsAt: new Date("2026-08-02T08:00:00.000Z"),
+      endsAt: new Date("2026-08-02T09:00:00.000Z"),
+      customerName: "Ada",
+      customerPhone: "+905551112233",
+    });
+    const rows = await listBookingsForTenant(tenantId);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.customerName).toBe("Ada");
+    expect(rows[0] && "customerPhone" in rows[0]).toBe(false);
+    expect(JSON.stringify(rows)).not.toContain("+905551112233");
   });
 
   it("rejects illegal status transitions", async () => {
