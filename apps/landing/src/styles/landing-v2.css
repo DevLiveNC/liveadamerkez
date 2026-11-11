@@ -65,6 +65,11 @@ body.landing .am-kicker {
   color: var(--am-color-secondary-text);
 }
 
+body.landing .am-land-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+}
 body.landing header.nav {
   height: auto;
   min-height: 72px;

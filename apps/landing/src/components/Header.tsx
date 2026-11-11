@@ -62,6 +62,9 @@ export function Header() {
   return (
     <>
       {variant === "landing" ? <UtilBar /> : null}
+      {variant === "landing" && menuOpen ? (
+        <div className="am-land-scrim" aria-hidden="true" onPointerDown={closeMenu} />
+      ) : null}
       <header className="nav" ref={headerRef}>
         <div className="wrap nav-in am-land-nav">
           <Link href="/" aria-label={nav.homeAria}>
