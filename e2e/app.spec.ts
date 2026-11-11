@@ -115,12 +115,19 @@ test("PWA app shell is guest-visible and login is role-tabbed", async ({ page })
   const kabuki = await page.request.get("/app/bos-durum/rezervasyon-yok.webp");
   expect(kabuki.ok()).toBeTruthy();
 
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/app/isletmeler/1");
   await expect(page.locator("html")).toHaveAttribute("data-dekor", "app-musteri");
   await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-musteri");
   await expect(page.getByText("Puan veya yorum yoktur")).toBeVisible();
   await expect(page.locator("body")).not.toContainText(/⭐|★|rating/i);
-  await expect(page.getByRole("link", { name: "Randevu için giriş yap." })).toBeVisible();
+  await page.getByRole("button", { name: "Rezervasyon yap" }).click();
+  await expect(page.getByRole("dialog", { name: "Rezervasyon" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Talep gönder" })).toHaveAttribute("href", /\/app\/giris/);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: "artifacts/app-rezervasyon-sheet-mobile-390.png", fullPage: false });
+  await page.goto("/app/randevular/11111111-1111-4111-8111-111111111111");
+  await expect(page).toHaveURL(/\/app\/giris/);
 });
 
 test("landing CTAs point at the app and waitlist stays closed", async ({ page }) => {

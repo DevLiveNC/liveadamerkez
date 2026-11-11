@@ -53,8 +53,14 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     pathname === "/app/yonetim" ||
     pathname.startsWith("/app/yonetim/") ||
     pathname.startsWith("/app/yonetici");
+<<<<<<< HEAD
   const isAuth = pathname.startsWith("/app/giris");
   const hideChrome = isPanel || isAuth;
+=======
+  const bookingSent = /^\/app\/randevular\/[^/]+$/.test(pathname);
+  const hideTabs = pathname.startsWith("/app/giris") || isPanel || bookingSent;
+  const hideCustomerTop = bookingSent;
+>>>>>>> 96ea4e2 (Rezervasyon sheet ve talep iletildi)
 
   const items: BottomNavItem[] = TABS.map((tab) => ({
     href: tab.href,
@@ -75,7 +81,11 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       }
       skipLabel={ui.skipToContent}
       header={
+<<<<<<< HEAD
         hideChrome ? null : (
+=======
+        isPanel || hideCustomerTop ? null : (
+>>>>>>> 96ea4e2 (Rezervasyon sheet ve talep iletildi)
           <TopBar className="am-top" blur>
             <Link href="/app" aria-label={app.title}>
               <Logo height={28} />
