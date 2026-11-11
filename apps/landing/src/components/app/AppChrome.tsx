@@ -2,18 +2,16 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { app, nav, ui } from "@ada-merkez/copy";
+import { app, ui } from "@ada-merkez/copy";
 import {
   AppShell,
   BottomNav,
   PageFade,
   PullToRefresh,
-  TopBar,
   UiIcon,
   startAppTransition,
   type BottomNavItem,
 } from "@ada-merkez/ui";
-import { Logo } from "../Logo";
 import { AppSwRegister } from "./AppSwRegister";
 import { AppInstallSheet } from "./AppInstallSheet";
 
@@ -74,24 +72,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
             : "#icerik"
       }
       skipLabel={ui.skipToContent}
-      header={
-        hideChrome ? null : (
-          <TopBar className="am-top" blur>
-            <Link href="/app" aria-label={app.title}>
-              <Logo height={28} />
-            </Link>
-            <div className="seg lang am-lang" role="group" aria-label={nav.lang}>
-              <button type="button" aria-pressed="true">
-                TR
-              </button>
-              <button type="button" disabled aria-disabled="true" aria-label={nav.enLabel} title={nav.enSoon}>
-                EN
-                <span className="lang-soon">{nav.enSoon}</span>
-              </button>
-            </div>
-          </TopBar>
-        )
-      }
+      header={null}
       footer={
         hideChrome ? null : (
           <BottomNav

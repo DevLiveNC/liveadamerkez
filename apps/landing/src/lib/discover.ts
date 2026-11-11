@@ -9,6 +9,7 @@ export type DiscoverCard = {
   serviceName: string | null;
   sample: boolean;
   categorySlug?: string | null;
+  image?: string | null;
 };
 
 const EXAMPLE_CARDS: DiscoverCard[] = examples.cards.map((card, index) => ({
@@ -18,6 +19,7 @@ const EXAMPLE_CARDS: DiscoverCard[] = examples.cards.map((card, index) => ({
   category: card.category,
   serviceName: card.service,
   sample: true,
+  image: card.image,
 }));
 
 export function exampleCard(id: string): DiscoverCard | null {
@@ -50,7 +52,8 @@ export async function loadDiscover(filters?: {
   if (cat && cat !== "all") {
     cards = cards.filter((card) => {
       const hay = `${card.category ?? ""} ${card.categorySlug ?? ""}`.toLocaleLowerCase("tr-TR");
-      if (cat === "kuafor") return hay.includes("kuafor") || hay.includes("kuaför") || hay.includes("güzellik");
+      if (cat === "kuafor") return hay.includes("kuafor") || hay.includes("kuaför");
+      if (cat === "guzellik") return hay.includes("güzellik") || hay.includes("guzellik");
       return hay.includes(cat);
     });
   }

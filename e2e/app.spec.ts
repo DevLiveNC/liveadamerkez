@@ -25,7 +25,7 @@ async function cacheDump(page: Page): Promise<{ names: string[]; urls: string[];
 test("PWA app shell is guest-visible and login is role-tabbed", async ({ page }) => {
   const home = await page.goto("/app");
   expect(home?.ok()).toBeTruthy();
-  await expect(page.getByRole("heading", { name: "Yarın için uygun saat" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Keşif" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Kuaför", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Klinik", exact: true })).toBeVisible();
   await expect(page.getByText("Örnek").first()).toBeVisible();
