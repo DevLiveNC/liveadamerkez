@@ -57,6 +57,8 @@ test("landing HTML redirects standalone before body and links the app manifest",
   expect(scriptIdx).toBeLessThan(bodyIdx);
   expect(html).toContain("navigator.standalone===true");
   expect(html).toContain('location.replace("/app")');
+  expect(html).toContain('p!=="/"');
+  expect(html).toContain("1500");
   expect(html).toMatch(/rel="manifest"[^>]*href="\/app\/manifest\.json"|href="\/app\/manifest\.json"[^>]*rel="manifest"/);
   expect(html).toContain('name="apple-mobile-web-app-capable"');
   expect(html).toContain('name="mobile-web-app-capable"');
@@ -66,6 +68,11 @@ test("landing HTML redirects standalone before body and links the app manifest",
 
   const appHtml = await (await request.get("/app")).text();
   expect(appHtml).not.toContain('location.replace("/app")');
+
+  for (const path of ["/yasal/gizlilik", "/yasal/kvkk", "/yasal/aydinlatma"]) {
+    const legalHtml = await (await request.get(path)).text();
+    expect(legalHtml).not.toContain('location.replace("/app")');
+  }
 });
 
 test("app manifest is installable and scope covers /app root", async ({ page }) => {
@@ -182,6 +189,31 @@ test("landing SW cache of / does not shadow /app", async ({ page }) => {
   expect(appHtml).toContain('data-dekor="app-musteri"');
 });
 
+test("unregisters leftover /app/ service worker scope", async ({ page }) => {
+  await page.goto("/app");
+  await expectAppShell(page);
+  const scopesAfterLegacy = await page.evaluate(async () => {
+    await navigator.serviceWorker.register("/app/sw.js", { scope: "/app/" });
+    const regs = await navigator.serviceWorker.getRegistrations();
+    return regs.map((reg) => new URL(reg.scope).pathname);
+  });
+  expect(scopesAfterLegacy.some((path) => path === "/app" || path === "/app/")).toBe(true);
+  if (!scopesAfterLegacy.includes("/app/")) {
+    return;
+  }
+
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await expect
+    .poll(async () => {
+      return page.evaluate(async () => {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        const paths = regs.map((reg) => new URL(reg.scope).pathname);
+        return paths.includes("/app") && !paths.includes("/app/");
+      });
+    })
+    .toBe(true);
+});
+
 test.describe("Android Chrome standalone display-mode", () => {
   const pixel = devices["Pixel 7"];
   test.use({
@@ -205,6 +237,14 @@ test.describe("Android Chrome standalone display-mode", () => {
     await expectAppShell(page);
     expect(new URL(page.url()).pathname).toMatch(/^\/app\/?$/);
   });
+
+  test("legal pages stay in standalone without redirect", async ({ page }) => {
+    await emulateAndroidStandalone(page);
+    await page.goto("/yasal/gizlilik", { waitUntil: "domcontentloaded" });
+    await expect(page).toHaveURL(/\/yasal\/gizlilik/);
+    await expect(page.getByRole("heading", { name: "Gizlilik" })).toBeVisible();
+    expect(new URL(page.url()).pathname).toBe("/yasal/gizlilik");
+  });
 });
 
 test.describe("iOS Safari UA + navigator.standalone", () => {
@@ -227,5 +267,17 @@ test.describe("iOS Safari UA + navigator.standalone", () => {
     await page.goto("/", { waitUntil: "commit" }).catch(() => undefined);
     await page.waitForURL((url) => url.pathname === "/app" || url.pathname === "/app/");
     await expectAppShell(page);
+  });
+
+  test("KVKK page stays open in standalone", async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "standalone", {
+        configurable: true,
+        get: () => true,
+      });
+    });
+    await page.goto("/yasal/kvkk", { waitUntil: "domcontentloaded" });
+    await expect(page).toHaveURL(/\/yasal\/kvkk/);
+    expect(new URL(page.url()).pathname).toBe("/yasal/kvkk");
   });
 });

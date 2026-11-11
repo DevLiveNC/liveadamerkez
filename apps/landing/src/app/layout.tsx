@@ -54,13 +54,14 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const path = (await headers()).get("x-ada-path") ?? "";
   const isApp = isAppPath(path);
+  const isHome = path === "/" || path === "";
   const dekor = dekorForPath(path);
   return (
     <html lang={site.language} data-theme="light" data-dekor={dekor}>
       <head>
-        {isApp ? null : (
+        {isHome ? (
           <script dangerouslySetInnerHTML={{ __html: PWA_STANDALONE_REDIRECT_SCRIPT }} />
-        )}
+        ) : null}
         <link rel="manifest" href={APP_MANIFEST_HREF} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
