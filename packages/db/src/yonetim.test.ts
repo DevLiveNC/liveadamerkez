@@ -111,8 +111,8 @@ describe.skipIf(!hasDb)("yonetim seed, roller ve KVKK", () => {
     await getPool().query(
       `INSERT INTO booking (tenant_id, kind, status, staff_id, starts_at, ends_at, channel, customer_name)
        SELECT $1, 'slot', 'pending', $2,
-         $3::timestamptz + (g * interval '1 minute'),
-         $3::timestamptz + (g * interval '1 minute') + interval '30 minutes',
+         $3::timestamptz + (g * interval '31 minutes'),
+         $3::timestamptz + (g * interval '31 minutes') + interval '30 minutes',
          'app', 'Örnek'
        FROM generate_series(0, $4) AS g`,
       [tenantId, staff.rows[0]?.id, from, ADMIN_BOOKING_LIST_LIMIT],
