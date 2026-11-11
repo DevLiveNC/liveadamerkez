@@ -3,21 +3,21 @@
 
 :root,
 [data-theme="light"] {
-  --am-navy: #0f2c44;
-  --am-coral: #e4572e;
-  --am-teal: #0e7c78;
-  --am-teal-dark: #0a4f4d;
-  --am-teal-soft: #d8f1ef;
-  --am-sand: #f8f0e3;
-  --am-cream: #fff8f0;
-  --am-white: #ffffff;
+  --am-navy: var(--am3-lacivert-800, #0f2c44);
+  --am-coral: var(--am3-mercan-400, #e4572e);
+  --am-teal: var(--am3-akdeniz-600, #0e7c78);
+  --am-teal-dark: var(--am3-akdeniz-800, #0a4f4d);
+  --am-teal-soft: var(--am3-akdeniz-50, #e2f7f5);
+  --am-sand: var(--am3-hellim-50, #fffbf2);
+  --am-cream: var(--am3-hellim-50, #fffbf2);
+  --am-white: var(--am3-surface, #ffffff);
 
-  --am-color-surface-raised: #ffffff;
-  --am-color-border-subtle: rgba(224, 210, 188, 0.7);
+  --am-color-surface-raised: var(--color-surface-raised, #ffffff);
+  --am-color-border-subtle: var(--color-border-subtle, rgba(224, 210, 188, 0.7));
   --am-color-divider: rgba(15, 44, 68, 0.08);
-  --am-color-link: #0a4f4d;
-  --am-color-icon: #0f2c44;
-  --am-color-icon-muted: #6e5e4e;
+  --am-color-link: var(--color-link, #0a4f4d);
+  --am-color-icon: var(--color-brand, #0f2c44);
+  --am-color-icon-muted: var(--color-text-muted, #6e5e4e);
   --am-color-warning-text: #8a5308;
 
   --am-elev-0: none;
@@ -45,10 +45,10 @@
   --am-radius-card: 20px;
   --am-radius-sheet: 24px;
 
-  --am-dur-fast: 120ms;
-  --am-dur-base: 180ms;
-  --am-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --am-ease-press: cubic-bezier(0.3, 0, 0.7, 1);
+  --am-dur-fast: var(--motion-duration-fast, 120ms);
+  --am-dur-base: var(--motion-duration-base, 180ms);
+  --am-ease-out: var(--motion-ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+  --am-ease-press: var(--motion-ease-press, cubic-bezier(0.3, 0, 0.7, 1));
 
   --am-touch: 44px;
   --am-btn-h: 52px;
@@ -60,8 +60,8 @@
 }
 
 [data-theme="dark"] {
-  --am-color-surface-raised: #16344f;
-  --am-color-border-subtle: rgba(26, 69, 102, 0.8);
+  --am-color-surface-raised: var(--color-surface-raised, #16344f);
+  --am-color-border-subtle: var(--color-border-subtle, rgba(26, 69, 102, 0.8));
   --am-color-divider: rgba(248, 240, 227, 0.1);
-  --am-color-link: #7ec9c3;
+  --am-color-link: var(--color-link, #7ec9c3);
 }
