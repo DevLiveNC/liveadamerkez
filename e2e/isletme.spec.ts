@@ -72,13 +72,13 @@ test("işletme paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar", 
   await expect(page.locator("body")).not.toContainText(/KKTC/i);
 
   await page.goto("/app/isletme/takvim");
-  await expect(page.getByRole("heading", { name: "Takvim" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Takvim", level: 1 })).toBeVisible();
   await page.goto("/app/isletme/talepler");
-  await expect(page.getByRole("heading", { name: "Gelen talepler" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Gelen talepler", level: 1 })).toBeVisible();
   await page.goto("/app/isletme/hizmetler");
-  await expect(page.getByRole("heading", { name: "Hizmetler" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Hizmetler", level: 1 })).toBeVisible();
   await page.goto("/app/isletme/profil");
-  await expect(page.getByRole("heading", { name: "Ayarlar" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Ayarlar", level: 1 })).toBeVisible();
 
   await page.goto("/app/isletme/istatistik");
   await expect(page).toHaveURL(/\/app\/isletme\/?$/);
