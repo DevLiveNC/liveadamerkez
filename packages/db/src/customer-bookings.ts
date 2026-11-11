@@ -3,7 +3,7 @@ import { canTransitionBookingStatus, nicosiaDateKey, TenantAccessError } from "@
 import { getDb, withTenantDb } from "./client.js";
 import { BookingConflictError, BookingStatusError, createBooking } from "./bookings.js";
 import { booking, business, category, customer, location, service } from "./schema.js";
-import { findPublishedBusinessId, getPublishedBusiness, listPublicServices } from "./catalog.js";
+import { findApprovedBusinessId, getApprovedBusiness, listPublicServices } from "./catalog.js";
 import { InvalidServiceError, listOpenSlots, slotStillOpen } from "./slots.js";
 
 export { TenantAccessError };
@@ -79,9 +79,9 @@ export async function createCustomerBooking(input: {
   startsAt: Date;
   serviceId?: string;
 }) {
-  const published = await findPublishedBusinessId(input.businessId);
+  const published = await findApprovedBusinessId(input.businessId);
   if (!published) throw new TenantAccessError();
-  const biz = await getPublishedBusiness(published);
+  const biz = await getApprovedBusiness(published);
   if (!biz) throw new TenantAccessError();
   if (input.startsAt.getTime() <= Date.now()) {
     throw new SlotUnavailableError();

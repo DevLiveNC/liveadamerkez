@@ -6,7 +6,7 @@ import {
 } from "@ada-merkez/shared";
 import { getDb } from "./client.js";
 import { booking } from "./schema.js";
-import { getPublishedBusiness, listPublicAvailability, listPublicServices } from "./catalog.js";
+import { getApprovedBusiness, listPublicAvailability, listPublicServices } from "./catalog.js";
 
 export class InvalidServiceError extends Error {
   readonly status = 400;
@@ -36,7 +36,7 @@ export async function listOpenSlots(input: {
 }): Promise<{ timezone: string; slots: OpenSlot[]; serviceName: string | null } | null> {
   const parsed = parseNicosiaDateKey(input.date);
   if (!parsed) return null;
-  const biz = await getPublishedBusiness(input.businessId);
+  const biz = await getApprovedBusiness(input.businessId);
   if (!biz) return null;
   const timezone = biz.timezone || "Europe/Nicosia";
   const services = await listPublicServices(biz.id);

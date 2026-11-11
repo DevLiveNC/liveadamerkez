@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { migrate } from "./migrate.js";
-import { closePool, getPool, isDatabaseConfigured } from "./client.js";
+import { closePool, getPool, isDatabaseConfigured, withTenant } from "./client.js";
 import { TenantAccessError } from "@ada-merkez/shared";
 import { bookingCountForTenant, getBookingForTenant } from "./bookings.js";
 
@@ -87,6 +87,39 @@ describe.skipIf(!hasDb)("tenant isolation at API and DB layers", () => {
         /* ignore */
       }
       client.release();
+    }
+  });
+
+  it("withTenant SET LOCAL ROLE hatasını yutmaz; callback çalışmaz", async () => {
+    const pool = getPool();
+    const connect = pool.connect.bind(pool);
+    const spy = vi.spyOn(pool, "connect").mockImplementation(async () => {
+      const client = await connect();
+      const query = client.query.bind(client);
+      const wrapped = ((...args: Parameters<typeof client.query>) => {
+        const text =
+          typeof args[0] === "string"
+            ? args[0]
+            : String((args[0] as { text?: string }).text ?? args[0]);
+        if (text.includes("SET LOCAL ROLE ada_app")) {
+          return Promise.reject(Object.assign(new Error("rol yok"), { code: "42704" }));
+        }
+        return query(...args);
+      }) as typeof client.query;
+      client.query = wrapped;
+      return client;
+    });
+    let ran = false;
+    try {
+      await expect(
+        withTenant(randomUUID(), async () => {
+          ran = true;
+          return 1;
+        }),
+      ).rejects.toMatchObject({ code: "42704" });
+      expect(ran).toBe(false);
+    } finally {
+      spy.mockRestore();
     }
   });
 });
