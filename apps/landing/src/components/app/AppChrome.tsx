@@ -1,57 +1,142 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { app, nav } from "@ada-merkez/copy";
+import { usePathname, useRouter } from "next/navigation";
+import { app, nav, ui } from "@ada-merkez/copy";
+import {
+  AppShell,
+  BottomNav,
+  PageFade,
+  PullToRefresh,
+  TopBar,
+  UiIcon,
+  startAppTransition,
+  type BottomNavItem,
+} from "@ada-merkez/ui";
 import { Logo } from "../Logo";
 import { AppSwRegister } from "./AppSwRegister";
 import { AppInstallSheet } from "./AppInstallSheet";
 
 const TABS = [
-  { href: "/app", label: app.discover, match: (p: string) => p === "/app" || p.startsWith("/app/isletmeler") },
-  { href: "/app/randevular", label: app.bookings, match: (p: string) => p.startsWith("/app/randevular") },
-  { href: "/app/favoriler", label: app.favorites, match: (p: string) => p.startsWith("/app/favoriler") },
-  { href: "/app/hesap", label: app.account, match: (p: string) => p.startsWith("/app/hesap") },
+  {
+    href: "/app",
+    label: app.discover,
+    icon: "home" as const,
+    match: (p: string) => p === "/app" || p.startsWith("/app/isletmeler"),
+  },
+  {
+    href: "/app/randevular",
+    label: app.bookings,
+    icon: "calendar" as const,
+    match: (p: string) => p.startsWith("/app/randevular"),
+  },
+  {
+    href: "/app/favoriler",
+    label: app.favorites,
+    icon: "heart" as const,
+    match: (p: string) => p.startsWith("/app/favoriler"),
+  },
+  {
+    href: "/app/hesap",
+    label: app.account,
+    icon: "user" as const,
+    match: (p: string) => p.startsWith("/app/hesap"),
+  },
 ] as const;
 
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "/app";
-  const hideTabs =
-    pathname.startsWith("/app/giris") ||
+  const router = useRouter();
+  const isPanel =
     pathname === "/app/isletme" ||
     pathname.startsWith("/app/isletme/") ||
     pathname === "/app/yonetim" ||
     pathname.startsWith("/app/yonetim/") ||
     pathname.startsWith("/app/yonetici");
+  const hideTabs = pathname.startsWith("/app/giris") || isPanel;
+
+  const items: BottomNavItem[] = TABS.map((tab) => ({
+    href: tab.href,
+    label: tab.label,
+    icon: <UiIcon name={tab.icon} />,
+    current: tab.match(pathname),
+  }));
 
   return (
-    <div className="am-shell">
-      <header className="am-top">
-        <Link href="/app" aria-label={app.title}>
-          <Logo height={28} />
-        </Link>
-        <div className="seg lang am-lang" role="group" aria-label={nav.lang}>
-          <button type="button" aria-pressed="true">
-            TR
-          </button>
-          <button type="button" disabled aria-disabled="true" aria-label={nav.enLabel} title={nav.enSoon}>
-            EN
-            <span className="lang-soon">{nav.enSoon}</span>
-          </button>
-        </div>
-      </header>
-      <main className="am-main">{children}</main>
-      {hideTabs ? null : (
-        <nav className="am-tabs" aria-label={app.title}>
-          {TABS.map((tab) => (
-            <Link key={tab.href} href={tab.href} className={tab.match(pathname) ? "on" : undefined}>
-              {tab.label}
+    <AppShell
+      className="am-shell"
+      skipHref={
+        pathname.startsWith("/app/yonetim")
+          ? "#yonetim-icerik"
+          : isPanel
+            ? "#isletme-icerik"
+            : "#icerik"
+      }
+      skipLabel={ui.skipToContent}
+      header={
+        isPanel ? null : (
+          <TopBar className="am-top" blur>
+            <Link href="/app" aria-label={app.title}>
+              <Logo height={28} />
             </Link>
-          ))}
-        </nav>
+            <div className="seg lang am-lang" role="group" aria-label={nav.lang}>
+              <button type="button" aria-pressed="true">
+                TR
+              </button>
+              <button type="button" disabled aria-disabled="true" aria-label={nav.enLabel} title={nav.enSoon}>
+                EN
+                <span className="lang-soon">{nav.enSoon}</span>
+              </button>
+            </div>
+          </TopBar>
+        )
+      }
+      footer={
+        hideTabs ? null : (
+          <BottomNav
+            className="am-tabs am-tabbar"
+            label={app.navAria}
+            items={items}
+            renderItem={(item, className) => (
+              <Link
+                href={item.href}
+                className={className}
+                aria-current={item.current ? "page" : undefined}
+                onClick={(event) => {
+                  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+                  if (item.current) {
+                    event.preventDefault();
+                    return;
+                  }
+                  event.preventDefault();
+                  startAppTransition(() => {
+                    router.push(item.href);
+                  });
+                }}
+              >
+                {item.icon}
+                {item.label}
+              </Link>
+            )}
+          />
+        )
+      }
+    >
+      {isPanel ? (
+        children
+      ) : (
+        <PullToRefresh
+          onRefresh={() => router.refresh()}
+          label={ui.pullToRefresh}
+          releaseLabel={ui.releaseToRefresh}
+          refreshingLabel={ui.refreshing}
+          mainClassName="am-main"
+        >
+          <PageFade key={pathname}>{children}</PageFade>
+        </PullToRefresh>
       )}
       <AppSwRegister />
       <AppInstallSheet />
-    </div>
+    </AppShell>
   );
 }

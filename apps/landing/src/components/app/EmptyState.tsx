@@ -1,4 +1,5 @@
 import { emptyState } from "@ada-merkez/copy";
+import { EmptyState as UiEmptyState } from "@ada-merkez/ui";
 
 export type EmptyStateKind = keyof typeof emptyState;
 
@@ -15,21 +16,23 @@ export function EmptyState({
   const src = `/app/bos-durum/${kind}.webp`;
   const src2x = `/app/bos-durum/${kind}@2x.webp`;
   return (
-    <div className="am-empty">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        className="am-empty-art"
-        src={src}
-        srcSet={`${src} 320w, ${src2x} 640w`}
-        sizes="320px"
-        width={320}
-        height={320}
-        alt={item.alt}
-        loading="lazy"
-        decoding="async"
-      />
-      <h2>{title ?? item.title}</h2>
-      <p className="t-sm t-muted">{body ?? item.body}</p>
-    </div>
+    <UiEmptyState
+      title={title ?? item.title}
+      body={body ?? item.body}
+      media={
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          className="am-empty-art"
+          src={src}
+          srcSet={`${src} 320w, ${src2x} 640w`}
+          sizes="160px"
+          width={160}
+          height={160}
+          alt={item.alt}
+          loading="lazy"
+          decoding="async"
+        />
+      }
+    />
   );
 }

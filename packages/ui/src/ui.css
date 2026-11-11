@@ -1,0 +1,163 @@
+@import "./tokens.css";
+@import "./app-v2.css";
+
+.am-ui-visually-hidden,
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Canlı PWA kabuğu: tasarım .am-phone çerçevesinin 100dvh karşılığı */
+.am-shell.am-ui-shell,
+.am-ui-shell {
+  width: 100%;
+  max-width: var(--am-app-width);
+  min-height: 100dvh;
+  height: 100dvh;
+  margin: 0 auto;
+  background: var(--am-color-background);
+  color: var(--am-color-text);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+@media (min-width: 860px) {
+  .am-shell.am-ui-shell,
+  .am-ui-shell {
+    max-width: var(--am-shell-max-desk);
+    box-shadow: var(--am-elev-4);
+    border-left: 1px solid var(--am-color-border);
+    border-right: 1px solid var(--am-color-border);
+  }
+}
+
+.am-header.am-top,
+.am-ui-topbar {
+  padding-top: max(8px, var(--am-safe-top));
+}
+
+.am-tabbar {
+  position: relative;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  flex: none;
+  padding-bottom: calc(var(--am-home-ind) + var(--am-safe-bottom));
+}
+
+.am-tab.is-on,
+.am-tab[aria-current="page"] {
+  color: var(--am-color-text);
+  font-weight: 600;
+}
+
+.am-ui-main,
+.am-main,
+.am-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+.am-ui-ptr {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.am-ui-ptr-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 0;
+  overflow: hidden;
+  font-size: var(--am-fs-xs);
+  font-weight: 600;
+  color: var(--am-color-text-muted);
+  flex: none;
+}
+
+.am-ui-page {
+  animation: am-ui-page-in var(--am-dur-medium) var(--am-ease-in-out);
+}
+
+@keyframes am-ui-page-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.am-overlay.am-ui-sheet-root,
+.am-ui-sheet-root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--am-z-sheet);
+}
+
+.am-sheet {
+  position: absolute;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: am-ui-vt-out var(--am-dur-medium) var(--am-ease-in-out) both;
+}
+::view-transition-new(root) {
+  animation: am-ui-vt-in var(--am-dur-medium) var(--am-ease-in-out) both;
+}
+
+@keyframes am-ui-vt-out { to { opacity: 0; } }
+@keyframes am-ui-vt-in { from { opacity: 0; } }
+
+.am-card-block {
+  background: var(--am-color-surface);
+  border-radius: var(--am-radius-card);
+  box-shadow: var(--am-elev-2);
+  padding: 16px;
+}
+
+.am-ui-chart {
+  display: block;
+  width: 100%;
+  color: var(--am-navy);
+}
+.am-ui-chart figcaption {
+  font-size: var(--am-fs-xs);
+  color: var(--am-color-text-muted);
+  margin-top: 6px;
+}
+.am-ui-chart svg { width: 100%; height: auto; overflow: visible; }
+
+@media (prefers-reduced-motion: reduce) {
+  .am-ui-page,
+  .am-sheet,
+  .am-overlay,
+  .am-btn:active {
+    animation: none !important;
+    transform: none !important;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}

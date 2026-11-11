@@ -1,17 +1,54 @@
-/* Ada Merkez — tasarım jetonları v1.4.1 (2026-11-11) — logo A kesin; karma palet; semantik durum renkleri
-   Kaynak: /workspace/ada-merkez/tasarim/tokens.json
+/* Ada Merkez — tasarım jetonları v2.0.0 (2026-11-11, Asia/Famagusta)
+   Kaynak: /workspace/ada-merkez/tasarim/tokens-v2/tokens.json
+   Palet v1.4.1 ile aynıdır; semantic, elevation, safe-area ve dark-ready eklenmiştir.
    Kullanım: kökte data-theme="light" | "dark" (varsayılan: light). */
 
 :root,
 [data-theme="light"] {
+  /* Brand (değişmez referans) */
+  --am-navy: #0f2c44;
+  --am-navy-deep: #0a1624;
+  --am-navy-mid: #1a4566;
+  --am-navy-hover: #0a1f31;
+  --am-coral: #e4572e;
+  --am-coral-dark: #c2410c;
+  --am-coral-light: #f07a52;
+  --am-coral-soft: #f4d6c8;
+  --am-coral-pending: #fcede8;
+  --am-teal: #0e7c78;
+  --am-teal-dark: #0a4f4d;
+  --am-teal-soft: #d8f1ef;
+  --am-teal-light: #7ec9c3;
+  --am-sand: #f8f0e3;
+  --am-sand-dark: #e8dcc8;
+  --am-cream: #fff8f0;
+  --am-white: #ffffff;
+
+  /* Neutral (sıcak gri skala) */
+  --am-neutral-50: #f8f0e3;
+  --am-neutral-100: #e8dcc8;
+  --am-neutral-200: #e0d2bc;
+  --am-neutral-300: #b8b2a8;
+  --am-neutral-400: #8c877e;
+  --am-neutral-500: #6b665e;
+  --am-neutral-600: #4a463f;
+  --am-neutral-700: #2f2c28;
+  --am-neutral-800: #1c1a17;
+  --am-neutral-900: #12110f;
+
+  /* Semantic — light */
   --am-color-background: #f8f0e3;
   --am-color-surface: #fff8f0;
+  --am-color-surface-raised: #ffffff;
   --am-color-surface-muted: #e8dcc8;
+  --am-color-surface-overlay: rgba(15, 44, 68, 0.44);
   --am-color-text: #0f2c44;
   --am-color-text-muted: #6e5e4e;
   --am-color-text-subtle: #7a6a58;
+  --am-color-text-inverse: #fff8f0;
   --am-color-border: #e0d2bc;
-
+  --am-color-border-subtle: rgba(224, 210, 188, 0.7);
+  --am-color-divider: rgba(15, 44, 68, 0.08);
   --am-color-primary: #0f2c44;
   --am-color-primary-hover: #0a1f31;
   --am-color-on-primary: #ffffff;
@@ -24,13 +61,12 @@
   --am-color-accent-hover: #c2410c;
   --am-color-accent-soft: #f4d6c8;
   --am-color-on-accent: #ffffff;
-
-  /* Açık zeminde metin/ikon için AA sağlayan değerler */
   --am-color-success: #007a3d;
   --am-color-success-fill: #007a3d;
   --am-color-success-subtle: #e3f6ec;
   --am-color-warning: #a16207;
   --am-color-warning-fill: #a16207;
+  --am-color-warning-text: #8a5308;
   --am-color-warning-subtle: #fbf3d8;
   --am-color-danger: #c62828;
   --am-color-danger-fill: #c62828;
@@ -40,8 +76,11 @@
   --am-color-info-subtle: #e6f3fb;
   --am-color-focus: #e4572e;
   --am-color-live: #00d26a;
+  --am-color-link: #0a4f4d;
+  --am-color-icon: #0f2c44;
+  --am-color-icon-muted: #6e5e4e;
 
-  /* Semantik takvim / istek durumları (v1.4.1) */
+  /* Status */
   --am-status-confirmed-bg: #0f2c44;
   --am-status-confirmed-fg: #fff8f0;
   --am-status-pending-bg: #fcede8;
@@ -53,39 +92,51 @@
   --am-status-cancelled-bg: #e8dcc8;
   --am-status-cancelled-fg: #6e5e4e;
 
+  /* Elevation */
+  --am-elev-0: none;
+  --am-elev-1: 0 1px 2px rgba(15, 44, 68, 0.05);
+  --am-elev-2: 0 4px 12px rgba(15, 44, 68, 0.07), 0 1px 2px rgba(15, 44, 68, 0.04);
+  --am-elev-3: 0 8px 24px rgba(15, 44, 68, 0.10), 0 2px 4px rgba(15, 44, 68, 0.04);
+  --am-elev-4: 0 16px 40px rgba(15, 44, 68, 0.16), 0 4px 8px rgba(15, 44, 68, 0.06);
+  --am-elev-5: 0 24px 56px rgba(15, 44, 68, 0.22);
+
+  /* Geriye dönük gölge adları */
   --am-shadow-sm: 0 1px 2px rgba(15, 44, 68, 0.06);
-  --am-shadow-md: 0 8px 24px rgba(15, 44, 68, 0.1);
+  --am-shadow-md: 0 8px 24px rgba(15, 44, 68, 0.10);
   --am-shadow-lg: 0 16px 48px rgba(15, 44, 68, 0.16);
-  --am-shadow-pin: 0 8px 24px rgba(228, 87, 46, 0.28);
 }
 
 [data-theme="dark"] {
   --am-color-background: #0a1624;
   --am-color-surface: #0f2c44;
+  --am-color-surface-raised: #16344f;
   --am-color-surface-muted: #16344f;
+  --am-color-surface-overlay: rgba(0, 0, 0, 0.56);
   --am-color-text: #f8f0e3;
   --am-color-text-muted: #b8b2a8;
-  --am-color-text-subtle: #7a6a58;
+  --am-color-text-subtle: #8c877e;
+  --am-color-text-inverse: #0f2c44;
   --am-color-border: #1a4566;
-
+  --am-color-border-subtle: rgba(26, 69, 102, 0.8);
+  --am-color-divider: rgba(248, 240, 227, 0.10);
   --am-color-primary: #f8f0e3;
   --am-color-primary-hover: #ffffff;
   --am-color-on-primary: #0f2c44;
   --am-color-secondary: #7ec9c3;
-  --am-color-on-secondary: #0a1624;
   --am-color-secondary-hover: #a8ddd8;
   --am-color-secondary-text: #7ec9c3;
   --am-color-secondary-soft: #0e3d3b;
+  --am-color-on-secondary: #0a1624;
   --am-color-accent: #e4572e;
   --am-color-accent-hover: #f07a52;
   --am-color-accent-soft: #5a2618;
   --am-color-on-accent: #ffffff;
-
   --am-color-success: #00d26a;
   --am-color-success-fill: #00d26a;
   --am-color-success-subtle: #0b3a24;
   --am-color-warning: #e8a317;
   --am-color-warning-fill: #e8a317;
+  --am-color-warning-text: #e8a317;
   --am-color-warning-subtle: #3a2e0e;
   --am-color-danger: #ff8a80;
   --am-color-danger-fill: #ff8a80;
@@ -95,159 +146,193 @@
   --am-color-info-subtle: #0e2f45;
   --am-color-focus: #f07a52;
   --am-color-live: #00d26a;
+  --am-color-link: #7ec9c3;
+  --am-color-icon: #f8f0e3;
+  --am-color-icon-muted: #b8b2a8;
 
-  --am-status-confirmed-bg: #0f2c44;
-  --am-status-confirmed-fg: #fff8f0;
+  --am-status-confirmed-bg: #fff8f0;
+  --am-status-confirmed-fg: #0f2c44;
   --am-status-pending-bg: #5a2618;
-  --am-status-pending-fg: #fcede8;
-  --am-status-pending-accent: #e4572e;
+  --am-status-pending-fg: #f8f0e3;
+  --am-status-pending-accent: #f07a52;
   --am-status-pending-text: #f07a52;
   --am-status-free-bg: #0e3d3b;
-  --am-status-free-fg: #d8f1ef;
+  --am-status-free-fg: #7ec9c3;
   --am-status-cancelled-bg: #16344f;
   --am-status-cancelled-fg: #b8b2a8;
 
-  --am-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
-  --am-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.36);
-  --am-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.45);
-  --am-shadow-pin: 0 8px 24px rgba(228, 87, 46, 0.4);
+  --am-elev-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --am-elev-2: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --am-elev-3: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --am-elev-4: 0 16px 40px rgba(0, 0, 0, 0.5);
+  --am-elev-5: 0 24px 56px rgba(0, 0, 0, 0.6);
 }
 
-/* Marka sabitleri (tema bağımsız) */
 :root {
-  --am-brand-navy: #0f2c44;
-  --am-brand-navy-deep: #0a1624;
-  --am-brand-navy-mid: #1a4566;
-  --am-brand-aegean: #1f6a8f;
-  --am-brand-teal: #0e7c78;
-  --am-brand-teal-dark: #0a4f4d;
-  --am-brand-teal-soft: #d8f1ef;
-  --am-brand-teal-light: #7ec9c3;
-  --am-brand-coral: #e4572e;
-  --am-brand-coral-dark: #c2410c;
-  --am-brand-coral-light: #f07a52;
-  --am-brand-coral-soft: #f4d6c8;
-  --am-brand-sand: #f8f0e3;
-  --am-brand-sand-dark: #e8dcc8;
-  --am-brand-cream: #fff8f0;
-  --am-brand-white: #ffffff;
-  --am-brand-ink: #12110f;
-  --am-brand-muted: #6e5e4e;
-  --am-brand-live: #00d26a;
+  /* Typography */
+  --am-font-display: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+  --am-font-sans: Inter, system-ui, sans-serif;
 
-  --am-neutral-50: #f8f0e3;
-  --am-neutral-100: #e8dcc8;
-  --am-neutral-200: #e0d2bc;
-  --am-neutral-300: #b8b2a8;
-  --am-neutral-400: #8c877e;
-  --am-neutral-500: #6b665e;
-  --am-neutral-600: #4a463f;
-  --am-neutral-700: #2f2c28;
-  --am-neutral-800: #1c1a17;
-  --am-neutral-900: #12110f;
+  --am-fs-xs: 12px; --am-lh-xs: 16px;
+  --am-fs-sm: 14px; --am-lh-sm: 20px;
+  --am-fs-md: 16px; --am-lh-md: 24px;
+  --am-fs-lg: 18px; --am-lh-lg: 28px;
+  --am-fs-xl: 20px; --am-lh-xl: 28px;
+  --am-fs-title: 22px; --am-lh-title: 28px;
+  --am-fs-2xl: 24px; --am-lh-2xl: 32px;
+  --am-fs-3xl: 32px; --am-lh-3xl: 40px;
 
-  --am-font-display: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
-  --am-font-sans: "Inter", system-ui, sans-serif;
+  --am-fw-regular: 400;
+  --am-fw-medium: 500;
+  --am-fw-semibold: 600;
+  --am-fw-bold: 700;
 
-  --am-text-xs: 0.75rem;
-  --am-text-sm: 0.875rem;
-  --am-text-md: 1rem;
-  --am-text-lg: 1.125rem;
-  --am-text-xl: 1.25rem;
-  --am-text-2xl: 1.5rem;
-  --am-text-3xl: 2rem;
-  --am-text-4xl: 2.5rem;
-  --am-text-5xl: 3rem;
-  --am-text-6xl: 4rem;
-
-  --am-leading-xs: 1rem;
-  --am-leading-sm: 1.25rem;
-  --am-leading-md: 1.5rem;
-  --am-leading-lg: 1.75rem;
-  --am-leading-xl: 1.75rem;
-  --am-leading-2xl: 2rem;
-  --am-leading-3xl: 2.5rem;
-  --am-leading-4xl: 3rem;
-  --am-leading-5xl: 3.5rem;
-  --am-leading-6xl: 4.5rem;
-
+  /* Spacing (4 px birim, 8 pt ızgara) */
   --am-space-0: 0;
-  --am-space-1: 0.25rem;
-  --am-space-2: 0.5rem;
-  --am-space-3: 0.75rem;
-  --am-space-4: 1rem;
-  --am-space-5: 1.25rem;
-  --am-space-6: 1.5rem;
-  --am-space-8: 2rem;
-  --am-space-10: 2.5rem;
-  --am-space-12: 3rem;
-  --am-space-16: 4rem;
-  --am-space-20: 5rem;
-  --am-space-24: 6rem;
+  --am-space-1: 4px;
+  --am-space-2: 8px;
+  --am-space-3: 12px;
+  --am-space-4: 16px;
+  --am-space-5: 20px;
+  --am-space-6: 24px;
+  --am-space-8: 32px;
+  --am-space-10: 40px;
+  --am-space-12: 48px;
+  --am-space-16: 64px;
 
-  --am-radius-sm: 4px;
-  --am-radius-md: 8px;
-  --am-radius-lg: 12px;
-  --am-radius-xl: 16px;
+  --am-page-pad: 20px;
+
+  /* Radius */
+  --am-radius-xs: 6px;
+  --am-radius-sm: 8px;
+  --am-radius-md: 12px;
+  --am-radius-lg: 16px;
+  --am-radius-xl: 20px;
   --am-radius-2xl: 24px;
+  --am-radius-3xl: 32px;
   --am-radius-full: 9999px;
-  --am-radius-icon: 22%;
-}
+  --am-radius-button: 14px;
+  --am-radius-input: 14px;
+  --am-radius-card: 20px;
+  --am-radius-sheet: 24px;
 
-html {
-  color-scheme: light;
-  background: var(--am-color-background);
-  color: var(--am-color-text);
-  font-family: var(--am-font-sans);
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-html[data-theme="dark"] {
-  color-scheme: dark;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--am-font-display);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-  color: var(--am-color-text);
-}
-
-
-/* Hareket, ızgara, katman — v1.1, geriye uyumlu eklenti */
-:root {
-  --am-motion-fast: 120ms;
-  --am-motion-base: 180ms;
-  --am-motion-medium: 240ms;
-  --am-motion-slow: 320ms;
+  /* Motion */
   --am-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --am-ease-in-out: cubic-bezier(0.45, 0, 0.15, 1);
   --am-ease-press: cubic-bezier(0.3, 0, 0.7, 1);
+  --am-dur-fast: 120ms;
+  --am-dur-base: 180ms;
+  --am-dur-medium: 240ms;
+  --am-dur-slow: 320ms;
+  --am-dur-sheet: 420ms;
+
+  /* Touch / layout */
+  --am-touch: 44px;
+  --am-touch-lg: 48px;
+  --am-btn-h: 52px;
+  --am-input-h: 48px;
+  --am-chip-h: 40px;
+  --am-tab-h: 56px;
+  --am-header-h: 56px;
+  --am-status-h: 47px;
+  --am-home-ind: 20px;
+  --am-safe-top: env(safe-area-inset-top, 0px);
+  --am-safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Focus */
+  --am-focus-ring: 0 0 0 3px #ffffff, 0 0 0 5px #e4572e;
+
+  /* Z */
+  --am-z-header: 40;
+  --am-z-cta: 45;
+  --am-z-tab: 50;
+  --am-z-overlay: 60;
+  --am-z-sheet: 75;
+  --am-z-toast: 90;
+
+  /* App frame */
+  --am-app-width: 390px;
+  --am-app-height: 844px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --am-dur-fast: 80ms;
+    --am-dur-base: 80ms;
+    --am-dur-medium: 80ms;
+    --am-dur-slow: 80ms;
+    --am-dur-sheet: 80ms;
+  }
+}
+
+/* v1 isimleri — v2 kaynak. Pazarlama CSS ve eski bileşenler kırılmasın. */
+:root {
+  --am-brand-navy: var(--am-navy);
+  --am-brand-navy-deep: var(--am-navy-deep);
+  --am-brand-navy-mid: var(--am-navy-mid);
+  --am-brand-aegean: #1f6a8f;
+  --am-brand-teal: var(--am-teal);
+  --am-brand-teal-dark: var(--am-teal-dark);
+  --am-brand-teal-soft: var(--am-teal-soft);
+  --am-brand-teal-light: var(--am-teal-light);
+  --am-brand-coral: var(--am-coral);
+  --am-brand-coral-dark: var(--am-coral-dark);
+  --am-brand-coral-light: var(--am-coral-light);
+  --am-brand-coral-soft: var(--am-coral-soft);
+  --am-brand-sand: var(--am-sand);
+  --am-brand-sand-dark: var(--am-sand-dark);
+  --am-brand-cream: var(--am-cream);
+  --am-brand-white: var(--am-white);
+  --am-brand-ink: #12110f;
+  --am-brand-muted: #6e5e4e;
+  --am-brand-live: var(--am-color-live);
+
+  --am-motion-fast: var(--am-dur-fast);
+  --am-motion-base: var(--am-dur-base);
+  --am-motion-medium: var(--am-dur-medium);
+  --am-motion-slow: var(--am-dur-slow);
+
+  --am-z-nav: var(--am-z-header);
+  --am-z-dropdown: 55;
+  --am-z-modal: 80;
+
+  --am-shadow-pin: 0 8px 24px rgba(228, 87, 46, 0.28);
+
+  --am-text-xs: var(--am-fs-xs);
+  --am-text-sm: var(--am-fs-sm);
+  --am-text-md: var(--am-fs-md);
+  --am-text-lg: var(--am-fs-lg);
+  --am-text-xl: var(--am-fs-xl);
+  --am-text-2xl: var(--am-fs-2xl);
+  --am-text-3xl: var(--am-fs-3xl);
+  --am-leading-xs: var(--am-lh-xs);
+  --am-leading-sm: var(--am-lh-sm);
+  --am-leading-md: var(--am-lh-md);
+  --am-leading-lg: var(--am-lh-lg);
+  --am-leading-xl: var(--am-lh-xl);
+  --am-leading-2xl: var(--am-lh-2xl);
+  --am-leading-3xl: var(--am-lh-3xl);
+
+  --am-space-20: 80px;
+  --am-space-24: 96px;
+  --am-radius-icon: 22%;
+
+  --am-safe-right: env(safe-area-inset-right, 0px);
+  --am-safe-left: env(safe-area-inset-left, 0px);
+
+  --am-shell-header-height: var(--am-header-h);
+  --am-shell-tabbar-height: var(--am-tab-h);
+  --am-shell-max: var(--am-app-width);
+  --am-shell-max-desk: 430px;
+  --am-shell-blur: 16px;
 
   --am-grid-columns: 12;
-  --am-grid-gutter: 24px;
+  --am-grid-gutter: 16px;
   --am-grid-margin: 80px;
   --am-page-width: 1440px;
   --am-content-width: 1280px;
-
-  --am-z-nav: 40;
-  --am-z-dropdown: 50;
-  --am-z-overlay: 60;
-  --am-z-modal: 70;
-  --am-z-sheet: 75;
-  --am-z-toast: 80;
-
-  --am-focus-ring: 0 0 0 3px #ffffff, 0 0 0 5px var(--am-color-focus);
-
-  /* v1.2 — dil, saat, para birimi gösterimi (geriye uyumlu) */
-  --am-letter-kicker: 0.12em;
+  --am-letter-kicker: 0.08em;
   --am-locale-default: "tr-TR";
   --am-timezone: "Europe/Nicosia";
   --am-currency-default: "TL";
-}
-
-@media (max-width: 860px) {
-  :root { --am-grid-margin: 20px; --am-grid-gutter: 16px; }
 }

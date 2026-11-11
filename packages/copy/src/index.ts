@@ -305,6 +305,7 @@ export const app = {
   bookings: "Randevu",
   favorites: "Favori",
   account: "Hesap",
+  navAria: "Müşteri gezinme",
   signIn: "Giriş",
   signUp: "Kayıt",
   signOut: "Çıkış",
@@ -377,6 +378,16 @@ export const app = {
   bookingNoShow: "Gelmedi",
 } as const;
 
+export const ui = {
+  skipToContent: "İçeriğe geç",
+  close: "Kapat",
+  refreshing: "Yenileniyor",
+  pullToRefresh: "Yenilemek için çek",
+  releaseToRefresh: "Bırakınca yenilenir",
+  loading: "Yükleniyor",
+  sample: "Örnek",
+} as const;
+
 export const legal = {
   pendingTitle: "Kullanıcı onayı bekliyor",
   pendingBody:
@@ -426,6 +437,7 @@ export const yonetimApp = {
   panelName: "Yönetim paneli",
   logout: "Çıkış",
   who: "Süper yönetim",
+  navAria: "Yönetim gezinme",
   navOverview: "Genel bakış",
   navOverviewShort: "Genel",
   navApprovals: "Onaylar",
@@ -825,6 +837,7 @@ export const isletmeApp = {
   requesting: "Gönderiliyor",
   verifying: "Kontrol ediliyor",
   loginError: "Giriş yapılamadı. Telefon ve kodu kontrol edin.",
+  navAria: "İşletme gezinme",
   navToday: "Bugün",
   navOverview: "Genel bakış",
   navOverviewShort: "Genel",

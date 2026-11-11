@@ -5,7 +5,9 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./dekor.css": "./dekor/dekor.css"
+    "./dekor.css": "./dekor/dekor.css",
+    "./ui.css": "./src/ui.css",
+    "./tokens.css": "./src/tokens.css"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

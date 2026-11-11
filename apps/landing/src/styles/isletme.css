@@ -6,12 +6,22 @@ body:has(.isletme-app) .util,
 body:has(.isletme-app) > footer.foot,
 body:has(.isletme-app) .consent-banner,
 body:has(.isletme-app) .install-sheet,
-body:has(.isletme-app) .am-top {
+body:has(.isletme-app) .am-top,
+body:has(.isletme-app) .am-tabs {
   display: none !important;
 }
 
+body:has(.isletme-app) .am-shell {
+  max-width: none;
+  border: 0;
+}
+
 .isletme-app {
-  min-height: 100dvh;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   background: var(--am-color-background);
   color: var(--am-color-text);
 }
@@ -19,7 +29,25 @@ body:has(.isletme-app) .am-top {
 .isletme-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.isletme-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.isletme-top-who {
+  margin: 0;
+  font-size: 12px;
+  color: var(--am-color-text-muted);
+  text-align: right;
+  max-width: 60%;
 }
 
 .isletme-side {
@@ -28,8 +56,9 @@ body:has(.isletme-app) .am-top {
 
 .isletme-main {
   flex: 1;
-  padding: 16px 16px 96px;
+  min-height: 0;
   min-width: 0;
+  padding: 16px 16px 24px;
 }
 
 .isletme-head h1 {
@@ -51,17 +80,7 @@ body:has(.isletme-app) .am-top {
 }
 
 .isletme-tabs {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 72px;
-  padding: 8px 8px 14px;
-  display: grid;
   grid-template-columns: repeat(4, 1fr);
-  background: var(--am-color-surface);
-  border-top: 1px solid var(--am-color-border);
-  z-index: 20;
 }
 
 .isletme-tabs a {
@@ -315,6 +334,15 @@ body:has(.isletme-app) .am-top {
   .isletme-shell {
     display: grid;
     grid-template-columns: 240px 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  .isletme-top {
+    display: none;
+  }
+
+  .isletme-shell > .am-ui-ptr {
+    min-height: 0;
   }
 
   .isletme-side {

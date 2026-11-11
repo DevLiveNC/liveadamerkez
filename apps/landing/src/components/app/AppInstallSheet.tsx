@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { addToHome, install } from "@ada-merkez/copy";
+import { addToHome, install, ui } from "@ada-merkez/copy";
+import { BottomSheet } from "@ada-merkez/ui";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -34,11 +35,20 @@ export function AppInstallSheet() {
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
   }, [pathname]);
 
-  if (hidden || pathname !== "/app") return null;
-  if (!deferred && !ios) return null;
+  const open = !hidden && pathname === "/app" && Boolean(deferred || ios);
+  if (!open) return null;
 
   return (
-    <div className="am-pwa-sheet" role="dialog" aria-labelledby="app-install-title">
+    <BottomSheet
+      open={open}
+      onClose={() => {
+        setHidden(true);
+        sessionStorage.setItem("am_app_install", "1");
+      }}
+      titleId="app-install-title"
+      closeLabel={ui.close}
+      className="am-pwa-sheet"
+    >
       <div className="am-pwa-row">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/app/icons/icon-192.png" alt="" width={56} height={56} />
@@ -74,6 +84,6 @@ export function AppInstallSheet() {
       >
         {install.dismiss}
       </button>
-    </div>
+    </BottomSheet>
   );
 }

@@ -1,0 +1,16 @@
+/* UI alias — kaynak packages/brand/tokens.css v2.0.0 */
+:root {
+  --am-ui-surface: var(--am-color-surface);
+  --am-ui-text: var(--am-color-text);
+  --am-ui-muted: var(--am-color-text-muted);
+  --am-ui-border: var(--am-color-border);
+  --am-ui-radius-card: var(--am-radius-card);
+  --am-ui-radius-control: var(--am-radius-button);
+  --am-ui-shadow-card: var(--am-elev-2);
+  --am-ui-shadow-card-hover: var(--am-elev-3);
+  --am-ui-chart: var(--am-navy);
+  --am-ui-chart-alt: var(--am-teal);
+  --am-ui-chart-accent: var(--am-coral);
+  --am-ui-skeleton: var(--am-sand-dark);
+  --am-ptr-threshold: 56px;
+}
