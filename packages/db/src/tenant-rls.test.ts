@@ -36,10 +36,12 @@ describe.skipIf(!hasDb)("tenant isolation at API and DB layers", () => {
       [bookingA, tenantA, staffA],
     );
 
-    await expect(getBookingForTenant(tenantA, bookingA)).resolves.toMatchObject({
+    const own = await getBookingForTenant(tenantA, bookingA);
+    expect(own).toMatchObject({
       id: bookingA,
       tenantId: tenantA,
     });
+    expect(own && "customerPhone" in own).toBe(false);
     await expect(getBookingForTenant(tenantB, bookingA)).rejects.toBeInstanceOf(
       TenantAccessError,
     );

@@ -4,7 +4,7 @@ import { closePool, getPool, isDatabaseConfigured } from "./client.js";
 import { migrate } from "./migrate.js";
 import { createAccount } from "./accounts.js";
 import { ForbiddenRoleError, upsertSeedUser } from "./isletme.js";
-import { listAdminBookings } from "./yonetim.js";
+import { listAdminBookings, listAdminUsers } from "./yonetim.js";
 
 const hasDb = isDatabaseConfigured();
 
@@ -57,5 +57,15 @@ describe.skipIf(!hasDb)("yonetim seed, roller ve KVKK", () => {
     expect(hit).toBeTruthy();
     expect(hit && "customerPhone" in hit).toBe(false);
     expect(JSON.stringify(rows)).not.toContain(phone);
+  });
+
+  it("listAdminUsers ada_app + app.is_admin yolundan okur", async () => {
+    process.env.ALLOW_ADMIN_SEED = "true";
+    const phone = `+90553${Math.floor(Math.random() * 1_000_000)
+      .toString()
+      .padStart(7, "0")}`;
+    const admin = await upsertSeedUser({ phone, role: "admin", displayName: "Yönetici" });
+    const users = await listAdminUsers();
+    expect(users.some((row) => row.id === admin.id && row.role === "admin")).toBe(true);
   });
 });

@@ -5,7 +5,7 @@ import { requireAdminDb } from "../../../../lib/admin-guard";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const auth = requireAdminDb(request);
+  const auth = await requireAdminDb(request);
   if (!auth.ok) return auth.response;
   const status = new URL(request.url).searchParams.get("status") ?? undefined;
   const businesses = await listAdminBusinesses(status || undefined);

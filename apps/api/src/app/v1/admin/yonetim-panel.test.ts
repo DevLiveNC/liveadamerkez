@@ -55,6 +55,13 @@ describe.skipIf(!hasDb)("yönetici paneli yetki", () => {
     expect(forbidden.status).toBe(403);
     expect(forbidden.headers.get("cache-control")).toBe("no-store");
 
+    const stolenAdminJwt = await businessesGet(
+      new Request("http://api.test/v1/admin/businesses", {
+        headers: auth(customer.id, "admin"),
+      }),
+    );
+    expect(stolenAdminJwt.status).toBe(403);
+
     const tenantId = randomUUID();
     await getPool().query(
       `INSERT INTO business (id, name, slug, status) VALUES ($1, $2, $3, 'pending')`,
