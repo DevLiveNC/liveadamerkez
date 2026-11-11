@@ -12,9 +12,9 @@ export function DiscoverHeader() {
         <UiIcon name="chevron" className="am-icon am-icon-sm" />
       </button>
       <div className="am-header-side">
-        <button className="am-icon-btn" type="button" aria-label={app.notifications} disabled>
+        <Link className="am-icon-btn" href="/app/randevular#bildirimler" aria-label={app.notifications}>
           <UiIcon name="bell" />
-        </button>
+        </Link>
         <span className="am-logo-sq">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={ICON_SRC} width={32} height={32} alt={app.title} />

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { isletmeApp } from "@ada-merkez/copy";
 import { EmptyKabuki } from "../../../../components/isletme/EmptyKabuki";
+import { SuggestSlotButton } from "../../../../components/isletme/SuggestSlotButton";
 import {
   fetchBookings,
   fetchServices,
@@ -97,6 +98,7 @@ export function GelenView() {
                 >
                   {isletmeApp.reject}
                 </button>
+                <SuggestSlotButton id={row.id} busy={busyId === row.id} onDone={load} />
               </div>
             </article>
           );

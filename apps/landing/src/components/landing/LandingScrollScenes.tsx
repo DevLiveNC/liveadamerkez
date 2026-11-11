@@ -8,7 +8,7 @@ import { readMotionSeconds } from "../../lib/motion-tokens";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 function playLandingScenes(root: HTMLElement) {
-  const duration = readMotionSeconds("--motion-duration-slow", 0.32);
+  const duration = readMotionSeconds("--motion-duration-base", 0.14);
   const targets = [...root.querySelectorAll<HTMLElement>(
     ".cat, .ex, .ev, .pilot, .tool, .rail-item, .biz-stat, .kabuki--compact",
   )].filter((el) => !el.closest(".hero"));
@@ -23,11 +23,11 @@ function playLandingScenes(root: HTMLElement) {
       if (!incoming.length) return;
       gsap.fromTo(
         incoming,
-        { y: 16 },
+        { y: 8 },
         {
           y: 0,
           duration,
-          stagger: 0.05,
+          stagger: 0.03,
           ease: "power2.out",
           overwrite: true,
           force3D: true,

@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 const Body = z.object({
   phone: z.string().trim().min(8).max(24),
-  code: z.string().trim().min(4).max(8),
+  code: z.string().trim().regex(/^\d{6}$/),
   role: z.enum(["customer", "business", "admin"]),
   mode: z.enum(["login", "register"]).optional(),
   name: z.string().trim().min(2).max(80).optional(),

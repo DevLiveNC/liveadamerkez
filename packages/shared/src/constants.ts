@@ -38,6 +38,7 @@ export const BUSINESS_SECTORS = ["kuafor", "klinik", "restoran", "diger"] as con
 export type BusinessSector = (typeof BUSINESS_SECTORS)[number];
 
 export const OTP_POLICY = {
+  codeLength: 6,
   maxSendsPerWindow: 3,
   maxSendsPerIpWindow: 8,
   windowMs: 15 * 60 * 1000,

@@ -150,27 +150,53 @@
   --am3-info: #0B5FA5;
   --am3-font-display: "Plus Jakarta Sans", system-ui, sans-serif;
   --am3-font-body: Inter, system-ui, sans-serif;
-  --am3-radius-sm: 10px;
-  --am3-radius-md: 16px;
-  --am3-radius-lg: 24px;
-  --am3-radius-xl: 36px;
+  --am3-radius-sm: 8px;
+  --am3-radius-md: 12px;
+  --am3-radius-lg: 16px;
+  --am3-radius-xl: 24px;
   --am3-radius-pill: 999px;
-  --am3-shadow-pop: 0 2px 0 rgba(15,44,68,.10), 0 18px 40px -12px rgba(15,44,68,.28);
-  --am3-shadow-sticker: 4px 4px 0 #0F2C44;
+  --am3-shadow-xs: 0 1px 2px rgba(15, 44, 68, 0.05);
+  --am3-shadow-sm: 0 2px 8px rgba(15, 44, 68, 0.06);
+  --am3-shadow-md: 0 6px 16px -4px rgba(15, 44, 68, 0.1);
+  --am3-shadow-lg: 0 12px 28px -8px rgba(15, 44, 68, 0.12);
+  --am3-shadow-pop: var(--am3-shadow-md);
+  --am3-shadow-sticker: var(--am3-shadow-sm);
+  --am3-texture-opacity: 0.06;
+  --am3-fs-sm: 13px;
+  --am3-fs-md: 15px;
+  --am3-fs-lg: 17px;
+  --am3-fs-xl: 19px;
+  --am3-fs-2xl: 22px;
+  --am3-fs-3xl: 28px;
+  --am3-space-page: 16px;
   --am3-ease-out: cubic-bezier(.22,1,.36,1);
   --am3-ease-spring: cubic-bezier(.34,1.56,.64,1);
   --am3-ease-inout: cubic-bezier(.65,0,.35,1);
+  --am3-motion-hero-spin: 80s;
+  --am3-motion-hero-drift: 28s;
+  --am3-motion-hero-enter: 0.42s;
 
-  --motion-duration-fast: 120ms;
-  --motion-duration-base: 180ms;
-  --motion-duration-medium: 240ms;
-  --motion-duration-slow: 320ms;
+  --motion-duration-fast: 90ms;
+  --motion-duration-base: 140ms;
+  --motion-duration-medium: 180ms;
+  --motion-duration-slow: 220ms;
   --motion-ease-out: var(--am3-ease-out);
   --motion-ease-in-out: var(--am3-ease-inout);
   --motion-ease-spring: var(--am3-ease-spring);
   --motion-ease-press: cubic-bezier(0.3, 0, 0.7, 1);
 }
 
+.am3-desen-dalga,
+.am3-desen-kum,
+.am3-desen-lefkara,
+.am3-desen-kayik,
+.am3-desen-harnup,
+.am3-desen-zeytin,
+.am3-desen-begonvil {
+  background-repeat: repeat;
+  background-size: 84px;
+  opacity: var(--am3-texture-opacity);
+}
 .am3-desen-dalga { background-image: url("/v3/desen/dalga.svg"); }
 .am3-desen-kum { background-image: url("/v3/desen/kum.svg"); }
 .am3-desen-lefkara { background-image: url("/v3/desen/lefkara.svg"); }
@@ -364,6 +390,39 @@
   --am-ease-out: var(--motion-ease-out);
   --am-ease-in-out: var(--motion-ease-in-out);
   --am-ease-press: var(--motion-ease-press);
+
+  --am-elev-1: var(--am3-shadow-xs);
+  --am-elev-2: var(--am3-shadow-sm);
+  --am-elev-3: var(--am3-shadow-md);
+  --am-elev-4: var(--am3-shadow-lg);
+  --am-elev-5: var(--am3-shadow-lg);
+
+  --am-radius-sm: var(--am3-radius-sm);
+  --am-radius-md: var(--am3-radius-md);
+  --am-radius-lg: var(--am3-radius-lg);
+  --am-radius-xl: var(--am3-radius-xl);
+  --am-radius-2xl: var(--am3-radius-xl);
+  --am-radius-button: var(--am3-radius-md);
+  --am-radius-input: var(--am3-radius-md);
+  --am-radius-card: var(--am3-radius-lg);
+  --am-radius-sheet: var(--am3-radius-lg);
+
+  --am-fs-sm: var(--am3-fs-sm);
+  --am-fs-md: var(--am3-fs-md);
+  --am-fs-lg: var(--am3-fs-lg);
+  --am-fs-xl: var(--am3-fs-xl);
+  --am-fs-title: var(--am3-fs-xl);
+  --am-fs-2xl: var(--am3-fs-2xl);
+  --am-fs-3xl: var(--am3-fs-3xl);
+  --am-page-pad: var(--am3-space-page);
+}
+
+[data-dekor="app-isletme"],
+[data-dekor="app-yonetici"] {
+  --color-background: var(--am3-hellim-50);
+  --color-surface: var(--am3-surface);
+  --am3-texture-opacity: 0.04;
+  --am-color-accent: var(--am3-accent);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -31,6 +31,7 @@ export const ctaEn = {
 export const nav = {
   discover: "Keşif",
   how: "Nasıl çalışır",
+  trust: "Güven",
   whatsapp: "WhatsApp ile",
   business: "İşletmeler",
   pilot: "Pilot",
@@ -331,8 +332,10 @@ export const app = {
   sampleEvents: "Örnek etkinlikler",
   dateSoon: "Tarih yakında",
   beauty: "Güzellik",
+  cafe: "Kafe",
   sport: "Spor",
   beach: "Sahil",
+  categorySoonBody: "Bu kategori henüz açık değil.",
   newBadge: "Yeni",
   clearSearch: "Temizle",
   filters: "Filtreler",
@@ -355,7 +358,8 @@ export const app = {
   admin: "Yönetici",
   roleTabs: "Hesap türü",
   phone: "Telefon",
-  phonePlaceholder: "05xx xxx xx xx",
+  phonePlaceholder: "+90 5xx xxx xx xx",
+  phoneHint: "Yalnız +90 (Kuzey Kıbrıs ve Türkiye).",
   name: "Ad",
   namePlaceholder: "Adınız",
   code: "Doğrulama kodu",
@@ -424,8 +428,8 @@ export const app = {
   resto: "Restoran",
   events: "Etkinlik",
   back: "Geri",
-  invalidPhone: "Geçerli bir telefon yaz.",
-  invalidCode: "Kodu kontrol et.",
+  invalidPhone: "Yalnız +90 numarası kabul edilir.",
+  invalidCode: "6 haneli kodu yaz.",
   invalidName: "Ad en az iki karakter olmalı.",
   authUnavailable: "Giriş şu anda alınamıyor. Lütfen sonra yeniden dene.",
   codeSent: "Kod gönderildi. Telefonuna gelen kodu yaz.",
@@ -442,6 +446,13 @@ export const app = {
   bookingConfirmed: "Onaylandı",
   bookingCancelled: "İptal",
   bookingNoShow: "Gelmedi",
+  notifyTitle: "Bildirimler",
+  notifyEmptyTitle: "Bildirim yok",
+  notifyEmptyBody: "Onay veya başka saat önerisi gelince burada görünür.",
+  notifyConfirmedTitle: "Randevun onaylandı",
+  notifyConfirmedBody: "talebini onayladı.",
+  notifySuggestTitle: "Başka saat önerildi",
+  notifySuggestBody: "başka bir saat önerdi.",
 } as const;
 
 export const ui = {
@@ -782,6 +793,25 @@ export const events = {
   ],
 } as const;
 
+export const trust = {
+  kicker: "Güven",
+  title: "Nasıl çalışır",
+  lede: "İşletmeyi bul, saati seç, onay bekle. Aşağıdaki maddeler ürünün bugün yaptığı işlerdir.",
+  s1Title: "İşletmeyi bul",
+  s1Body: "Şehir ve kategori ile bak. Uygulama keşif listesini açar.",
+  s2Title: "Saati seç",
+  s2Body: "Uygun saati görür, talep gönderirsin. Talep onay bekler.",
+  s3Title: "Onayı takip et",
+  s3Body: "İşletme onaylar veya başka saat önerir. Durum Randevularım’da durur.",
+  securityTitle: "Güvenlik",
+  otp: "Giriş tek kullanımlık 6 haneli kodla.",
+  tls: "Bağlantı HTTPS ile şifrelenir.",
+  mask: "Telefon numarası listelerde maskelenir.",
+  kvkkTitle: "KVKK uyumuna hazırlık",
+  kvkkBody:
+    "Aydınlatma metni ve silme talebi vardır. Bu bir sertifika, denetim veya tam uyum iddiası değildir.",
+} as const;
+
 export const howBoard = {
   kicker: "Nasıl çalışır",
   title: "Saat sormak için hattı meşgul etmeden.",
@@ -903,7 +933,7 @@ export const faq = {
     },
     {
       q: "Ücret var mı?",
-      a: "Fiyat ve paketler henüz yayımlanmadı. Paylaşılınca burada yazarız.",
+      a: "Müşteriye ücretsiz. İşletme paketleri henüz yayımlanmadı; paylaşılınca burada yazarız.",
     },
   ],
 } as const;
@@ -997,6 +1027,9 @@ export const isletmeApp = {
   appChannel: "Uygulama",
   approve: "Onayla",
   reject: "Reddet",
+  suggestSlot: "Başka saat öner",
+  suggestSend: "Öneriyi gönder",
+  suggestWhen: "Önerilen saat",
   inboxEmptyTitle: "Bekleyen istek yok",
   inboxEmptyBody: "Gelen rezervasyon veya WhatsApp talebi olunca burada listelenir.",
   slotsTitle: "Boş saatler",

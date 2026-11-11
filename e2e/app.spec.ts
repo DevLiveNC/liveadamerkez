@@ -28,6 +28,11 @@ test("PWA app shell is guest-visible and login is role-tabbed", async ({ page })
   await expect(page.getByRole("heading", { name: "Keşif" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Kuaför", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Klinik", exact: true })).toBeVisible();
+  await expect(page.locator(".am-chip[aria-disabled='true']").filter({ hasText: "Kafe" })).toBeVisible();
+  await expect(page.locator(".am-chip[aria-disabled='true']").filter({ hasText: "Spor" })).toBeVisible();
+  await expect(page.locator(".am-chip[aria-disabled='true']").filter({ hasText: "Sahil" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^Kafe/ })).toHaveCount(0);
+  await expect(page.locator(".am-greet-img")).toHaveCount(0);
   await expect(page.getByText("Örnek").first()).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("data-dekor", "app-musteri");
   await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-musteri");

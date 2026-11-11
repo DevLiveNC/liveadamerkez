@@ -48,6 +48,12 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   ).toBeVisible();
   await expect(page.getByRole("link", { name: "Uygulamayı aç" }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Uygulamayı aç" }).first()).toHaveAttribute("href", "/app");
+  await expect(page.getByRole("heading", { name: "Nasıl çalışır" })).toBeVisible();
+  await expect(page.getByText("Giriş tek kullanımlık 6 haneli kodla.")).toBeVisible();
+  await expect(page.getByText("Bağlantı HTTPS ile şifrelenir.")).toBeVisible();
+  await expect(page.getByText("Telefon numarası listelerde maskelenir.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "KVKK uyumuna hazırlık" })).toBeVisible();
+  await expect(page.locator("body")).toContainText("Müşteriye ücretsiz");
   await expect(page.getByRole("link", { name: "Kendi işletmeni ekle" }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Kendi işletmeni ekle" }).first()).toHaveAttribute(
     "href",

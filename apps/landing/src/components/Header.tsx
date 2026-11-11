@@ -10,6 +10,7 @@ import { UtilBar } from "./UtilBar";
 const LANDING_LINKS = [
   { href: "/#kategoriler", label: nav.discover },
   { href: "/#nasil", label: nav.how },
+  { href: "/#guven", label: nav.trust },
   { href: "/#whatsapp", label: nav.whatsapp },
   { href: "/#isletmeler", label: nav.business },
   { href: "/#pilot", label: nav.pilot },

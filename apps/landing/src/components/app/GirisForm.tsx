@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { app, hero, kabuki } from "@ada-merkez/copy";
 import {
   authPageUrl,
+  OTP_POLICY,
   readNextParam,
   safeAppPath,
+  toE164,
   type AuthMode,
   type SessionRole,
 } from "@ada-merkez/shared";
@@ -89,7 +91,7 @@ export function GirisForm({
 
   async function sendCode() {
     setError(null);
-    if (phone.trim().length < 10) {
+    if (!toE164(phone)) {
       setError(app.invalidPhone);
       return;
     }
@@ -125,7 +127,7 @@ export function GirisForm({
 
   async function verify() {
     setError(null);
-    if (code.trim().length < 4) {
+    if (code.trim().length !== OTP_POLICY.codeLength) {
       setError(app.invalidCode);
       return;
     }
@@ -284,6 +286,7 @@ export function GirisForm({
                   onChange={(event) => setPhone(event.target.value)}
                   placeholder={app.phonePlaceholder}
                 />
+                <p className="am-subtle">{app.phoneHint}</p>
               </div>
 
               {sent ? (
@@ -295,9 +298,11 @@ export function GirisForm({
                     className="am-input"
                     inputMode="numeric"
                     autoComplete="one-time-code"
+                    maxLength={OTP_POLICY.codeLength}
+                    pattern="\d{6}"
                     value={code}
                     aria-invalid={invalid || undefined}
-                    onChange={(event) => setCode(event.target.value)}
+                    onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, OTP_POLICY.codeLength))}
                   />
                   <p className="am-subtle">{app.codeSent}</p>
                   {debugCode ? (

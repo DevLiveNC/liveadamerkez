@@ -552,6 +552,12 @@ body.am-app .am-greet{
   gap: 12px;
   margin: 8px 0 16px;
 }
+body.am-app .am-greet:not(:has(.am-greet-img)) .am-balloon{
+  border-radius: var(--am-radius-lg);
+}
+body.am-app .am-greet:not(:has(.am-greet-img)) .am-balloon::before{
+  display: none;
+}
 body.am-app .am-greet-img{
   width: 104px; height: 104px;
   flex-shrink: 0;

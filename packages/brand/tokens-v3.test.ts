@@ -54,6 +54,10 @@ describe("tokens-v3 palette source", () => {
     expect(css).toContain("--am-motion-fast: var(--motion-duration-fast)");
     expect(css).toContain("--am-ease-out: var(--motion-ease-out)");
     expect(css).toContain("--am-dur-fast: var(--motion-duration-fast)");
+    expect(css).toContain("--am-elev-2: var(--am3-shadow-sm)");
+    expect(css).toContain("--am-radius-card: var(--am3-radius-lg)");
+    expect(css).toContain("--am3-texture-opacity: 0.06");
+    expect(css).not.toContain("4px 4px 0");
   });
 
   it("collapses motion durations when reduced motion is preferred", () => {
@@ -71,5 +75,7 @@ describe("tokens-v3 palette source", () => {
     expect(json.renk?.hellim?.["50"]).toMatch(/^#FFFBF2$/i);
     expect(css).toContain("--am3-bg: #FFFBF2");
     expect(css).toContain("url(\"/v3/desen/dalga.svg\")");
+    expect(css).toContain("--am3-radius-md: 12px");
+    expect(css).toContain("--am3-shadow-sticker: var(--am3-shadow-sm)");
   });
 });

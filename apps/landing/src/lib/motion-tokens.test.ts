@@ -15,15 +15,15 @@ const brandCss = readFileSync(join(repoRoot, "packages/brand/tokens-v3.css"), "u
 
 describe("motion infrastructure", () => {
   it("keeps JS duration tokens aligned with CSS seconds", () => {
-    expect(MOTION_DURATION_S.fast).toBe(0.12);
-    expect(MOTION_DURATION_S.base).toBe(0.18);
-    expect(MOTION_DURATION_S.medium).toBe(0.24);
-    expect(MOTION_DURATION_S.slow).toBe(0.32);
+    expect(MOTION_DURATION_S.fast).toBe(0.09);
+    expect(MOTION_DURATION_S.base).toBe(0.14);
+    expect(MOTION_DURATION_S.medium).toBe(0.18);
+    expect(MOTION_DURATION_S.slow).toBe(0.22);
     expect(MOTION_EASE.out).toEqual([0.22, 1, 0.36, 1]);
     expect(MOTION_EASE.inOut).toEqual([0.65, 0, 0.35, 1]);
     expect(MOTION_EASE.spring).toEqual([0.34, 1.56, 0.64, 1]);
     expect(brandCss).toContain("--am3-ease-out");
-    expect(brandCss).toContain("--motion-duration-base: 180ms");
+    expect(brandCss).toContain("--motion-duration-base: 140ms");
   });
 
   it("loads GSAP only through a client dynamic import", () => {

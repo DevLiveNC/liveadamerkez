@@ -11,14 +11,17 @@ import { loadDiscover } from "../../lib/discover";
 import { greetingForNicosia } from "../../lib/nicosia-date";
 import { skeletonQueryEnabled } from "../../lib/skeleton-query";
 
+const SOON_CATEGORIES = new Set(["kafe", "spor", "sahil"]);
+
 const FILTERS = [
-  { id: "all", label: app.all, category: "" },
-  { id: "hair", label: app.hair, category: "kuafor" },
-  { id: "beauty", label: app.beauty, category: "guzellik" },
-  { id: "clinic", label: app.clinic, category: "klinik" },
-  { id: "resto", label: app.resto, category: "restoran" },
-  { id: "sport", label: app.sport, category: "spor" },
-  { id: "beach", label: app.beach, category: "sahil" },
+  { id: "all", label: app.all, category: "", soon: false },
+  { id: "hair", label: app.hair, category: "kuafor", soon: false },
+  { id: "beauty", label: app.beauty, category: "guzellik", soon: false },
+  { id: "clinic", label: app.clinic, category: "klinik", soon: false },
+  { id: "resto", label: app.resto, category: "restoran", soon: false },
+  { id: "cafe", label: app.cafe, category: "kafe", soon: true },
+  { id: "sport", label: app.sport, category: "spor", soon: true },
+  { id: "beach", label: app.beach, category: "sahil", soon: true },
 ] as const;
 
 function hrefFor(category: string, q: string, liste?: boolean) {
@@ -40,7 +43,10 @@ async function HomeInner({
   listMode: boolean;
 }) {
   const session = await getSession();
-  const { cards, fromExamples } = await loadDiscover({ q, category });
+  const soonCategory = SOON_CATEGORIES.has(category);
+  const { cards, fromExamples } = soonCategory
+    ? { cards: [] as Awaited<ReturnType<typeof loadDiscover>>["cards"], fromExamples: false }
+    : await loadDiscover({ q, category });
 
   return (
     <>
@@ -48,15 +54,6 @@ async function HomeInner({
       {listMode ? null : <h1 className="visually-hidden">{app.homeTitle}</h1>}
       {listMode ? null : (
         <div className="am-greet">
-          <div className="am-greet-img">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/landing/maskot/kabuki-selam-512.webp"
-              width={104}
-              height={104}
-              alt=""
-            />
-          </div>
           <div className="am-balloon">
             <p>{greetingForNicosia()}</p>
             <p className="am-slogan">{app.slogan}</p>
@@ -86,6 +83,13 @@ async function HomeInner({
       </form>
       <div className="am-chips" aria-label={app.filters}>
         {FILTERS.map((filter) => {
+          if (filter.soon) {
+            return (
+              <span key={filter.id} className="am-chip" aria-disabled="true">
+                {filter.label} <Badge tone="soon">{app.soon}</Badge>
+              </span>
+            );
+          }
           const on = (category || "") === filter.category;
           return (
             <Link
@@ -117,7 +121,11 @@ async function HomeInner({
               ))}
             </div>
           ) : (
-            <EmptyState kind="sonuc-yok" />
+            <EmptyState
+              kind="sonuc-yok"
+              title={soonCategory ? app.soon : undefined}
+              body={soonCategory ? app.categorySoonBody : undefined}
+            />
           )}
         </>
       ) : (
@@ -135,7 +143,11 @@ async function HomeInner({
               ))}
             </div>
           ) : (
-            <EmptyState kind="sonuc-yok" />
+            <EmptyState
+              kind="sonuc-yok"
+              title={soonCategory ? app.soon : undefined}
+              body={soonCategory ? app.categorySoonBody : undefined}
+            />
           )}
           <div className="am-sec">
             <h2>{app.sampleEvents}</h2>

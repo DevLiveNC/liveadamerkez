@@ -3,6 +3,7 @@ import {
   evaluateOtpIpSend,
   evaluateOtpSend,
   evaluateOtpVerify,
+  OTP_POLICY,
   type OtpChallengeState,
   type OtpIpState,
 } from "@ada-merkez/shared";
@@ -121,7 +122,7 @@ export async function requestOtp(
     return { ...decision, otpCode: undefined as string | undefined };
   }
 
-  const otpCode = generateOtpCode(6);
+  const otpCode = generateOtpCode(OTP_POLICY.codeLength);
   const codeHash = hashOtp(phone, purpose, otpCode);
   await persist(phone, purpose, decision.next, { codeHash, ipHash: ipHash ?? null });
   return { ...decision, otpCode };
@@ -139,8 +140,9 @@ export async function verifyOtp(
     .where(and(eq(otpChallenge.phone, phone), eq(otpChallenge.purpose, purpose)))
     .orderBy(desc(otpChallenge.updatedAt))
     .limit(1);
+  const lengthOk = code.length === OTP_POLICY.codeLength && /^\d+$/.test(code);
   const expected = hashOtp(phone, purpose, code);
-  const codeMatches = existing ? otpHashesEqual(existing.codeHash, expected) : false;
+  const codeMatches = Boolean(lengthOk && existing && otpHashesEqual(existing.codeHash, expected));
   const decision = evaluateOtpVerify(existing ? toState(existing) : null, now, codeMatches);
   if (existing) {
     await persist(phone, purpose, decision.next, {

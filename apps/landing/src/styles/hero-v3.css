@@ -23,7 +23,7 @@
   inset: 0 0 30% 0;
   background: url("/landing/v3/desen/lefkara.svg") repeat;
   background-size: 84px;
-  opacity: 0.16;
+  opacity: var(--am3-texture-opacity);
   z-index: -2;
   -webkit-mask: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.6) 55%, transparent 100%);
   mask: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.6) 55%, transparent 100%);
@@ -46,11 +46,11 @@
 }
 .am-hero-v3 .h3-sun .h3-ticks {
   transform-origin: 200px 200px;
-  animation: h3-spin 120s linear infinite;
+  animation: h3-spin var(--am3-motion-hero-spin) linear infinite;
 }
 .am-hero-v3 .h3-sun .h3-min {
   transform-origin: 200px 200px;
-  animation: h3-spin 18s linear infinite;
+  animation: h3-spin calc(var(--am3-motion-hero-spin) / 5) linear infinite;
 }
 
 .am-hero-v3 .h3-sea {
@@ -68,7 +68,7 @@
   width: 200%;
   height: 100%;
   bottom: 0;
-  animation: h3-drift 22s linear infinite;
+  animation: h3-drift var(--am3-motion-hero-drift) linear infinite;
 }
 .am-hero-v3 .h3-wave.w1 { height: 100%; }
 .am-hero-v3 .h3-wave.w2 { animation-duration: 30s; animation-direction: reverse; height: 84%; }
@@ -187,23 +187,23 @@
   background: var(--am3-mercan-400);
   color: #fff;
   border: 2px solid var(--am3-lacivert-800);
-  box-shadow: 5px 5px 0 var(--am3-lacivert-800);
+  box-shadow: var(--am3-shadow-sticker);
 }
 .am-hero-v3 .h3-btn--sticker {
   background: #fffbf2;
   color: var(--am3-lacivert-800);
   border: 2px solid var(--am3-lacivert-800);
-  box-shadow: 5px 5px 0 var(--am3-lacivert-800);
+  box-shadow: var(--am3-shadow-sticker);
 }
 .am-hero-v3 .h3-btn--coral:hover,
 .am-hero-v3 .h3-btn--sticker:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 var(--am3-lacivert-800);
+  transform: translateY(-1px);
+  box-shadow: var(--am3-shadow-md);
 }
 .am-hero-v3 .h3-btn--coral:active,
 .am-hero-v3 .h3-btn--sticker:active {
-  transform: translate(3px, 3px);
-  box-shadow: 2px 2px 0 var(--am3-lacivert-800);
+  transform: none;
+  box-shadow: var(--am3-shadow-sm);
 }
 
 .am-hero-v3 .h3-copy {
@@ -271,7 +271,7 @@
   border-radius: 0.18em;
   transform: rotate(-2.2deg);
   z-index: -1;
-  box-shadow: 5px 5px 0 var(--am3-lacivert-800);
+  box-shadow: var(--am3-shadow-sticker);
 }
 .am-hero-v3 .h3-sub {
   font: 800 30px/1.15 var(--am3-font-display);
@@ -369,8 +369,8 @@
   width: 230px;
   background: #fffbf2;
   border: 2px solid var(--am3-lacivert-800);
-  box-shadow: 4px 4px 0 var(--am3-lacivert-800);
-  border-radius: 20px 20px 6px 20px;
+  box-shadow: var(--am3-shadow-sticker);
+  border-radius: var(--am3-radius-lg) var(--am3-radius-lg) 6px var(--am3-radius-lg);
   padding: 14px 16px;
   font: 600 16px/1.35 var(--am3-font-body);
   color: var(--am3-lacivert-800);
@@ -398,8 +398,8 @@
   z-index: 6;
   background: #fff;
   border: 2px solid var(--am3-lacivert-800);
-  box-shadow: 5px 5px 0 var(--am3-lacivert-800);
-  border-radius: 22px;
+  box-shadow: var(--am3-shadow-sticker);
+  border-radius: var(--am3-radius-lg);
   padding: 14px;
   transform: rotate(3deg);
   animation: h3-float 6s var(--am3-ease-inout) infinite reverse;
@@ -497,30 +497,30 @@
 .am-hero-v3 .h3-mq svg:nth-of-type(3n + 1) { color: var(--am3-gunbatimi-200); }
 
 @media (prefers-reduced-motion: no-preference) {
-  .am-hero-v3.is-in .h3-kicker { animation: h3-rise 0.7s var(--am3-ease-out) 0.05s both; }
-  .am-hero-v3.is-in h1 .w { animation: h3-rise 0.8s var(--am3-ease-out) both; }
-  .am-hero-v3.is-in h1 .w:nth-child(1) { animation-delay: 0.12s; }
-  .am-hero-v3.is-in h1 .w:nth-child(2) { animation-delay: 0.22s; }
-  .am-hero-v3.is-in h1 .l2 .w { animation-delay: 0.34s; }
-  .am-hero-v3.is-in .h3-sub { animation: h3-rise 0.7s var(--am3-ease-out) 0.46s both; }
-  .am-hero-v3.is-in .h3-lede { animation: h3-rise 0.7s var(--am3-ease-out) 0.54s both; }
-  .am-hero-v3.is-in .h3-cta { animation: h3-rise 0.7s var(--am3-ease-out) 0.62s both; }
-  .am-hero-v3.is-in .h3-chips { animation: h3-rise 0.7s var(--am3-ease-out) 0.7s both; }
+  .am-hero-v3.is-in .h3-kicker { animation: h3-rise var(--am3-motion-hero-enter) var(--am3-ease-out) 0.04s both; }
+  .am-hero-v3.is-in h1 .w { animation: h3-rise var(--am3-motion-hero-enter) var(--am3-ease-out) both; }
+  .am-hero-v3.is-in h1 .w:nth-child(1) { animation-delay: 0.06s; }
+  .am-hero-v3.is-in h1 .w:nth-child(2) { animation-delay: 0.1s; }
+  .am-hero-v3.is-in h1 .l2 .w { animation-delay: 0.14s; }
+  .am-hero-v3.is-in .h3-sub { animation: h3-rise var(--am3-motion-hero-enter) var(--am3-ease-out) 0.18s both; }
+  .am-hero-v3.is-in .h3-lede { animation: h3-rise var(--am3-motion-hero-enter) var(--am3-ease-out) 0.22s both; }
+  .am-hero-v3.is-in .h3-cta { animation: h3-rise var(--am3-motion-hero-enter) var(--am3-ease-out) 0.26s both; }
+  .am-hero-v3.is-in .h3-chips { animation: h3-rise var(--am3-motion-hero-enter) var(--am3-ease-out) 0.3s both; }
 }
 
 @keyframes h3-rise {
-  from { transform: translateY(28px) rotate(var(--r, 0deg)); }
+  from { transform: translateY(10px) rotate(var(--r, 0deg)); }
   to { transform: translateY(0) rotate(var(--r, 0deg)); }
 }
 @keyframes h3-drift { to { transform: translateX(-50%); } }
 @keyframes h3-spin { to { transform: rotate(360deg); } }
 @keyframes h3-bob {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-8px) rotate(2deg); }
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-4px) rotate(1deg); }
 }
 @keyframes h3-float {
   0%, 100% { translate: 0 0; }
-  50% { translate: 0 -10px; }
+  50% { translate: 0 -4px; }
 }
 @keyframes h3-fall {
   0% { transform: translate(0, 0) rotate(0); }

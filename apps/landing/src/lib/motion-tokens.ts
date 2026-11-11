@@ -1,8 +1,8 @@
 export const MOTION_DURATION_S = {
-  fast: 0.12,
-  base: 0.18,
-  medium: 0.24,
-  slow: 0.32,
+  fast: 0.09,
+  base: 0.14,
+  medium: 0.18,
+  slow: 0.22,
 } as const;
 
 export const MOTION_EASE = {

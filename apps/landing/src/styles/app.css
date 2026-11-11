@@ -147,11 +147,37 @@ body.am-app {
 }
 
 .am-empty-art {
-  width: 320px;
-  max-width: min(320px, 100%);
+  width: 160px;
+  max-width: min(160px, 100%);
   height: auto;
   margin: 0 auto 8px;
   display: block;
+}
+
+.am-notify {
+  padding: 8px 0 16px;
+}
+
+.am-notify-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.am-notify-list li {
+  background: var(--am-color-surface);
+  border: 1px solid var(--am-color-border);
+  border-radius: var(--am-radius-md);
+  box-shadow: var(--am-elev-1);
+  padding: 12px 14px;
+}
+
+.am-notify-list p {
+  margin: 4px 0 0;
+  color: var(--am-color-text-muted);
 }
 
 .am-add-shot {

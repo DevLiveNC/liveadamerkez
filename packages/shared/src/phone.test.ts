@@ -7,6 +7,9 @@ describe("E.164", () => {
     expect(toE164("+90 548 888 23 66")).toBe("+905488882366");
     expect(toE164("905331112233")).toBe("+905331112233");
     expect(toE164("12")).toBeNull();
+    expect(toE164("+44 7700 900123")).toBeNull();
+    expect(toE164("00447700900123")).toBeNull();
+    expect(toE164("+1 202 555 0100")).toBeNull();
   });
 });
 

@@ -338,6 +338,25 @@ export const deletionRequest = pgTable("deletion_request", {
   processedAt: timestamp("processed_at", { withTimezone: true }),
 });
 
+export const appNotification = pgTable(
+  "app_notification",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    accountId: uuid("account_id")
+      .notNull()
+      .references(() => appAccount.id),
+    type: text("type").notNull(),
+    title: text("title").notNull(),
+    body: text("body").notNull(),
+    bookingId: uuid("booking_id").references(() => booking.id),
+    payload: jsonb("payload"),
+    channel: text("channel").notNull().default("in_app"),
+    readAt: timestamp("read_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("app_notification_account_idx").on(t.accountId, t.createdAt)],
+);
+
 export const otpChallenge = pgTable(
   "otp_challenge",
   {

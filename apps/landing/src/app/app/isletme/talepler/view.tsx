@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { isletmeApp } from "@ada-merkez/copy";
 import { EmptyKabuki } from "../../../../components/isletme/EmptyKabuki";
+import { SuggestSlotButton } from "../../../../components/isletme/SuggestSlotButton";
 import { IconApp, IconMessage } from "../../../../components/panel/icons";
 import {
   fetchBookings,
@@ -147,7 +148,8 @@ export function TaleplerView() {
                               onClick={() => void act(row.id, "cancelled")}
                             >
                               {isletmeApp.reject}
-                            </button>
+                            </button>{" "}
+                            <SuggestSlotButton id={row.id} busy={busyId === row.id} onDone={load} />
                           </>
                         ) : null}
                       </td>

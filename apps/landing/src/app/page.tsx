@@ -8,6 +8,7 @@ import {
   faq,
   howBoard,
   kabuki,
+  trust,
   later,
   pilotCities,
   search,
@@ -362,6 +363,45 @@ export default function HomePage() {
                 <span style={{ width: 8, height: 8, borderRadius: 99, background: "var(--am-color-live)", display: "inline-block" }} />{" "}
                 {howBoard.status}
               </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="section trust" id="guven">
+        <div className="wrap">
+          <p className="t-label section-kicker">{trust.kicker}</p>
+          <h2 className="t-h2">{trust.title}</h2>
+          <p className="t-lede">{trust.lede}</p>
+          <ol className="trust-steps">
+            <li>
+              <span>01</span>
+              <strong>{trust.s1Title}</strong>
+              <p>{trust.s1Body}</p>
+            </li>
+            <li>
+              <span>02</span>
+              <strong>{trust.s2Title}</strong>
+              <p>{trust.s2Body}</p>
+            </li>
+            <li>
+              <span>03</span>
+              <strong>{trust.s3Title}</strong>
+              <p>{trust.s3Body}</p>
+            </li>
+          </ol>
+          <div className="trust-grid">
+            <article>
+              <h3>{trust.securityTitle}</h3>
+              <ul>
+                <li>{trust.otp}</li>
+                <li>{trust.tls}</li>
+                <li>{trust.mask}</li>
+              </ul>
+            </article>
+            <article>
+              <h3>{trust.kvkkTitle}</h3>
+              <p>{trust.kvkkBody}</p>
             </article>
           </div>
         </div>
