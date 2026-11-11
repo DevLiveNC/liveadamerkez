@@ -201,7 +201,7 @@ test("mobil menü Esc ve dışarı tıklayınca kapanır, odak döner", async ({
   await expect(menu).toBeFocused();
   await menu.click();
   await expect(menu).toHaveAttribute("aria-expanded", "true");
-  await page.locator("main").click({ position: { x: 8, y: 8 } });
+  await page.locator("body").click({ position: { x: 12, y: 400 } });
   await expect(menu).toHaveAttribute("aria-expanded", "false");
   await expect(menu).toBeFocused();
 });
