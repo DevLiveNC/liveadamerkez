@@ -22,7 +22,7 @@ export function AddToHomeSection() {
   }, []);
 
   return (
-    <section className="section" id="uygulama">
+    <section className="section" id="ana-ekrana">
       <div className="wrap">
         <div className="section-intro">
           <div className="lead">

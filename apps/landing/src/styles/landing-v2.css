@@ -1,0 +1,161 @@
+/* Landing UI v2 overlay — token v2 aliases + panel.css .am-land. PWA head/SW dokunulmaz. */
+
+.am-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--am-btn-h, 52px);
+  padding: 0 20px;
+  border-radius: var(--am-radius-button, 14px);
+  font-family: var(--am-font-display);
+  font-weight: 600;
+  font-size: var(--am-fs-md, 16px);
+  line-height: 1;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+.am-btn:active { transform: scale(0.98); }
+.am-btn--sm { min-height: 40px; padding: 0 14px; font-size: 14px; }
+.am-btn--primary { background: var(--am-color-primary); color: var(--am-color-on-primary); }
+.am-btn--ghost {
+  background: transparent;
+  color: var(--am-color-text);
+  border-color: var(--am-color-border);
+}
+.am-btn--soft {
+  background: var(--am-color-secondary-soft, #d8f1ef);
+  color: var(--am-color-secondary-text, #0a4f4d);
+}
+.am-btn[disabled] { opacity: 0.45; pointer-events: none; }
+
+.am-icon-btn {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--am-color-text);
+  border-radius: 12px;
+  cursor: pointer;
+}
+.am-icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.am-kicker {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--am-color-secondary-text);
+}
+
+body.landing header.nav {
+  height: auto;
+  min-height: 72px;
+}
+body.landing .nav-in.am-land-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 72px;
+}
+body.landing .am-land-links {
+  display: flex;
+  gap: 18px;
+  flex: 1;
+}
+body.landing .am-land-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+body.landing .am-land-mob-nav { display: none; }
+
+body.landing main.am-land .hero {
+  padding: 48px 0 48px;
+}
+body.landing main.am-land .hero .t-display {
+  font-size: 56px;
+  line-height: 64px;
+  letter-spacing: -0.03em;
+  max-width: 16ch;
+}
+body.landing main.am-land .hero-copy {
+  gap: 20px;
+  padding-top: 0;
+}
+body.landing main.am-land .hero-stage {
+  min-height: 420px;
+  justify-content: center;
+}
+body.landing main.am-land .hero-stage .device-shot { display: none; }
+body.landing main.am-land .am-hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+body.landing .search-band { padding: 0 0 8px; }
+body.landing .search-bar {
+  border-radius: 16px;
+  box-shadow: var(--am-elev-3);
+  min-height: 64px;
+}
+
+body.landing .section { padding: 80px 0; }
+body.landing .section h2,
+body.landing .t-h2 {
+  letter-spacing: -0.02em;
+}
+
+body.landing .badge-ornek,
+body.landing .badge-soon {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+body.landing .am-land-panel {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 20px 20px;
+  border-top: 1px solid var(--am-color-divider);
+  background: var(--am-color-surface-raised, #fff);
+}
+body.landing .am-land-panel.is-open { display: flex; }
+body.landing .am-land-panel a {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+@media (max-width: 860px) {
+  body.landing .am-land-links,
+  body.landing .am-land-actions .desk-only { display: none !important; }
+  body.landing .am-land-mob-nav { display: flex !important; }
+  body.landing main.am-land .hero { padding: 24px 0 32px; }
+  body.landing main.am-land .hero .t-display {
+    font-size: 32px;
+    line-height: 40px;
+  }
+  body.landing main.am-land .hero-stage { min-height: 200px; }
+  body.landing main.am-land .am-hero-cta .am-btn { width: 100%; }
+  body.landing .section { padding: 48px 0; }
+}
