@@ -48,7 +48,7 @@ export function Header() {
       if (headerRef.current?.contains(target)) return;
       setMenuOpen(false);
       const el = target instanceof Element ? target : null;
-      if (el?.closest("a, button, input, select, textarea, [href]")) return;
+      if (el?.closest("a, button, input, select, textarea")) return;
       window.setTimeout(() => menuBtnRef.current?.focus(), 0);
     };
     document.addEventListener("keydown", onKey);
