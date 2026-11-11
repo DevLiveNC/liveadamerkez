@@ -402,6 +402,7 @@ export const apiMessages = {
   rateLimited: "Çok fazla istek. Lütfen sonra yeniden dene.",
   slotTaken: "Bu saat aralığı dolu.",
   slotUnavailable: "Bu saat artık boş değil.",
+  invalidService: "Hizmet bulunamadı.",
   invalidAuth: "Telefon ve kodu kontrol et.",
   adminRegisterDisabled: "Yönetici kaydı yoktur. Rol sunucuda atanır.",
   accountNotFound: "Bu rolde hesap yok. Müşteri veya işletme için kayıt ol.",

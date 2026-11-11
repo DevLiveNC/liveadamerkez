@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { getDb } from "./client.js";
-import { availabilityRule, business, category, location, service, staff } from "./schema.js";
+import { availabilityRule, business, category, location, service } from "./schema.js";
 
 export type PublicBusiness = {
   id: string;
@@ -33,7 +33,7 @@ export async function listPublishedBusinesses(filters?: {
     .from(business)
     .leftJoin(location, eq(business.locationId, location.id))
     .leftJoin(category, eq(business.categoryId, category.id))
-    .where(eq(business.status, "published"));
+    .where(eq(business.status, "approved"));
 
   const q = filters?.q?.trim().toLocaleLowerCase("tr-TR");
   const cat = filters?.category?.trim().toLocaleLowerCase("tr-TR");
@@ -87,7 +87,7 @@ export async function getPublishedBusiness(id: string) {
     .from(business)
     .leftJoin(location, eq(business.locationId, location.id))
     .leftJoin(category, eq(business.categoryId, category.id))
-    .where(and(eq(business.id, id), eq(business.status, "published")))
+    .where(and(eq(business.id, id), eq(business.status, "approved")))
     .limit(1);
   if (!row) return null;
 
@@ -99,12 +99,12 @@ export async function getPublishedBusiness(id: string) {
       staffId: service.staffId,
     })
     .from(service)
-    .where(eq(service.tenantId, row.id));
+    .where(and(eq(service.tenantId, row.id), eq(service.active, true)));
 
   return { ...row, services };
 }
 
-export async function listServicesForTenant(tenantId: string) {
+export async function listPublicServices(tenantId: string) {
   return getDb()
     .select({
       id: service.id,
@@ -113,24 +113,18 @@ export async function listServicesForTenant(tenantId: string) {
       staffId: service.staffId,
     })
     .from(service)
-    .where(eq(service.tenantId, tenantId));
+    .where(and(eq(service.tenantId, tenantId), eq(service.active, true)));
 }
 
-export async function listAvailabilityForTenant(tenantId: string) {
+export async function listPublicAvailability(tenantId: string) {
   return getDb().select().from(availabilityRule).where(eq(availabilityRule.tenantId, tenantId));
-}
-
-export async function getActiveStaff(tenantId: string, staffId?: string | null) {
-  const filters = [eq(staff.tenantId, tenantId), eq(staff.active, true)];
-  if (staffId) filters.push(eq(staff.id, staffId));
-  return getDb().select().from(staff).where(and(...filters));
 }
 
 export async function findPublishedBusinessId(id: string): Promise<string | null> {
   const [row] = await getDb()
     .select({ id: business.id })
     .from(business)
-    .where(and(eq(business.id, id), eq(business.status, "published")))
+    .where(and(eq(business.id, id), eq(business.status, "approved")))
     .limit(1);
   return row?.id ?? null;
 }

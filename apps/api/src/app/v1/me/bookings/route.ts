@@ -2,6 +2,7 @@ import { z } from "zod";
 import { apiMessages } from "@ada-merkez/copy";
 import {
   BookingConflictError,
+  InvalidServiceError,
   SlotUnavailableError,
   TenantAccessError,
   createCustomerBooking,
@@ -11,6 +12,7 @@ import {
 } from "@ada-merkez/db";
 import { corsHeaders, json, readJson } from "../../../../lib/http";
 import { customerOr401 } from "../../../../lib/auth";
+import { consumeRateLimit, limitRequest } from "../../../../lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +45,14 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return json({ ok: false, code: "INVALID", message: apiMessages.invalidAuth }, 400, headers);
   }
+  const limitedAccount = await consumeRateLimit(`booking:account:${auth.session.sub}`, 8, 10 * 60 * 1000);
+  const limitedIp = await limitRequest(request, "booking", 12, 10 * 60 * 1000);
+  if (!limitedAccount.ok || !limitedIp.ok) {
+    const retryAfterMs =
+      (!limitedAccount.ok ? limitedAccount.retryAfterMs : 0) ||
+      (!limitedIp.ok ? limitedIp.retryAfterMs : 0);
+    return json({ ok: false, code: "RATE_LIMITED", message: apiMessages.rateLimited, retryAfterMs }, 429, headers);
+  }
   if (!isDatabaseConfigured()) {
     return json(
       { ok: false, code: "SERVICE_UNAVAILABLE", message: apiMessages.dbUnavailable },
@@ -67,6 +77,9 @@ export async function POST(request: Request) {
   } catch (error) {
     if (error instanceof TenantAccessError) {
       return json({ ok: false, code: "NOT_FOUND", message: apiMessages.notFound }, 404, headers);
+    }
+    if (error instanceof InvalidServiceError) {
+      return json({ ok: false, code: error.code, message: apiMessages.invalidService }, 400, headers);
     }
     if (error instanceof SlotUnavailableError) {
       return json(

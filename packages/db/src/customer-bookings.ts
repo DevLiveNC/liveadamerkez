@@ -3,8 +3,8 @@ import { canTransitionBookingStatus, nicosiaDateKey, TenantAccessError } from "@
 import { getDb, withTenantDb } from "./client.js";
 import { BookingConflictError, BookingStatusError, createBooking } from "./bookings.js";
 import { booking, business, category, customer, location, service } from "./schema.js";
-import { findPublishedBusinessId, getPublishedBusiness, listServicesForTenant } from "./catalog.js";
-import { listOpenSlots, slotStillOpen } from "./slots.js";
+import { findPublishedBusinessId, getPublishedBusiness, listPublicServices } from "./catalog.js";
+import { InvalidServiceError, listOpenSlots, slotStillOpen } from "./slots.js";
 
 export { TenantAccessError };
 
@@ -83,6 +83,13 @@ export async function createCustomerBooking(input: {
   if (!published) throw new TenantAccessError();
   const biz = await getPublishedBusiness(published);
   if (!biz) throw new TenantAccessError();
+  if (input.startsAt.getTime() <= Date.now()) {
+    throw new SlotUnavailableError();
+  }
+  const services = await listPublicServices(published);
+  if (input.serviceId && !services.some((item) => item.id === input.serviceId)) {
+    throw new InvalidServiceError();
+  }
   const date = nicosiaDateKey(input.startsAt, biz.timezone);
   const open = await listOpenSlots({
     businessId: published,
@@ -108,17 +115,13 @@ export async function createCustomerBooking(input: {
     phone: input.phone,
     name: input.name,
   });
-  const services = await listServicesForTenant(published);
-  const serviceRow = input.serviceId
-    ? services.find((item) => item.id === input.serviceId)
-    : services[0];
   return createBooking({
     tenantId: published,
     kind: "slot",
     startsAt: input.startsAt,
     endsAt,
     staffId: match.staffId,
-    serviceId: serviceRow?.id ?? match.serviceId,
+    serviceId: input.serviceId ?? match.serviceId,
     customerId: crm?.id ?? null,
     accountId: input.accountId,
     status: "pending",

@@ -21,3 +21,26 @@ CREATE UNIQUE INDEX IF NOT EXISTS favorite_account_tenant
   ON favorite (account_id, tenant_id);
 
 CREATE INDEX IF NOT EXISTS favorite_account_idx ON favorite (account_id);
+
+CREATE OR REPLACE FUNCTION app_current_account_id() RETURNS uuid
+LANGUAGE plpgsql STABLE AS $$
+BEGIN
+  RETURN NULLIF(current_setting('app.account_id', true), '')::uuid;
+EXCEPTION WHEN invalid_text_representation THEN
+  RETURN NULL;
+END;
+$$;
+
+ALTER TABLE favorite ENABLE ROW LEVEL SECURITY;
+ALTER TABLE favorite FORCE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS favorite_account ON favorite;
+CREATE POLICY favorite_account ON favorite
+  USING (account_id = app_current_account_id())
+  WITH CHECK (account_id = app_current_account_id());
+
+DO $$
+BEGIN
+  GRANT SELECT, INSERT, UPDATE, DELETE ON favorite TO ada_app;
+EXCEPTION WHEN OTHERS THEN
+  RAISE NOTICE 'favorite ada_app yetkileri atlandı: %', SQLERRM;
+END $$;

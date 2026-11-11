@@ -52,6 +52,30 @@ describe("isTrustedSameOrigin", () => {
     ).toBe(true);
   });
 
+  it("uses X-Forwarded-Host only when TRUST_FORWARDED_HOST is true", () => {
+    const prev = process.env.TRUST_FORWARDED_HOST;
+    delete process.env.TRUST_FORWARDED_HOST;
+    expect(
+      isTrustedSameOrigin(
+        req(
+          { origin: "https://evil.test", "x-forwarded-host": "evil.test" },
+          "http://127.0.0.1:3100/app/api/oturum",
+        ),
+      ),
+    ).toBe(false);
+    process.env.TRUST_FORWARDED_HOST = "true";
+    expect(
+      isTrustedSameOrigin(
+        req(
+          { origin: "http://app.test", "x-forwarded-host": "app.test" },
+          "http://127.0.0.1:3100/app/api/oturum",
+        ),
+      ),
+    ).toBe(true);
+    if (prev === undefined) delete process.env.TRUST_FORWARDED_HOST;
+    else process.env.TRUST_FORWARDED_HOST = prev;
+  });
+
   it("rejects cross-site and mismatched Origin", () => {
     expect(
       isTrustedSameOrigin(

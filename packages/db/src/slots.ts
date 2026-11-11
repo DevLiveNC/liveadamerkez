@@ -6,11 +6,16 @@ import {
 } from "@ada-merkez/shared";
 import { getDb } from "./client.js";
 import { booking } from "./schema.js";
-import {
-  getPublishedBusiness,
-  listAvailabilityForTenant,
-  listServicesForTenant,
-} from "./catalog.js";
+import { getPublishedBusiness, listPublicAvailability, listPublicServices } from "./catalog.js";
+
+export class InvalidServiceError extends Error {
+  readonly status = 400;
+  readonly code = "INVALID_SERVICE";
+  constructor(message = "Hizmet bulunamadı.") {
+    super(message);
+    this.name = "InvalidServiceError";
+  }
+}
 
 export type OpenSlot = {
   startsAt: string;
@@ -34,13 +39,12 @@ export async function listOpenSlots(input: {
   const biz = await getPublishedBusiness(input.businessId);
   if (!biz) return null;
   const timezone = biz.timezone || "Europe/Nicosia";
-  const services = await listServicesForTenant(biz.id);
-  const chosen =
-    (input.serviceId ? services.find((item) => item.id === input.serviceId) : undefined) ??
-    services[0] ??
-    null;
+  const services = await listPublicServices(biz.id);
+  const matched = input.serviceId ? services.find((item) => item.id === input.serviceId) : undefined;
+  if (input.serviceId && !matched) throw new InvalidServiceError();
+  const chosen = matched ?? services[0] ?? null;
   const duration = chosen?.durationMinutes ?? 60;
-  const rules = await listAvailabilityForTenant(biz.id);
+  const rules = await listPublicAvailability(biz.id);
   const noon = nicosiaWallTimeToUtc(parsed.year, parsed.month, parsed.day, 12, 0, 0, timezone);
   const weekday = nicosiaWeekday(noon, timezone);
   const dayRules = rules.filter((rule) => rule.weekday === null || rule.weekday === weekday);
@@ -71,6 +75,7 @@ export async function listOpenSlots(input: {
       const min = minute % 60;
       const startsAt = nicosiaWallTimeToUtc(parsed.year, parsed.month, parsed.day, hour, min, 0, timezone);
       const endsAt = new Date(startsAt.getTime() + duration * 60 * 1000);
+      if (startsAt.getTime() <= Date.now()) continue;
       const overlap = taken.some((row) => {
         if (staffId && row.staffId && row.staffId !== staffId) return false;
         return row.startsAt < endsAt && row.endsAt > startsAt;
@@ -96,6 +101,7 @@ export async function slotStillOpen(input: {
   staffId?: string | null;
 }): Promise<boolean> {
   if (!(input.endsAt > input.startsAt)) return false;
+  if (input.startsAt.getTime() <= Date.now()) return false;
   const all = await getDb()
     .select({
       startsAt: booking.startsAt,

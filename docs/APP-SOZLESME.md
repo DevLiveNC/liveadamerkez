@@ -76,7 +76,7 @@ await requireRole(["admin"], "/app/yonetim");
 - `requireRole(role, next)` oturum yoksa girişe, rol uymazsa `/app/yetki` sayfasına gider.
 - Open redirect yok: `next` her okumada `safeAppPath` / `readNextParam` ile süzülür (`/apple` ve `https://` elenir).
 
-Çerez: `am_session`, `HttpOnly`, `Path=/app`, `SameSite=Lax`. Landing BFF: `POST/DELETE /app/api/oturum`, `POST/DELETE /app/api/randevular`, `POST/DELETE /app/api/favoriler`, `PATCH /app/api/hesap`. BFF mutasyonları `Origin` / `Sec-Fetch-Site` ile aynı origin ister; Host, `X-Forwarded-Host`’tan önce bakılır. `/app/api` yanıtları `Cache-Control: no-store`. `DELETE /app/api/oturum` ayrıca `Clear-Site-Data: "cache"` döner ve SW’ye `CLEAR_CACHES` mesajı gider.
+Çerez: `am_session`, `HttpOnly`, `Path=/app`, `SameSite=Lax`. Landing BFF: `POST/DELETE /app/api/oturum`, `POST/DELETE /app/api/randevular`, `POST/DELETE /app/api/favoriler`, `PATCH /app/api/hesap`. BFF mutasyonları `Origin` / `Sec-Fetch-Site` ile aynı origin ister; gerçek `Host` önce, `X-Forwarded-Host` yalnız `TRUST_FORWARDED_HOST=true` iken yedek. `/app/api` yanıtları `Cache-Control: no-store`. `DELETE /app/api/oturum` ayrıca `Clear-Site-Data: "cache"` döner ve SW’ye `CLEAR_CACHES` mesajı gider.
 
 ## API
 
@@ -85,10 +85,10 @@ await requireRole(["admin"], "/app/yonetim");
 | `POST /v1/otp/request` | herkes | Mevcut OTP; WhatsApp henüz bağlı değil |
 | `POST /v1/auth/verify` | herkes | OTP doğrula, oturum jetonu ver |
 | `GET /v1/auth/me` | Bearer | Hesap özeti |
-| `GET /v1/public/businesses` | herkes | Keşif; boşsa landing örnek kartlara düşer |
-| `GET /v1/public/businesses/:id` | herkes | Yayımlanmış işletme |
-| `GET /v1/public/businesses/:id/slots` | herkes | `date=YYYY-MM-DD` Europe/Nicosia |
-| `GET/POST /v1/me/bookings` | `customer` + `sub` | Sahiplik `account_id`; IDOR yok |
+| `GET /v1/public/businesses` | herkes | Keşif; yalnız `approved`; boşsa landing örnek kartlara düşer |
+| `GET /v1/public/businesses/:id` | herkes | `approved` işletme |
+| `GET /v1/public/businesses/:id/slots` | herkes | `date=YYYY-MM-DD` Europe/Nicosia; geçmiş slot yok; yanlış `serviceId` 400 |
+| `GET/POST /v1/me/bookings` | `customer` + `sub` | Sahiplik `account_id`; geçmiş 409; rate limit; IDOR yok |
 | `DELETE /v1/me/bookings/:id` | `customer` + `sub` | Yalnız kendi kaydı |
 | `GET/POST /v1/me/favorites` | `customer` + `sub` | Yalnız kendi favorisi |
 | `DELETE /v1/me/favorites/:businessId` | `customer` + `sub` | Yalnız kendi favorisi |

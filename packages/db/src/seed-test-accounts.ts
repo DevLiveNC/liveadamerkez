@@ -37,7 +37,7 @@ async function main(): Promise<void> {
   );
   const business = await pool.query<{ id: string }>(
     `INSERT INTO business (name, slug, status, timezone, sample)
-     VALUES ('Örnek Kuaför', $1, 'published', 'Europe/Nicosia', true)
+     VALUES ('Örnek Kuaför', $1, 'approved', 'Europe/Nicosia', true)
      ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, status = EXCLUDED.status, sample = true
      RETURNING id`,
     [`ornek-kuafor-${randomInt(1000, 9999)}`],
