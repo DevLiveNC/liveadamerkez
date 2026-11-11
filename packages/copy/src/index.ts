@@ -804,8 +804,13 @@ export const later = {
   posBody: "Yazar kasa ile tahsilat, aynı çatı altında.",
   ticketTitle: "Etkinlik bileti",
   ticketBody: "Konser ve etkinlik bileti, randevunun yanında.",
-  campusTitle: "Öğrenci indirimi",
-  campusBody: "Ada Kampüs kimliğiyle indirim, abartısız sonraki adım.",
+  campusTitle: "Öğrenci avantajları",
+  campusBody: "Ada Kampüs kimliğinle öğrencilere özel fırsatlar yakında.",
+} as const;
+
+export const laterEn = {
+  campusTitle: "Student perks",
+  campusBody: "Exclusive offers for Ada Kampüs members, coming soon.",
 } as const;
 
 export const closeCta = {
