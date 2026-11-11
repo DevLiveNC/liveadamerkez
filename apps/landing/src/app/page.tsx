@@ -7,7 +7,6 @@ import {
   examples,
   faq,
   hero,
-  heroShot,
   howBoard,
   kabuki,
   later,
@@ -83,7 +82,7 @@ function Kabuki({
 
 export default function HomePage() {
   return (
-    <main id="icerik">
+    <main id="icerik" className="am-land">
       <section className="hero">
         <Dekor scene="landing" slot="hero" />
         <svg className="hero-art" viewBox="0 0 400 400" aria-hidden="true">
@@ -98,30 +97,17 @@ export default function HomePage() {
             <p className="t-label">{hero.kicker}</p>
             <h1 className="t-display">{hero.title}</h1>
             <p className="t-lede">{hero.lead}</p>
-            <div className="hero-cta">
-              <a className="btn btn-coral btn-lg" href="/app">
+            <div className="hero-cta am-hero-cta">
+              <a className="am-btn am-btn--primary" href="/app">
                 {cta.openApp}
               </a>
-              <a className="btn btn-ghost btn-lg" href="/app/giris?rol=isletme&kayit=1">
+              <a className="am-btn am-btn--ghost" href="/app/giris?rol=isletme&kayit=1">
                 {hero.secondaryCta}
               </a>
             </div>
           </div>
-          <div className="span-6 hero-stage">
+          <div className="span-6 hero-stage am-hero-visual">
             <Kabuki pose="selam" line={kabuki.hero} variant="hero" />
-            <div className="device device-shot">
-              <div className="device-screen">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/landing/ekran/kesif-mobil.webp"
-                  alt={heroShot.alt}
-                  width={780}
-                  height={1688}
-                  loading="eager"
-                  decoding="async"
-                />
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -769,7 +755,8 @@ export default function HomePage() {
 
       <AddToHomeSection />
 
-      <section className="close" id="waitlist">
+      <section className="close" id="yakinda">
+        <span id="waitlist" hidden />
         <div className="wrap">
           <div className="close-box">
             <div>
@@ -779,14 +766,16 @@ export default function HomePage() {
               <h2>{closeCta.title}</h2>
               <p>{closeCta.body}</p>
             </div>
-            <div className="close-actions">
-              <a className="btn btn-coral btn-lg" href="/bekleme-listesi">
-                {cta.customer}
-              </a>
-              <a className="btn btn-ghost on-dark btn-lg" href="/app/giris?rol=isletme&kayit=1">
+            <div className="close-actions am-hero-cta">
+              <button className="am-btn am-btn--primary" type="button" disabled>
+                {waitlist.closedShort}
+              </button>
+              <a className="am-btn am-btn--ghost" href="/app/giris?rol=isletme&kayit=1">
                 {cta.business}
               </a>
-              <p className="status-soon">{waitlist.closedShort}</p>
+              <a className="am-btn am-btn--soft" href="/app">
+                {cta.openApp}
+              </a>
             </div>
           </div>
         </div>
