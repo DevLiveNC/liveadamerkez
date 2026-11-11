@@ -10,7 +10,7 @@
   "display": "standalone",
   "orientation": "portrait-primary",
   "theme_color": "#0F2C44",
-  "background_color": "#F8F0E3",
+  "background_color": "#FFFBF2",
   "categories": ["lifestyle", "business"],
   "icons": [
     {

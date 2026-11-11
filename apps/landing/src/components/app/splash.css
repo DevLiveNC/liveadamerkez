@@ -1,0 +1,309 @@
+/* Ada Merkez PWA açılış — Faz A splash/index.html + motion-spec.md.
+   Token yoksa hex. Yalnız transform/opacity. */
+.am-splash {
+  --am3-hellim-50: #fffbf2;
+  --am3-lacivert-800: #0f2c44;
+  --am3-limon-400: #f5d21e;
+  --am3-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --am3-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --am3-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --am3-font-display: "Plus Jakarta Sans", system-ui, sans-serif;
+  --am3-font-body: Inter, system-ui, sans-serif;
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--am3-hellim-50, #fffbf2);
+}
+.am-splash > * {
+  position: absolute;
+}
+.am-splash-base {
+  inset: 0;
+  background: var(--am3-hellim-50, #fffbf2);
+}
+.am-splash-sun {
+  left: 50%;
+  top: 38%;
+  width: 2400px;
+  height: 2400px;
+  margin: -1200px 0 0 -1200px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #ff8a3d 0%, #e4572e 26%, #e4572e 60%, #d9503a 100%);
+  transform: scale(0.02);
+  animation: am-splash-sunopen 620ms var(--am3-ease-inout) 80ms both;
+}
+.am-splash-lef {
+  inset: 0;
+  background: url("/app/v3/desen/lefkara-acik.svg") repeat;
+  background-size: 76px;
+  opacity: 0;
+  animation: am-splash-fade 600ms ease-out 500ms both;
+  --o: 0.22;
+}
+.am-splash-rays {
+  left: 50%;
+  top: 38%;
+  width: 560px;
+  height: 560px;
+  margin: -280px 0 0 -280px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 251, 242, 0.16) 0deg 6deg, transparent 6deg 30deg);
+  -webkit-mask: radial-gradient(closest-side, transparent 52%, #000 54%, #000 100%);
+  mask: radial-gradient(closest-side, transparent 52%, #000 54%, #000 100%);
+  opacity: 0;
+  transform: scale(0.7) rotate(-20deg);
+  animation:
+    am-splash-rays 900ms var(--am3-ease-out) 420ms both,
+    am-splash-spin 40s linear 1320ms infinite;
+}
+.am-splash-mark {
+  left: 50%;
+  top: 38%;
+  width: 132px;
+  height: 171px;
+  margin: -104px 0 0 -66px;
+  animation: am-splash-drop 480ms var(--am3-ease-spring) 560ms both;
+}
+.am-splash-mark svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 10px 0 rgba(15, 44, 68, 0.18));
+}
+.am-splash-mark .sq {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: am-splash-pop 340ms var(--am3-ease-spring) 900ms both;
+}
+.am-splash-words {
+  left: 24px;
+  right: 24px;
+  top: calc(38% + 88px);
+  text-align: center;
+}
+.am-splash-slogan {
+  margin: 0;
+  font: 800 44px/1 var(--am3-font-display);
+  letter-spacing: -0.035em;
+  color: var(--am3-lacivert-800, #0f2c44);
+  animation: am-splash-rise 460ms var(--am3-ease-out) 1300ms both;
+}
+.am-splash-slogan b {
+  position: relative;
+  z-index: 0;
+  padding: 0 0.08em;
+  font-weight: 800;
+}
+.am-splash-slogan b::before {
+  content: "";
+  position: absolute;
+  inset: 0.18em -0.04em 0.02em -0.02em;
+  background: var(--am3-limon-400, #f5d21e);
+  border-radius: 0.16em;
+  transform: rotate(-2deg);
+  z-index: -1;
+  box-shadow: 3px 3px 0 var(--am3-lacivert-800, #0f2c44);
+}
+.am-splash-geo {
+  display: inline-block;
+  margin-top: 14px;
+  font: 700 13.5px/1 var(--am3-font-body);
+  color: var(--am3-lacivert-800, #0f2c44);
+  background: #fffbf2;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 2px solid var(--am3-lacivert-800, #0f2c44);
+  box-shadow: 3px 3px 0 var(--am3-lacivert-800, #0f2c44);
+  animation: am-splash-rise 460ms var(--am3-ease-out) 1420ms both;
+}
+.am-splash-sea {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 300px;
+  transform: translateY(100%);
+  animation: am-splash-seaup 520ms var(--am3-ease-out) 380ms both;
+}
+.am-splash-wv {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 400%;
+  height: 100%;
+  animation: am-splash-drift 9s linear infinite;
+}
+.am-splash-wv.s2 {
+  height: 82%;
+  animation-duration: 12s;
+  animation-direction: reverse;
+}
+.am-splash-wv.s3 {
+  height: 60%;
+  animation-duration: 15s;
+}
+.am-splash-wv.s4 {
+  height: 38%;
+  animation-duration: 19s;
+  animation-direction: reverse;
+}
+.am-splash-kabuki {
+  left: 50%;
+  bottom: 44px;
+  width: 240px;
+  height: 240px;
+  margin-left: -120px;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 18px rgba(8, 26, 42, 0.35));
+  animation:
+    am-splash-kabukiup 520ms var(--am3-ease-spring) 1040ms both,
+    am-splash-bob 3.6s var(--am3-ease-inout) 1560ms infinite;
+}
+.am-splash-foam {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 78px;
+  background: linear-gradient(180deg, rgba(8, 62, 110, 0) 0%, #083e6e 70%);
+  animation: am-splash-fade 300ms linear 380ms both;
+  --o: 1;
+}
+.am-splash-beg {
+  width: 200px;
+  pointer-events: none;
+}
+.am-splash-b1 {
+  right: -58px;
+  top: -52px;
+  transform: rotate(168deg) translate(-90px, -90px);
+  opacity: 0;
+  animation: am-splash-beg1 560ms var(--am3-ease-out) 1100ms both;
+}
+.am-splash-b2 {
+  left: -70px;
+  top: 30%;
+  width: 150px;
+  transform: rotate(30deg) translateX(-80px);
+  opacity: 0;
+  animation: am-splash-beg2 560ms var(--am3-ease-out) 1200ms both;
+}
+.am-splash-skip {
+  top: max(12px, env(safe-area-inset-top));
+  right: 16px;
+  z-index: 5;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 2px solid var(--am3-lacivert-800, #0f2c44);
+  background: #fffbf2;
+  color: var(--am3-lacivert-800, #0f2c44);
+  font: 700 13px/1 var(--am3-font-body);
+  cursor: pointer;
+}
+
+@keyframes am-splash-sunopen {
+  from { transform: scale(0.02); }
+  to { transform: scale(1); }
+}
+@keyframes am-splash-fade {
+  from { opacity: 0; }
+  to { opacity: var(--o); }
+}
+@keyframes am-splash-rays {
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes am-splash-spin {
+  from { rotate: 0deg; }
+  to { rotate: 360deg; }
+}
+@keyframes am-splash-drop {
+  0% { opacity: 0; transform: translateY(-70px) scale(0.82); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes am-splash-pop {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+@keyframes am-splash-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes am-splash-seaup {
+  to { transform: translateY(0); }
+}
+@keyframes am-splash-drift {
+  to { transform: translateX(-50%); }
+}
+@keyframes am-splash-kabukiup {
+  0% { opacity: 0; transform: translateY(150px) rotate(-6deg); }
+  55% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) rotate(0); }
+}
+@keyframes am-splash-bob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+@keyframes am-splash-beg1 {
+  to { opacity: 1; transform: rotate(168deg) translate(0, 0); }
+}
+@keyframes am-splash-beg2 {
+  to { opacity: 1; transform: rotate(30deg) translateX(0); }
+}
+@keyframes am-splash-rmfade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes am-splash-devir-up {
+  to { transform: translateY(-40px); opacity: 0; }
+}
+@keyframes am-splash-devir-fade {
+  to { opacity: 0; }
+}
+
+.am-splash.devir .am-splash-mark,
+.am-splash.devir .am-splash-words {
+  animation: am-splash-devir-up 400ms var(--am3-ease-inout) both;
+}
+.am-splash.devir {
+  animation: am-splash-devir-fade 400ms var(--am3-ease-inout) 80ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .am-splash-sun { transform: scale(1) !important; }
+  .am-splash-sun,
+  .am-splash-lef,
+  .am-splash-rays,
+  .am-splash-mark,
+  .am-splash-mark .sq,
+  .am-splash-slogan,
+  .am-splash-geo,
+  .am-splash-sea,
+  .am-splash-wv,
+  .am-splash-kabuki,
+  .am-splash-foam,
+  .am-splash-b1,
+  .am-splash-b2 {
+    animation: none !important;
+  }
+  .am-splash-lef { opacity: 0.22; }
+  .am-splash-rays { opacity: 1; transform: none; }
+  .am-splash-sea { transform: none; }
+  .am-splash-foam { opacity: 1; }
+  .am-splash-b1 { opacity: 1; transform: rotate(168deg); }
+  .am-splash-b2 { opacity: 1; transform: rotate(30deg); }
+  .am-splash {
+    animation: am-splash-rmfade 200ms ease-out both !important;
+    animation-duration: 200ms !important;
+  }
+  .am-splash.devir .am-splash-mark,
+  .am-splash.devir .am-splash-words {
+    animation: none !important;
+  }
+  .am-splash.devir {
+    animation: am-splash-devir-fade 200ms ease-out both;
+  }
+}
