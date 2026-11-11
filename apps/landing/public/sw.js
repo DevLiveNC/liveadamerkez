@@ -1,4 +1,4 @@
-const CACHE = "ada-merkez-landing-v31";
+const CACHE = "ada-merkez-landing-v32";
 const PRECACHE = [
   "/",
   "/offline",
@@ -31,6 +31,7 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+  // Never intercept the PWA: a cached "/" landing document must not shadow /app.
   if (url.pathname === "/app" || url.pathname.startsWith("/app/")) return;
 
   if (request.mode === "navigate") {
@@ -43,7 +44,14 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(async () => {
           const cached = await caches.match(request);
-          return cached || caches.match("/offline");
+          if (cached) {
+            try {
+              if (new URL(cached.url).pathname === url.pathname) return cached;
+            } catch {
+              return cached;
+            }
+          }
+          return caches.match("/offline");
         }),
     );
     return;

@@ -9,7 +9,7 @@ export function ServiceWorkerRegister() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
     if (isAppPath(pathname)) {
-      void navigator.serviceWorker.register("/app/sw.js", { scope: "/app/" });
+      void navigator.serviceWorker.register("/app/sw.js", { scope: "/app" });
       return;
     }
     void navigator.serviceWorker.register("/sw.js", { scope: "/" });

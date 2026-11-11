@@ -75,13 +75,17 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   await expect(page.getByRole("link", { name: /KVKK aydınlatma metni yakında/ }).first()).toBeVisible();
   await expect(page.getByRole("button", { name: "Listeye yazıl" })).toHaveCount(0);
 
-  const manifest = await page.request.get("/manifest.webmanifest");
-  expect(manifest.ok()).toBeTruthy();
-  const manifestBody = await manifest.json();
-  expect(manifestBody.name).toBe("Ada Merkez");
-  expect(JSON.stringify(manifestBody)).not.toMatch(/KKTC/i);
-  expect(manifestBody.display).toBe("standalone");
-  expect(manifestBody.icons?.length).toBeGreaterThan(0);
+  await expect(page.locator('link[rel="manifest"]').first()).toHaveAttribute("href", "/app/manifest.json");
+
+  const landingManifest = await page.request.get("/manifest.webmanifest");
+  expect(landingManifest.ok()).toBeTruthy();
+  const landingManifestBody = await landingManifest.json();
+  expect(landingManifestBody.name).toBe("Ada Merkez");
+  expect(JSON.stringify(landingManifestBody)).not.toMatch(/KKTC/i);
+  expect(landingManifestBody.display).toBe("standalone");
+  expect(landingManifestBody.start_url).toBe("/app?source=pwa");
+  expect(landingManifestBody.scope).toBe("/app");
+  expect(landingManifestBody.icons?.length).toBeGreaterThan(0);
 
   const sw = await page.request.get("/sw.js");
   expect(sw.ok()).toBeTruthy();
@@ -154,6 +158,21 @@ test("mobile screenshot and PWA meta", async ({ page }) => {
   await page.waitForLoadState("networkidle");
   const apple = page.locator('link[rel="apple-touch-icon"]');
   await expect(apple).toHaveAttribute("href", /apple-touch-icon/);
+  await expect(page.locator('meta[name="apple-mobile-web-app-capable"]').first()).toHaveAttribute(
+    "content",
+    "yes",
+  );
+  await expect(page.locator('meta[name="mobile-web-app-capable"]').first()).toHaveAttribute(
+    "content",
+    "yes",
+  );
+  await expect(page.locator('meta[name="apple-mobile-web-app-title"]').first()).toHaveAttribute(
+    "content",
+    "Ada Merkez",
+  );
+  await expect(
+    page.locator('meta[name="apple-mobile-web-app-status-bar-style"]').first(),
+  ).toHaveAttribute("content", "default");
   await page.screenshot({
     path: path.join(artifactDir, "landing-mobile.png"),
     fullPage: true,

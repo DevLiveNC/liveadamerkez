@@ -1,4 +1,4 @@
-const CACHE = "ada-merkez-app-v3";
+const CACHE = "ada-merkez-app-v4";
 const OFFLINE = "/app/offline.html";
 const PRECACHE = [
   OFFLINE,

@@ -5,6 +5,7 @@ import { Dekor } from "@ada-merkez/ui";
 import { isAppPath } from "@ada-merkez/shared";
 import { MarketingChrome } from "../components/MarketingChrome";
 import { dekorForPath } from "../lib/dekor";
+import { APP_MANIFEST_HREF, PWA_STANDALONE_REDIRECT_SCRIPT } from "../lib/pwa";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
   description: site.description,
   applicationName: site.name,
   metadataBase: siteUrl ? new URL(siteUrl) : undefined,
-  manifest: "/manifest.webmanifest",
+  manifest: APP_MANIFEST_HREF,
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
@@ -57,6 +58,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={site.language} data-theme="light" data-dekor={dekor}>
       <head>
+        {isApp ? null : (
+          <script dangerouslySetInnerHTML={{ __html: PWA_STANDALONE_REDIRECT_SCRIPT }} />
+        )}
+        <link rel="manifest" href={APP_MANIFEST_HREF} />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content={site.name} />
         <link rel="preload" href="/fonts/PlusJakartaSans-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/PlusJakartaSans-SemiBold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
