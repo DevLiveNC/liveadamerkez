@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import { cta, ctaEn, isletmeApp, later, laterEn } from "./index.js";
 
 describe("kontrol takip kopyası", () => {
-  it("erken erişim CTA TR/EN", () => {
-    expect(cta.customer).toBe("Erken erişim yakında");
-    expect(ctaEn.customer).toBe("Early access soon");
+  it("ana CTA Uygulamayı aç / Kendi işletmeni ekle", () => {
+    expect(cta.openApp).toBe("Uygulamayı aç");
+    expect(cta.business).toBe("Kendi işletmeni ekle");
+    expect(ctaEn.openApp).toBe("Open the app");
+    expect(ctaEn.business).toBe("Add your business");
   });
 
   it("işletme form hataları kopyadan gelir", () => {

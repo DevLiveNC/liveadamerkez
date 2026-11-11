@@ -24,7 +24,8 @@ export const cta = {
 } as const;
 
 export const ctaEn = {
-  customer: "Early access soon",
+  openApp: "Open the app",
+  business: "Add your business",
 } as const;
 
 export const nav = {
@@ -49,7 +50,7 @@ export const hero = {
   kicker: "Kuzey Kıbrıs ve Türkiye için",
   title: "Adada randevu ve rezervasyon dağılmasın.",
   lead: "Kuaför, klinik veya restoranı bul; uygun saati seç. Dilersen uygulama indirmeden WhatsApp’tan hallet.",
-  primaryCta: cta.customer,
+  primaryCta: cta.openApp,
   secondaryCta: cta.business,
 } as const;
 
@@ -230,7 +231,7 @@ export const businessApply = {
 export const qrPage = {
   kicker: "QR kanalı",
   lead: "Kuaför ve klinikte randevu, restoranda masa; dilerseniz WhatsApp üzerinden. Uygulama indirmek zorunda değilsiniz.",
-  cta: cta.customer,
+  cta: cta.openApp,
 } as const;
 
 export const trackingConsent = {

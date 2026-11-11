@@ -92,11 +92,11 @@ export function Header() {
               <Link className="am-btn am-btn--ghost am-btn--sm desk-only" href="/app/giris">
                 {cta.signIn}
               </Link>
-              <Link className="am-btn am-btn--primary am-btn--sm desk-only" href="/#yakinda">
-                {cta.customer}
-              </Link>
-              <Link className="am-btn am-btn--ghost am-btn--sm desk-only" href="/app">
+              <Link className="am-btn am-btn--primary am-btn--sm desk-only" href="/app">
                 {cta.openApp}
+              </Link>
+              <Link className="am-btn am-btn--ghost am-btn--sm desk-only" href="/app/giris?rol=isletme&kayit=1">
+                {cta.business}
               </Link>
               <button
                 ref={menuBtnRef}
@@ -131,6 +131,9 @@ export function Header() {
             </Link>
             <Link href="/app" onClick={closeMenu}>
               {cta.openApp}
+            </Link>
+            <Link href="/app/giris?rol=isletme&kayit=1" onClick={closeMenu}>
+              {cta.business}
             </Link>
           </div>
         ) : null}
