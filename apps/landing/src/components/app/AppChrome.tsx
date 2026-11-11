@@ -56,7 +56,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   const isAuth = pathname.startsWith("/app/giris");
   const bookingSent = /^\/app\/randevular\/[^/]+$/.test(pathname);
   const hideChrome = isPanel || isAuth || bookingSent;
-  const hideCustomerTop = hideChrome;
+  const hideCustomerTop = hideChrome || pathname.startsWith("/app/isletmeler");
 
   const items: BottomNavItem[] = TABS.map((tab) => ({
     href: tab.href,

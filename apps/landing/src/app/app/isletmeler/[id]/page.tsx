@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { app } from "@ada-merkez/copy";
+import { app, examples } from "@ada-merkez/copy";
 import { loginUrl } from "@ada-merkez/shared";
-import { Badge } from "@ada-merkez/ui";
+import { Badge, UiIcon } from "@ada-merkez/ui";
+import { BusinessGallery } from "../../../../components/app/BusinessGallery";
 import { FavoriteToggle } from "../../../../components/app/FavoriteToggle";
 import { ReservationFlow } from "../../../../components/app/ReservationFlow";
 import type { SheetSlot } from "../../../../components/app/ReservationSheet";
@@ -12,6 +13,17 @@ import { exampleCard } from "../../../../lib/discover";
 import { nicosiaDayStrip } from "../../../../lib/nicosia-days";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function stock(name: string) {
+  return `/landing/stok/${name}.webp`;
+}
+
+function galleryFor(image?: string | null): string[] {
+  if (!image) return [];
+  if (image === "kuafor-salon") return [stock("kuafor-salon"), stock("kuafor-makas"), stock("restoran-sofra")];
+  if (image === "kuafor-makas") return [stock("kuafor-makas"), stock("kuafor-salon"), stock("restoran-sofra")];
+  return [stock(image), stock("kuafor-salon"), stock("kuafor-makas")];
+}
 
 type LiveService = { id: string; name: string; durationMinutes?: number };
 
@@ -39,6 +51,7 @@ export default async function IsletmeDetayPage({
       }>(`/v1/public/businesses/${id}`)
     : null;
   const example = exampleCard(id);
+  const exampleMeta = example ? examples.cards.find((card) => card.name === example.name) : undefined;
   const biz = live?.ok && live.business
     ? {
         id: live.business.id,
@@ -47,6 +60,7 @@ export default async function IsletmeDetayPage({
         city: live.business.city,
         category: live.business.category,
         services: live.business.services,
+        image: null as string | null,
       }
     : example
       ? {
@@ -56,6 +70,7 @@ export default async function IsletmeDetayPage({
           city: example.city,
           category: example.category,
           services: example.serviceName ? [{ id: "ornek", name: example.serviceName }] : [],
+          image: exampleMeta?.image ?? null,
         }
       : null;
   if (!biz) notFound();
@@ -82,30 +97,49 @@ export default async function IsletmeDetayPage({
           )?.favorites?.some((item) => item.businessId === id),
         )
       : false;
+  const loginHref = loginUrl({ next: `/app/isletmeler/${id}` });
+  const slides = galleryFor(biz.image);
+  const heartHref = session && UUID.test(id) ? undefined : loginHref;
   const detailPath = `/app/isletmeler/${id}`;
 
   return (
     <>
-      <p>
-        <Link href="/app">{app.back}</Link>
-      </p>
-      <header className="am-head">
-        <p className="t-label">{biz.category}</p>
+      <BusinessGallery
+        slides={slides}
+        nav={
+          <div className="am-gallery-nav">
+            <Link className="am-icon-btn am-icon-btn--light" href="/app" aria-label={app.back}>
+              <UiIcon name="back" />
+            </Link>
+            <div className="am-header-side">
+              {session && UUID.test(id) ? (
+                <FavoriteToggle businessId={id} initial={favorited} icon />
+              ) : (
+                <Link className="am-icon-btn am-icon-btn--light" href={heartHref ?? loginHref} aria-label={app.loginToFavorite}>
+                  <UiIcon name="heart" />
+                </Link>
+              )}
+              <span className="am-icon-btn am-icon-btn--light" aria-hidden="true">
+                <UiIcon name="share" />
+              </span>
+            </div>
+          </div>
+        }
+      />
+      <div className="am-biz-hero-meta">
+        <div className="am-biz-title-row" style={{ marginBottom: 6 }}>
+          {biz.sample ? <Badge tone="sample">{app.example}</Badge> : null}
+          {biz.sample ? <Badge tone="new">{app.newBadge}</Badge> : null}
+        </div>
         <h1>{biz.name}</h1>
-        <p className="am-note">{[biz.city, biz.category].filter(Boolean).join(" · ")}</p>
-        {biz.sample ? <Badge tone="sample">{app.example}</Badge> : null}
-      </header>
-      {biz.sample ? <p className="am-banner">{app.exampleNote}</p> : null}
-      {session && UUID.test(id) ? <FavoriteToggle businessId={id} initial={favorited} /> : null}
-      {session ? null : (
-        <p>
-          <Link className="btn btn-ghost" href={loginUrl({ next: detailPath })}>
-            {app.loginToFavorite}
-          </Link>
+        <p className="am-meta-row">
+          <UiIcon name="pin" className="am-icon am-icon-sm" />
+          <span>{[biz.city, biz.category].filter(Boolean).join(" · ")}</span>
         </p>
-      )}
+      </div>
+      {biz.sample ? <p className="am-note">{app.exampleNote}</p> : null}
       <h2 className="am-sec">
-        <span>{app.servicesTitle}</span>
+        <span>{app.services}</span>
       </h2>
       {biz.services.length ? (
         biz.services.map((svc, index) => (
@@ -124,6 +158,9 @@ export default async function IsletmeDetayPage({
       ) : (
         <p className="am-note">{app.priceAsk}</p>
       )}
+      <p className="am-wa mt-3">
+        <UiIcon name="message" /> {app.messageWa}
+      </p>
       <ReservationFlow
         businessId={biz.id}
         businessName={biz.name}
