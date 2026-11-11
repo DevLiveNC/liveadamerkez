@@ -59,7 +59,8 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     pathname === "/app" ||
     pathname.startsWith("/app/isletmeler") ||
     pathname.startsWith("/app/randevular") ||
-    pathname.startsWith("/app/favoriler");
+    pathname.startsWith("/app/favoriler") ||
+    pathname.startsWith("/app/hesap");
 
   const items: BottomNavItem[] = TABS.map((tab) => ({
     href: tab.href,
