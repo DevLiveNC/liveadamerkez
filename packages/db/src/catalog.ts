@@ -13,7 +13,7 @@ export type PublicBusiness = {
   serviceName: string | null;
 };
 
-export async function listPublishedBusinesses(filters?: {
+export async function listApprovedBusinesses(filters?: {
   q?: string;
   category?: string;
   city?: string;

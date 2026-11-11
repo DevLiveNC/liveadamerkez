@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { migrate } from "./migrate.js";
-import { closePool, getPool, isDatabaseConfigured } from "./client.js";
+import { closePool, getPool, isDatabaseConfigured, withCustomerDb } from "./client.js";
+import { favorite } from "./schema.js";
 import { TenantAccessError, createBooking } from "./bookings.js";
 import {
   SlotUnavailableError,
@@ -82,9 +83,15 @@ describe.skipIf(!hasDb)("customer panel ownership", () => {
     await addFavorite(accountA, tenantId);
     expect(await isFavorite(accountA, tenantId)).toBe(true);
     expect(await isFavorite(accountB, tenantId)).toBe(false);
+    expect((await listFavoritesForAccount(accountA)).map((row) => row.businessId)).toContain(tenantId);
     expect((await listFavoritesForAccount(accountB)).map((row) => row.businessId)).not.toContain(
       tenantId,
     );
+    const seenByA = await withCustomerDb(accountA, (db) =>
+      db.select({ accountId: favorite.accountId, tenantId: favorite.tenantId }).from(favorite),
+    );
+    expect(seenByA.some((row) => row.accountId === accountA && row.tenantId === tenantId)).toBe(true);
+    expect(seenByA.some((row) => row.accountId === accountB)).toBe(false);
     await expect(removeFavorite(accountB, tenantId)).rejects.toBeInstanceOf(FavoriteDeniedError);
     expect(await isFavorite(accountA, tenantId)).toBe(true);
 

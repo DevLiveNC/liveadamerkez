@@ -1,4 +1,4 @@
-import { listPublishedBusinesses, isDatabaseConfigured } from "@ada-merkez/db";
+import { listApprovedBusinesses, isDatabaseConfigured } from "@ada-merkez/db";
 import { corsHeaders, json } from "../../../../lib/http";
 
 export const dynamic = "force-dynamic";
@@ -9,7 +9,7 @@ export async function GET(request: Request) {
     return json({ ok: true, businesses: [] }, 200, headers);
   }
   const url = new URL(request.url);
-  const businesses = await listPublishedBusinesses({
+  const businesses = await listApprovedBusinesses({
     q: url.searchParams.get("q") ?? undefined,
     category: url.searchParams.get("category") ?? undefined,
     city: url.searchParams.get("city") ?? undefined,

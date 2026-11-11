@@ -162,8 +162,8 @@ const bookingPublicColumns = {
   updatedAt: booking.updatedAt,
 };
 
-export function toPublicBooking<T extends { customerPhone?: string | null }>(row: T): Omit<T, "customerPhone"> {
-  const { customerPhone: _phone, ...rest } = row;
+export function toPublicBooking<T extends object>(row: T): Omit<T, "customerPhone"> {
+  const { customerPhone: _phone, ...rest } = row as T & { customerPhone?: string | null };
   return rest;
 }
 
@@ -189,7 +189,7 @@ export async function listBookingsForTenant(
 export async function getBookingForTenant(tenantId: string, bookingId: string) {
   const row = await withTenantDb(tenantId, async (db) => {
     const [found] = await db
-      .select()
+      .select(bookingPublicColumns)
       .from(booking)
       .where(and(eq(booking.id, bookingId), eq(booking.tenantId, tenantId)))
       .limit(1);
