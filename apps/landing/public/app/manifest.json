@@ -5,7 +5,7 @@
   "description": "Kuzey Kıbrıs ve Türkiye için işletme keşfi, randevu ve rezervasyon. Dilersen uygulama indirmeden WhatsApp’tan hallet.",
   "lang": "tr",
   "dir": "ltr",
-  "start_url": "/app",
+  "start_url": "/app/",
   "scope": "/app/",
   "display": "standalone",
   "orientation": "portrait-primary",

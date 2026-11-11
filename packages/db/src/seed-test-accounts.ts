@@ -36,14 +36,36 @@ async function main(): Promise<void> {
      ON CONFLICT (slug) DO NOTHING`,
   );
   const business = await pool.query<{ id: string }>(
-    `INSERT INTO business (name, slug, status, timezone)
-     VALUES ('Örnek Kuaför', $1, 'published', 'Europe/Nicosia')
-     ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, status = EXCLUDED.status
+    `INSERT INTO business (name, slug, status, timezone, sample)
+     VALUES ('Örnek Kuaför', $1, 'approved', 'Europe/Nicosia', true)
+     ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, status = EXCLUDED.status, sample = true
      RETURNING id`,
     [`ornek-kuafor-${randomInt(1000, 9999)}`],
   );
   const tenantId = business.rows[0]?.id;
   if (!tenantId) throw new Error("Örnek işletme oluşturulamadı.");
+  const category = await pool.query<{ id: string }>(
+    `SELECT id FROM category WHERE slug = 'kuafor' LIMIT 1`,
+  );
+  const categoryId = category.rows[0]?.id ?? null;
+  if (categoryId) {
+    await pool.query(`UPDATE business SET category_id = $2 WHERE id = $1`, [tenantId, categoryId]);
+  }
+  const staff = await pool.query<{ id: string }>(
+    `INSERT INTO staff (tenant_id, name, active) VALUES ($1, 'Örnek personel', true) RETURNING id`,
+    [tenantId],
+  );
+  const staffId = staff.rows[0]?.id;
+  await pool.query(
+    `INSERT INTO service (tenant_id, name, duration_minutes, staff_id)
+     VALUES ($1, 'Kesim ve bakım', 60, $2)`,
+    [tenantId, staffId ?? null],
+  );
+  await pool.query(
+    `INSERT INTO availability_rule (tenant_id, staff_id, weekday, starts_at_minutes, ends_at_minutes)
+     VALUES ($1, $2, NULL, 540, 1080)`,
+    [tenantId, staffId ?? null],
+  );
 
   const accounts = [
     { phone: customerPhone, role: "customer", name: "Örnek müşteri", tenantId: null as string | null, code: customerCode },

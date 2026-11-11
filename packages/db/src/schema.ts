@@ -63,6 +63,7 @@ export const business = pgTable("business", {
   locationId: uuid("location_id").references(() => location.id),
   status: businessStatusEnum("status").notNull().default("draft"),
   timezone: text("timezone").notNull().default("Europe/Nicosia"),
+  sample: boolean("sample").notNull().default(false),
   phone: text("phone"),
   email: text("email"),
   whatsapp: text("whatsapp"),
@@ -218,6 +219,7 @@ export const booking = pgTable(
     serviceId: uuid("service_id").references(() => service.id),
     resourceId: uuid("resource_id").references(() => resource.id),
     customerId: uuid("customer_id").references(() => customer.id),
+    accountId: uuid("account_id").references(() => appAccount.id),
     status: bookingStatusEnum("status").notNull().default("pending"),
     startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
     endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
@@ -236,7 +238,23 @@ export const booking = pgTable(
   (t) => [
     check("booking_time_order", sql`${t.endsAt} > ${t.startsAt}`),
     index("booking_tenant_starts_idx").on(t.tenantId, t.startsAt),
+    index("booking_account_idx").on(t.accountId),
   ],
+);
+
+export const favorite = pgTable(
+  "favorite",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    accountId: uuid("account_id")
+      .notNull()
+      .references(() => appAccount.id),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => business.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("favorite_account_tenant").on(t.accountId, t.tenantId)],
 );
 
 export const waitlistEntry = pgTable("waitlist_entry", {

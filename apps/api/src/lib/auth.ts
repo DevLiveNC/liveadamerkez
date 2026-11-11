@@ -42,6 +42,17 @@ export function sessionOr401(
   return { ok: true, session };
 }
 
+export function customerOr401(
+  request: Request,
+  cors: Record<string, string>,
+): { session: SessionClaims; ok: true } | { ok: false; response: ReturnType<typeof json> } {
+  const auth = sessionOr401(request, cors);
+  if (!auth.ok) return auth;
+  const role = requireRole(auth.session, "customer", cors);
+  if (!role.ok) return role;
+  return { ok: true, session: auth.session };
+}
+
 export function requireRole(
   session: SessionClaims,
   roles: SessionRole | SessionRole[],
