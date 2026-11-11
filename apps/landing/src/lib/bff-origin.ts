@@ -12,7 +12,7 @@ export function isTrustedSameOrigin(request: Request): boolean {
   } catch {
     return false;
   }
-  const hostHeader = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "";
+  const hostHeader = request.headers.get("host") ?? request.headers.get("x-forwarded-host") ?? "";
   const host = hostHeader.split(",")[0]?.trim() ?? "";
   if (host && originHost === host) return true;
   try {

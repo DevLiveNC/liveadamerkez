@@ -10,7 +10,7 @@ import {
   listBookingsForAccount,
 } from "@ada-merkez/db";
 import { corsHeaders, json, readJson } from "../../../../lib/http";
-import { sessionOr401 } from "../../../../lib/auth";
+import { customerOr401 } from "../../../../lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +22,7 @@ const Body = z.object({
 
 export async function GET(request: Request) {
   const headers = corsHeaders(request);
-  const auth = sessionOr401(request, headers);
+  const auth = customerOr401(request, headers);
   if (!auth.ok) return auth.response;
   if (!isDatabaseConfigured()) {
     return json(
@@ -37,7 +37,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const headers = corsHeaders(request);
-  const auth = sessionOr401(request, headers);
+  const auth = customerOr401(request, headers);
   if (!auth.ok) return auth.response;
   const parsed = Body.safeParse(await readJson(request));
   if (!parsed.success) {

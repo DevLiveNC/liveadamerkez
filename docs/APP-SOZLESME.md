@@ -48,10 +48,11 @@ Landing slot’ları sayfa ağacında (hero, bölüm arası). `data-dekor` html/
 | Yol | Kim görür | Not |
 |---|---|---|
 | `/app` | misafir | Keşif; giriş zorunlu değil |
+| `/app/isletmeler/:id` | misafir | Detay; randevu/favori için giriş |
 | `/app/giris` | misafir | Sekmeler: Müşteri (varsayılan) · İşletme · Yönetici |
+| `/app/randevular`, `/app/favoriler`, `/app/hesap` | `customer` | `(musteri)` layout + sayfada `requireRole("customer")` |
 | `/app/isletme` | `business` | PR-D yazar; `requireRole("business")` |
 | `/app/yonetim` | `admin` | PR-E yazar; `requireRole("admin")` |
-| Korumalı işlem | oturum | Rezervasyon, favori → yoksa `/app/giris?next=` |
 
 Yönetici sekmesinde kayıt yoktur. `admin` rolü yalnızca sunucuda (seed / SQL) atanır.
 
@@ -65,7 +66,7 @@ import { getSession, requireRole, requireSession } from "../../lib/app-auth";
 const session = await getSession();
 // session: { id, role, name, phone, tenantId } | null
 
-await requireSession("/app/randevular");
+await requireRole("customer", "/app/randevular");
 await requireRole("business", "/app/isletme");
 await requireRole(["admin"], "/app/yonetim");
 ```
@@ -75,7 +76,7 @@ await requireRole(["admin"], "/app/yonetim");
 - `requireRole(role, next)` oturum yoksa girişe, rol uymazsa `/app/yetki` sayfasına gider.
 - Open redirect yok: `next` her okumada `safeAppPath` / `readNextParam` ile süzülür (`/apple` ve `https://` elenir).
 
-Çerez: `am_session`, `HttpOnly`, `Path=/app`, `SameSite=Lax`. Landing BFF: `POST/DELETE /app/api/oturum`, `POST/DELETE /app/api/randevular`, `POST/DELETE /app/api/favoriler`, `PATCH /app/api/hesap`. BFF mutasyonları `Origin` / `Sec-Fetch-Site` ile aynı origin ister. `/app/api` yanıtları `Cache-Control: no-store`. `DELETE /app/api/oturum` ayrıca `Clear-Site-Data: "cache"` döner ve SW’ye `CLEAR_CACHES` mesajı gider.
+Çerez: `am_session`, `HttpOnly`, `Path=/app`, `SameSite=Lax`. Landing BFF: `POST/DELETE /app/api/oturum`, `POST/DELETE /app/api/randevular`, `POST/DELETE /app/api/favoriler`, `PATCH /app/api/hesap`. BFF mutasyonları `Origin` / `Sec-Fetch-Site` ile aynı origin ister; Host, `X-Forwarded-Host`’tan önce bakılır. `/app/api` yanıtları `Cache-Control: no-store`. `DELETE /app/api/oturum` ayrıca `Clear-Site-Data: "cache"` döner ve SW’ye `CLEAR_CACHES` mesajı gider.
 
 ## API
 
@@ -87,11 +88,11 @@ await requireRole(["admin"], "/app/yonetim");
 | `GET /v1/public/businesses` | herkes | Keşif; boşsa landing örnek kartlara düşer |
 | `GET /v1/public/businesses/:id` | herkes | Yayımlanmış işletme |
 | `GET /v1/public/businesses/:id/slots` | herkes | `date=YYYY-MM-DD` Europe/Nicosia |
-| `GET/POST /v1/me/bookings` | oturum `sub` | Sahiplik `account_id`; IDOR yok |
-| `DELETE /v1/me/bookings/:id` | oturum `sub` | Yalnız kendi kaydı |
-| `GET/POST /v1/me/favorites` | oturum `sub` | Yalnız kendi favorisi |
-| `DELETE /v1/me/favorites/:businessId` | oturum `sub` | Yalnız kendi favorisi |
-| `PATCH /v1/me` | oturum `sub` | Ad güncelle |
+| `GET/POST /v1/me/bookings` | `customer` + `sub` | Sahiplik `account_id`; IDOR yok |
+| `DELETE /v1/me/bookings/:id` | `customer` + `sub` | Yalnız kendi kaydı |
+| `GET/POST /v1/me/favorites` | `customer` + `sub` | Yalnız kendi favorisi |
+| `DELETE /v1/me/favorites/:businessId` | `customer` + `sub` | Yalnız kendi favorisi |
+| `PATCH /v1/me` | `customer` + `sub` | Ad güncelle |
 | `GET/POST /v1/bookings` | `business` \| `admin` + `tenantId` | Müşteri bu ucu kullanmaz |
 
 `POST /v1/auth/verify` gövde: `{ phone, code, role, mode: "login" \| "register", name? }`. `role=admin` ve `mode=register` → `403 ADMIN_REGISTER_DISABLED`.
@@ -100,7 +101,7 @@ Sunucu yetkisi: `apps/api/src/lib/auth.ts` → `sessionOr401`, `requireRole`. Ki
 
 ## PWA
 
-- Manifest: `/app/manifest.json` — `start_url=/app`, `scope=/app/`, `display=standalone`
+- Manifest: `/app/manifest.json` — `start_url=/app/`, `scope=/app/`, `display=standalone`
 - İkonlar: `/app/icons/` (192, 512, maskable-512, apple-touch-180)
 - iOS splash: `/app/splash/` + `apple-touch-startup-image` (`IosSplashLinks`)
 - Kısayol: Keşif `/app`, Randevularım `/app/randevular`

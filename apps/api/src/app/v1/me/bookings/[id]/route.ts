@@ -6,13 +6,13 @@ import {
   isDatabaseConfigured,
 } from "@ada-merkez/db";
 import { corsHeaders, json } from "../../../../../lib/http";
-import { sessionOr401 } from "../../../../../lib/auth";
+import { customerOr401 } from "../../../../../lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
   const headers = corsHeaders(request);
-  const auth = sessionOr401(request, headers);
+  const auth = customerOr401(request, headers);
   if (!auth.ok) return auth.response;
   const { id } = await context.params;
   if (!isDatabaseConfigured()) {

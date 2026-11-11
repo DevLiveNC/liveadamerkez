@@ -1,13 +1,13 @@
 import { apiMessages } from "@ada-merkez/copy";
 import { FavoriteDeniedError, isDatabaseConfigured, removeFavorite } from "@ada-merkez/db";
 import { corsHeaders, json } from "../../../../../lib/http";
-import { sessionOr401 } from "../../../../../lib/auth";
+import { customerOr401 } from "../../../../../lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function DELETE(request: Request, context: { params: Promise<{ businessId: string }> }) {
   const headers = corsHeaders(request);
-  const auth = sessionOr401(request, headers);
+  const auth = customerOr401(request, headers);
   if (!auth.ok) return auth.response;
   const { businessId } = await context.params;
   if (!isDatabaseConfigured()) {

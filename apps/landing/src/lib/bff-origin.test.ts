@@ -31,6 +31,27 @@ describe("isTrustedSameOrigin", () => {
     ).toBe(true);
   });
 
+  it("prefers Host over spoofed X-Forwarded-Host", () => {
+    expect(
+      isTrustedSameOrigin(
+        req({
+          origin: "https://evil.test",
+          host: "127.0.0.1:3100",
+          "x-forwarded-host": "evil.test",
+        }),
+      ),
+    ).toBe(false);
+    expect(
+      isTrustedSameOrigin(
+        req({
+          origin: "http://127.0.0.1:3100",
+          host: "127.0.0.1:3100",
+          "x-forwarded-host": "evil.test",
+        }),
+      ),
+    ).toBe(true);
+  });
+
   it("rejects cross-site and mismatched Origin", () => {
     expect(
       isTrustedSameOrigin(

@@ -1,10 +1,9 @@
-import Link from "next/link";
 import { app } from "@ada-merkez/copy";
-import { formatInNicosia, loginUrl } from "@ada-merkez/shared";
-import { CancelBookingButton } from "../../../components/app/CancelBookingButton";
-import { EmptyState } from "../../../components/app/EmptyState";
-import { getSession } from "../../../lib/app-auth";
-import { serverApi } from "../../../lib/app-api";
+import { formatInNicosia } from "@ada-merkez/shared";
+import { CancelBookingButton } from "../../../../components/app/CancelBookingButton";
+import { EmptyState } from "../../../../components/app/EmptyState";
+import { requireRole } from "../../../../lib/app-auth";
+import { serverApi } from "../../../../lib/app-api";
 
 type BookingRow = {
   id: string;
@@ -25,10 +24,8 @@ function bookingStatusLabel(status: string): string {
 }
 
 export default async function RandevularPage() {
-  const session = await getSession();
-  const data = session
-    ? await serverApi<{ ok?: boolean; bookings?: BookingRow[] }>("/v1/me/bookings")
-    : null;
+  await requireRole("customer", "/app/randevular");
+  const data = await serverApi<{ ok?: boolean; bookings?: BookingRow[] }>("/v1/me/bookings");
   const bookings = data?.ok ? (data.bookings ?? []) : [];
 
   return (
@@ -36,13 +33,6 @@ export default async function RandevularPage() {
       <header className="am-head">
         <h1>{app.bookings}</h1>
       </header>
-      {session ? null : (
-        <p>
-          <Link className="btn btn-coral" href={loginUrl({ next: "/app/randevular" })}>
-            {app.loginToBook}
-          </Link>
-        </p>
-      )}
       {bookings.length ? (
         bookings.map((row) => (
           <article className="am-biz" key={row.id}>

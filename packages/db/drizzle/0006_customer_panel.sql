@@ -1,4 +1,5 @@
 -- Müşteri paneli: örnek işletme bayrağı, rezervasyon hesap bağı, favori.
+-- 0004 işletme paneli, 0005 yönetim paneli; bu dosya 0006.
 -- account_id ile sahiplik; müşteri başka hesabın kaydını göremez.
 
 ALTER TABLE business

@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { app } from "@ada-merkez/copy";
-import { loginUrl } from "@ada-merkez/shared";
-import { FavoriteToggle } from "../../../components/app/FavoriteToggle";
-import { EmptyState } from "../../../components/app/EmptyState";
-import { getSession } from "../../../lib/app-auth";
-import { serverApi } from "../../../lib/app-api";
+import { FavoriteToggle } from "../../../../components/app/FavoriteToggle";
+import { EmptyState } from "../../../../components/app/EmptyState";
+import { requireRole } from "../../../../lib/app-auth";
+import { serverApi } from "../../../../lib/app-api";
 
 type FavoriteRow = {
   id: string;
@@ -16,10 +15,8 @@ type FavoriteRow = {
 };
 
 export default async function FavorilerPage() {
-  const session = await getSession();
-  const data = session
-    ? await serverApi<{ ok?: boolean; favorites?: FavoriteRow[] }>("/v1/me/favorites")
-    : null;
+  await requireRole("customer", "/app/favoriler");
+  const data = await serverApi<{ ok?: boolean; favorites?: FavoriteRow[] }>("/v1/me/favorites");
   const favorites = data?.ok ? (data.favorites ?? []) : [];
 
   return (
@@ -27,13 +24,6 @@ export default async function FavorilerPage() {
       <header className="am-head">
         <h1>{app.favorites}</h1>
       </header>
-      {session ? null : (
-        <p>
-          <Link className="btn btn-coral" href={loginUrl({ next: "/app/favoriler" })}>
-            {app.loginToFavorite}
-          </Link>
-        </p>
-      )}
       {favorites.length ? (
         favorites.map((row) => (
           <article className="am-biz" key={row.id}>
