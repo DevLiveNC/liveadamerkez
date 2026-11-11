@@ -1,4 +1,4 @@
-import { getPublishedBusiness, isDatabaseConfigured } from "@ada-merkez/db";
+import { getApprovedBusiness, isDatabaseConfigured } from "@ada-merkez/db";
 import { apiMessages } from "@ada-merkez/copy";
 import { corsHeaders, json } from "../../../../../lib/http";
 
@@ -10,7 +10,7 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   if (!isDatabaseConfigured()) {
     return json({ ok: false, code: "NOT_FOUND", message: apiMessages.notFound }, 404, headers);
   }
-  const row = await getPublishedBusiness(id);
+  const row = await getApprovedBusiness(id);
   if (!row) {
     return json({ ok: false, code: "NOT_FOUND", message: apiMessages.notFound }, 404, headers);
   }

@@ -70,7 +70,7 @@ export async function listApprovedBusinesses(filters?: {
   }));
 }
 
-export async function getPublishedBusiness(id: string) {
+export async function getApprovedBusiness(id: string) {
   const db = getDb();
   const [row] = await db
     .select({
@@ -120,7 +120,7 @@ export async function listPublicAvailability(tenantId: string) {
   return getDb().select().from(availabilityRule).where(eq(availabilityRule.tenantId, tenantId));
 }
 
-export async function findPublishedBusinessId(id: string): Promise<string | null> {
+export async function findApprovedBusinessId(id: string): Promise<string | null> {
   const [row] = await getDb()
     .select({ id: business.id })
     .from(business)

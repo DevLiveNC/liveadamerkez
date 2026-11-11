@@ -52,11 +52,7 @@ export async function withTenant<T>(
   try {
     await client.query("BEGIN");
     await client.query("SELECT set_config('app.tenant_id', $1, true)", [tenantId]);
-    try {
-      await client.query("SET LOCAL ROLE ada_app");
-    } catch {
-      /* rol yoksa app.tenant_id ile devam */
-    }
+    await client.query("SET LOCAL ROLE ada_app");
     const value = await fn(client);
     await client.query("COMMIT");
     return value;

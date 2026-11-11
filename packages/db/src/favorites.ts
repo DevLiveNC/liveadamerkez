@@ -1,7 +1,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { getDb, withCustomerDb } from "./client.js";
 import { business, category, favorite, location } from "./schema.js";
-import { findPublishedBusinessId } from "./catalog.js";
+import { findApprovedBusinessId } from "./catalog.js";
 
 export class FavoriteDeniedError extends Error {
   readonly status = 404;
@@ -52,7 +52,7 @@ export async function listFavoritesForAccount(accountId: string) {
 }
 
 export async function addFavorite(accountId: string, businessId: string) {
-  const published = await findPublishedBusinessId(businessId);
+  const published = await findApprovedBusinessId(businessId);
   if (!published) throw new FavoriteDeniedError();
   return withCustomerDb(accountId, async (db) => {
     const [row] = await db
