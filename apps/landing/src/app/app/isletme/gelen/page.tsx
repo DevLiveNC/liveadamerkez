@@ -1,7 +1,5 @@
-import { requireIsletmePanel } from "../guard";
-import { GelenView } from "./view";
+import { redirect } from "next/navigation";
 
-export default async function GelenPage() {
-  await requireIsletmePanel("/app/isletme/gelen");
-  return <GelenView />;
+export default function GelenRedirect() {
+  redirect("/app/isletme/talepler");
 }

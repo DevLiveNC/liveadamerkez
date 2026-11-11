@@ -6,7 +6,7 @@ import { signSession } from "@ada-merkez/shared/node";
 const apiURL = process.env.PLAYWRIGHT_API_URL ?? "http://127.0.0.1:3001";
 const authSecret = process.env.AUTH_SECRET ?? "e2e-auth-secret";
 
-test("işletme paneli sunucuda kilitli, KKTC yazmaz, boş durumda Kabuki gösterir", async ({
+test("işletme paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar", async ({
   page,
   request,
 }) => {
@@ -65,14 +65,23 @@ test("işletme paneli sunucuda kilitli, KKTC yazmaz, boş durumda Kabuki göster
   ]);
   await page.goto("/app/isletme");
   await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-isletme");
-  await expect(page.getByRole("heading", { name: "Bugünkü randevular" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Bugün kayıt yok" })).toBeVisible();
-  await expect(page.getByAltText("Kabuki, Ada Merkez maskotu, selam veriyor")).toBeVisible();
-  const emptyImg = page.getByAltText("Kabuki, Ada Merkez maskotu, selam veriyor");
-  await expect(emptyImg).toHaveAttribute("width", "320");
-  await expect(emptyImg).toHaveAttribute("height", "320");
+  await expect(page.getByRole("heading", { name: "Genel bakış" })).toBeVisible();
+  await expect(page.getByText("Örnek").first()).toBeVisible();
+  await expect(page.locator(".am-dash-tabbar")).toHaveCount(1);
+  await expect(page.getByRole("button", { name: "Menü" })).toHaveCount(0);
   await expect(page.locator("body")).not.toContainText(/KKTC/i);
 
+  await page.goto("/app/isletme/takvim");
+  await expect(page.getByRole("heading", { name: "Takvim" })).toBeVisible();
+  await page.goto("/app/isletme/talepler");
+  await expect(page.getByRole("heading", { name: "Gelen talepler" })).toBeVisible();
+  await page.goto("/app/isletme/hizmetler");
+  await expect(page.getByRole("heading", { name: "Hizmetler" })).toBeVisible();
+  await page.goto("/app/isletme/profil");
+  await expect(page.getByRole("heading", { name: "Ayarlar" })).toBeVisible();
+
   await page.goto("/app/isletme/istatistik");
-  await expect(page.getByRole("heading", { name: "Henüz istatistik yok" })).toBeVisible();
+  await expect(page).toHaveURL(/\/app\/isletme\/?$/);
+  await page.goto("/app/isletme/gelen");
+  await expect(page).toHaveURL(/\/app\/isletme\/talepler/);
 });
