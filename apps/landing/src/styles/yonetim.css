@@ -13,6 +13,7 @@ body:has(.yonetim-app) .am-tabs {
 
 body:has(.yonetim-app) .am-shell {
   max-width: none;
+  border: 0;
 }
 
 body:has(.yonetim-app) .am-main {
@@ -21,7 +22,11 @@ body:has(.yonetim-app) .am-main {
 }
 
 .yonetim-app {
-  min-height: 100dvh;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   background: var(--am-color-background);
   color: var(--am-color-text);
   position: relative;
@@ -31,7 +36,24 @@ body:has(.yonetim-app) .am-main {
 .yonetim-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.yonetim-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.yonetim-top-who {
+  margin: 0;
+  font-size: 12px;
+  color: var(--am-color-text-muted);
+  text-align: right;
 }
 
 .yonetim-side {
@@ -40,8 +62,9 @@ body:has(.yonetim-app) .am-main {
 
 .yonetim-main {
   flex: 1;
-  padding: 16px 16px 96px;
+  min-height: 0;
   min-width: 0;
+  padding: 16px 16px 24px;
 }
 
 .yonetim-head h1 {
@@ -54,17 +77,7 @@ body:has(.yonetim-app) .am-main {
 }
 
 .yonetim-tabs {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 72px;
-  padding: 8px 8px 14px;
-  display: grid;
   grid-template-columns: repeat(4, 1fr);
-  background: var(--am-color-surface);
-  border-top: 1px solid var(--am-color-border);
-  z-index: 20;
 }
 
 .yonetim-tabs a {
@@ -210,6 +223,16 @@ body:has(.yonetim-app) .am-main {
 @media (min-width: 900px) {
   .yonetim-shell {
     flex-direction: row;
+  }
+
+  .yonetim-top {
+    display: none;
+  }
+
+  .yonetim-shell > .am-ui-ptr {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
   }
 
   .yonetim-side {

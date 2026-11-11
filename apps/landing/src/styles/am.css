@@ -11,10 +11,10 @@
   --am-gutter: 24px;
   --am-pad: 80px;
   --am-nav: 72px;
-  --am-motion-fast: 120ms;
-  --am-motion-base: 180ms;
-  --am-motion-med: 240ms;
-  --am-motion-slow: 320ms;
+  --am-motion-fast: var(--am-dur-fast);
+  --am-motion-base: var(--am-dur-base);
+  --am-motion-med: var(--am-dur-medium);
+  --am-motion-slow: var(--am-dur-slow);
   --am-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --am-ease-in-out: cubic-bezier(0.45, 0, 0.15, 1);
   --am-ease-press: cubic-bezier(0.3, 0, 0.7, 1);

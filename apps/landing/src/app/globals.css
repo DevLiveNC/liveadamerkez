@@ -1,10 +1,11 @@
 @import "../styles/landing-fonts.css";
-@import "../styles/am.css";
 @import "../styles/tokens-v2-local.css";
+@import "../styles/am.css";
 @import "../styles/landing.css";
 @import "../styles/landing-v2.css";
 @import "../styles/forms.css";
 @import "../styles/app.css";
+@import "@ada-merkez/ui/ui.css";
 @import "@ada-merkez/ui/dekor.css";
 
 html {
@@ -115,6 +116,15 @@ body.landing {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  :root,
+  [data-theme="light"],
+  [data-theme="dark"] {
+    --am-dur-fast: 80ms;
+    --am-dur-base: 80ms;
+    --am-dur-medium: 80ms;
+    --am-dur-slow: 80ms;
+    --am-dur-sheet: 80ms;
+  }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
