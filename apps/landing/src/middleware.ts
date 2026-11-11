@@ -14,6 +14,7 @@ function isAppPublicStatic(pathname: string): boolean {
   return (
     pathname.startsWith("/app/icons/") ||
     pathname.startsWith("/app/splash/") ||
+    pathname.startsWith("/app/v3/") ||
     pathname.startsWith("/app/bos-durum/") ||
     pathname.startsWith("/app/ana-ekrana-ekle/")
   );

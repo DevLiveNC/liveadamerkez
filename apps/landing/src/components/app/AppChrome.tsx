@@ -16,6 +16,7 @@ import {
 import { Logo } from "../Logo";
 import { AppSwRegister } from "./AppSwRegister";
 import { AppInstallSheet } from "./AppInstallSheet";
+import { AppLaunch } from "./AppLaunch";
 
 const TABS = [
   {
@@ -152,6 +153,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       )}
       <AppSwRegister />
       <AppInstallSheet />
+      <AppLaunch />
     </AppShell>
   );
 }

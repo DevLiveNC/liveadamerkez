@@ -452,6 +452,46 @@ export const ui = {
   sample: "Örnek",
 } as const;
 
+export const splash = {
+  aria: "Ada Merkez açılış ekranı: A işareti ve Kabuki. Adanın saati, burada.",
+  sloganLead: "Adanın saati,",
+  sloganEm: "burada.",
+  geo: site.regionLine,
+  skip: "Atla",
+  skipAria: "Açılış animasyonunu atla",
+  en: {
+    aria: "Ada Merkez opening screen: A mark and Kabuki. The island's time is here.",
+    sloganLead: "The island's time,",
+    sloganEm: "is here.",
+    geo: "For Northern Cyprus and Turkey",
+    skip: "Skip",
+    skipAria: "Skip the opening animation",
+  },
+} as const;
+
+export const onboarding = {
+  title: "Nasıl çalışır",
+  skip: "Atla",
+  next: "İleri",
+  done: "Keşfe geç",
+  steps: [
+    { title: how.steps[0].title, body: how.steps[0].body },
+    { title: how.steps[1].title, body: how.steps[1].body },
+    { title: how.steps[2].title, body: how.steps[2].body },
+  ],
+  en: {
+    title: "How it works",
+    skip: "Skip",
+    next: "Next",
+    done: "Start exploring",
+    steps: [
+      { title: "Find a business", body: "City and category" },
+      { title: "Pick a time", body: "Europe/Nicosia" },
+      { title: "Confirm", body: "Waiting for approval" },
+    ],
+  },
+} as const;
+
 export const legal = {
   pendingTitle: "Kullanıcı onayı bekliyor",
   pendingBody:

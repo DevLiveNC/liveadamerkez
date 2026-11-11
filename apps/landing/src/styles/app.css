@@ -326,3 +326,49 @@ body.am-app {
   height: 56px;
   border-radius: 12px;
 }
+
+body.am-app a.am-biz,
+body.am-app .am-card-block {
+  transition: transform var(--am-dur-fast, 120ms) var(--am-ease-press, cubic-bezier(0.3, 0, 0.7, 1));
+}
+body.am-app a.am-biz:active,
+body.am-app .am-card-block:active {
+  transform: scale(0.98);
+}
+body.am-app .am-sheet {
+  animation: am-sheet-in var(--am-dur-medium, 240ms) var(--am-ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+@keyframes am-sheet-in {
+  from { transform: translateY(16px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.am-launch-skel {
+  display: grid;
+  gap: 12px;
+  padding: 12px 0 24px;
+}
+.am-launch-skel-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.am-launch-skel-av {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  flex: none;
+}
+.am-launch-skel-copy {
+  flex: 1;
+  display: grid;
+  gap: 8px;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.am-app a.am-biz:active,
+  body.am-app .am-card-block:active {
+    transform: none;
+  }
+  body.am-app .am-sheet {
+    animation: none;
+  }
+}
