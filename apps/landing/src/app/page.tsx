@@ -765,7 +765,6 @@ export default function HomePage() {
               </p>
               <h2>{closeCta.title}</h2>
               <p>{closeCta.body}</p>
-              <p>{waitlist.closedTitle}.</p>
             </div>
             <div className="close-actions am-hero-cta">
               <button className="am-btn am-btn--primary" type="button" disabled>

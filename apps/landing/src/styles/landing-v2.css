@@ -88,7 +88,7 @@ body.landing .am-land-actions {
 body.landing .am-land-mob-nav { display: none; }
 
 body.landing main.am-land .hero {
-  padding: 48px 0 48px;
+  padding: 48px 0 16px;
 }
 body.landing main.am-land .hero .t-display {
   font-size: 56px;
@@ -101,7 +101,7 @@ body.landing main.am-land .hero-copy {
   padding-top: 0;
 }
 body.landing main.am-land .hero-stage {
-  min-height: 420px;
+  min-height: 560px;
   justify-content: center;
 }
 body.landing main.am-land .hero-stage .device-shot { display: none; }
@@ -111,7 +111,6 @@ body.landing main.am-land .am-hero-cta {
   gap: 12px;
 }
 
-body.landing .search-band { padding: 0 0 8px; }
 body.landing .search-bar {
   border-radius: 16px;
   box-shadow: var(--am-elev-3);
