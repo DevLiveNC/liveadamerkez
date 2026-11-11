@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { app, site } from "@ada-merkez/copy";
 import { AppChrome } from "../../components/app/AppChrome";
 import { IosSplashLinks } from "../../components/app/IosSplashLinks";
+import { APP_MANIFEST_HREF } from "../../lib/pwa";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
   title: app.title,
   description: app.description,
   applicationName: site.name,
-  manifest: "/app/manifest.json",
+  manifest: APP_MANIFEST_HREF,
   appleWebApp: {
     capable: true,
     title: site.name,

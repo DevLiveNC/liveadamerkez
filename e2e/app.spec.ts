@@ -26,8 +26,8 @@ test("PWA app shell is guest-visible and login is role-tabbed", async ({ page })
   const home = await page.goto("/app");
   expect(home?.ok()).toBeTruthy();
   await expect(page.getByRole("heading", { name: "Yarın için uygun saat" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Kuaför" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Klinik" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Kuaför", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Klinik", exact: true })).toBeVisible();
   await expect(page.getByText("Örnek").first()).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("data-dekor", "app-musteri");
   await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-musteri");
@@ -53,8 +53,8 @@ test("PWA app shell is guest-visible and login is role-tabbed", async ({ page })
     shortcuts?: { url?: string }[];
     icons?: { src?: string }[];
   };
-  expect(manifestBody.start_url).toBe("/app/");
-  expect(manifestBody.scope).toBe("/app/");
+  expect(manifestBody.start_url).toBe("/app?source=pwa");
+  expect(manifestBody.scope).toBe("/app");
   expect(manifestBody.display).toBe("standalone");
   expect(manifestBody.shortcuts?.some((item) => item.url === "/app/randevular")).toBe(true);
   expect(manifestBody.icons?.every((icon) => icon.src?.startsWith("/app/icons/"))).toBe(true);
@@ -63,7 +63,7 @@ test("PWA app shell is guest-visible and login is role-tabbed", async ({ page })
   const sw = await page.request.get("/app/sw.js");
   expect(sw.ok()).toBeTruthy();
   const swText = await sw.text();
-  expect(swText).toMatch(/ada-merkez-app-v3/);
+  expect(swText).toMatch(/ada-merkez-app-v4/);
   expect(swText).toMatch(/CLEAR_CACHES/);
   expect(swText).toMatch(/offline\.html/);
   const offline = await page.request.get("/app/offline.html");

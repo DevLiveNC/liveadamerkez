@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
         source: "/app/sw.js",
         headers: [
           { key: "Content-Type", value: "application/javascript; charset=utf-8" },
-          { key: "Service-Worker-Allowed", value: "/app/" },
+          { key: "Service-Worker-Allowed", value: "/app" },
           { key: "Cache-Control", value: "no-cache" },
         ],
       },

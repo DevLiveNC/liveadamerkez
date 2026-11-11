@@ -101,12 +101,13 @@ Sunucu yetkisi: `apps/api/src/lib/auth.ts` → `sessionOr401`, `requireRole`. Ki
 
 ## PWA
 
-- Manifest: `/app/manifest.json` — `start_url=/app/`, `scope=/app/`, `display=standalone`
+- Manifest: `/app/manifest.json` — `start_url=/app?source=pwa`, `scope=/app`, `display=standalone`. `scope=/app/` prefix olarak `/app` kökünü kapsamaz; Next.js kanonik yol `/app` olduğu için kapsam `/app`.
+- Landing HTML (`/`) app manifest’ini link’ler (iOS ana ekrana eklemede o anki sayfa URL’sini kullanır). Standalone / `navigator.standalone` ise render’dan önce `/app`’e yönlenir.
 - İkonlar: `/app/icons/` (192, 512, maskable-512, apple-touch-180)
 - iOS splash: `/app/splash/` + `apple-touch-startup-image` (`IosSplashLinks`)
 - Kısayol: Keşif `/app`, Randevularım `/app/randevular`
-- Service worker: `/app/sw.js`, kayıt kapsamı `/app/` (manifest `scope` ile aynı)
-- Landing SW `/app` isteklerini işlemez
+- Service worker: `/app/sw.js`, kayıt kapsamı `/app` (manifest `scope` ile aynı; `Service-Worker-Allowed: /app`)
+- Landing SW `/app` isteklerini işlemez; `/` önbelleği `/app` yanıtı olarak dönmez
 - SW yalnızca kamu kabuğunu (`/app/offline.html`) ve statik ikon / splash / manifest dosyalarını önbelleğe alır. Gezinme, HTML ve RSC `network-only`; `cache.put` yok.
 - Kimlikli HTML, RSC ve `/app/api` yanıtları `Cache-Control: no-store`.
 
