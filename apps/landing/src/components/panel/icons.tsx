@@ -72,12 +72,22 @@ export function IconApp({ className = "am-icon am-icon-sm" }: { className?: stri
   );
 }
 
+export function IconApprove({ className = "am-icon" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8 12 3 3 5-6" />
+    </svg>
+  );
+}
+
 export function IconUsers({ className = "am-icon" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
       <circle cx="9" cy="8" r="3" />
-      <path d="M3 19c1.2-3 3.5-4.5 6-4.5S16.8 16 18 19" />
-      <circle cx="17" cy="9" r="2.2" />
+      <path d="M3.5 19c.8-3 3-4.5 5.5-4.5S13.7 16 14.5 19" />
+      <circle cx="17" cy="9" r="2.4" />
+      <path d="M16 14.6c2.2.3 4 1.6 4.6 4.4" />
     </svg>
   );
 }
@@ -96,8 +106,7 @@ export function IconReports({ className = "am-icon" }: { className?: string }) {
 export function IconSystem({ className = "am-icon" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="4" y="5" width="16" height="12" rx="2" />
-      <path d="M8 19h8" />
+      <path d="M4 13h3l2-6 4 12 2-6h5" />
     </svg>
   );
 }

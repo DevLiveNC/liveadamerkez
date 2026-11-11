@@ -1,12 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { yonetimApp } from "@ada-merkez/copy";
 import { EmptyState } from "../../../../components/app/EmptyState";
 import { fetchUsers, type AdminUser } from "../../../../lib/yonetim-api";
 
+type RoleFilter = "all" | "customer" | "business" | "admin";
+
+function roleLabel(role: string) {
+  if (role === "customer") return yonetimApp.roleCustomer;
+  if (role === "business") return yonetimApp.roleBusiness;
+  if (role === "admin") return yonetimApp.roleAdmin;
+  return role;
+}
+
+function shortDate(iso: string) {
+  return new Intl.DateTimeFormat("tr-TR", {
+    timeZone: "Europe/Nicosia",
+    day: "numeric",
+    month: "short",
+  }).format(new Date(iso));
+}
+
 export function KullanicilarView() {
   const [rows, setRows] = useState<AdminUser[] | null>(null);
+  const [filter, setFilter] = useState<RoleFilter>("all");
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -18,39 +36,63 @@ export function KullanicilarView() {
       });
   }, []);
 
+  const shown = useMemo(() => {
+    if (!rows) return [];
+    if (filter === "all") return rows;
+    return rows.filter((row) => row.role === filter);
+  }, [rows, filter]);
+
   if (error) return <EmptyState kind="hata" />;
-  if (!rows) {
-    return (
-      <div className="yonetim-head">
-        <h1>{yonetimApp.usersTitle}</h1>
-      </div>
-    );
-  }
+  if (!rows) return null;
 
   return (
-    <div>
-      <div className="yonetim-head">
-        <p className="t-label">{yonetimApp.who}</p>
-        <h1>{yonetimApp.usersTitle}</h1>
-        <p className="t-sm t-muted">{yonetimApp.usersLead}</p>
+    <>
+      <div className="am-toolbar">
+        {(
+          [
+            ["all", yonetimApp.filterAll],
+            ["customer", yonetimApp.roleCustomer],
+            ["business", yonetimApp.roleBusiness],
+            ["admin", yonetimApp.roleAdmin],
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            className={`am-chip${filter === id ? " am-chip--on" : ""}`}
+            onClick={() => setFilter(id)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
-      {rows.length === 0 ? (
+      {shown.length === 0 ? (
         <EmptyState kind="sonuc-yok" title={yonetimApp.emptyUsersTitle} body={yonetimApp.emptyUsersBody} />
       ) : (
-        <div className="yonetim-list">
-          {rows.map((row) => (
-            <article key={row.id} className="yonetim-card">
-              <p className="t-sm" style={{ fontWeight: 600 }}>
-                {row.displayName || row.phone}
-              </p>
-              <p className="t-xs t-muted">{row.phone}</p>
-              <p className="t-xs" style={{ marginTop: 6 }}>
-                {row.role}
-              </p>
-            </article>
-          ))}
-        </div>
+        <section className="am-panel-card">
+          <h2>{yonetimApp.usersTitle}</h2>
+          <div className="am-table-wrap">
+            <table className="am-table">
+              <thead>
+                <tr>
+                  <th>{yonetimApp.colAccount}</th>
+                  <th>{yonetimApp.colRole}</th>
+                  <th>{yonetimApp.colRegistered}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {shown.map((row) => (
+                  <tr key={row.id}>
+                    <td data-th={yonetimApp.colAccount}>{row.displayName || row.phone}</td>
+                    <td data-th={yonetimApp.colRole}>{roleLabel(row.role)}</td>
+                    <td data-th={yonetimApp.colRegistered}>{shortDate(row.createdAt)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
       )}
-    </div>
+    </>
   );
 }
