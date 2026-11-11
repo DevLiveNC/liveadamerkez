@@ -1,8 +1,9 @@
 @import "./tokens.css";
 @import "./app-v2.css";
 
-.am-ui-visually-hidden,
-.visually-hidden {
+/* Kabuk ve UI kuralları yalnız PWA gövdesinde. Landing landing-v2.css kullanır. */
+body.am-app .am-ui-visually-hidden,
+body.am-app .visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -15,8 +16,8 @@
 }
 
 /* Canlı PWA kabuğu: tasarım .am-phone çerçevesinin 100dvh karşılığı */
-.am-shell.am-ui-shell,
-.am-ui-shell {
+body.am-app .am-shell.am-ui-shell,
+body.am-app .am-ui-shell {
   width: 100%;
   max-width: var(--am-app-width);
   min-height: 100dvh;
@@ -32,8 +33,8 @@
 }
 
 @media (min-width: 860px) {
-  .am-shell.am-ui-shell,
-  .am-ui-shell {
+  body.am-app .am-shell.am-ui-shell,
+  body.am-app .am-ui-shell {
     max-width: var(--am-shell-max-desk);
     box-shadow: var(--am-elev-4);
     border-left: 1px solid var(--am-color-border);
@@ -41,12 +42,12 @@
   }
 }
 
-.am-header.am-top,
-.am-ui-topbar {
+body.am-app .am-header.am-top,
+body.am-app .am-ui-topbar {
   padding-top: max(8px, var(--am-safe-top));
 }
 
-.am-tabbar {
+body.am-app .am-tabbar {
   position: relative;
   left: auto;
   right: auto;
@@ -55,15 +56,15 @@
   padding-bottom: calc(var(--am-home-ind) + var(--am-safe-bottom));
 }
 
-.am-tab.is-on,
-.am-tab[aria-current="page"] {
+body.am-app .am-tab.is-on,
+body.am-app .am-tab[aria-current="page"] {
   color: var(--am-color-text);
   font-weight: 600;
 }
 
-.am-ui-main,
-.am-main,
-.am-scroll {
+body.am-app .am-ui-main,
+body.am-app .am-main,
+body.am-app .am-scroll {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -73,7 +74,11 @@
   touch-action: pan-y;
 }
 
-.am-ui-ptr {
+body.am-app .am-ui-main {
+  padding: 0 var(--am-page-pad) 16px;
+}
+
+body.am-app .am-ui-ptr {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -83,7 +88,7 @@
   width: 100%;
 }
 
-.am-ui-ptr-indicator {
+body.am-app .am-ui-ptr-indicator {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,7 +100,7 @@
   flex: none;
 }
 
-.am-ui-page {
+body.am-app .am-ui-page {
   animation: am-ui-page-in var(--am-dur-medium) var(--am-ease-in-out);
 }
 
@@ -104,14 +109,14 @@
   to { opacity: 1; }
 }
 
-.am-overlay.am-ui-sheet-root,
-.am-ui-sheet-root {
+body.am-app .am-overlay.am-ui-sheet-root,
+body.am-app .am-ui-sheet-root {
   position: fixed;
   inset: 0;
   z-index: var(--am-z-sheet);
 }
 
-.am-sheet {
+body.am-app .am-sheet {
   position: absolute;
 }
 
@@ -129,30 +134,30 @@
 @keyframes am-ui-vt-out { to { opacity: 0; } }
 @keyframes am-ui-vt-in { from { opacity: 0; } }
 
-.am-card-block {
+body.am-app .am-card-block {
   background: var(--am-color-surface);
   border-radius: var(--am-radius-card);
   box-shadow: var(--am-elev-2);
   padding: 16px;
 }
 
-.am-ui-chart {
+body.am-app .am-ui-chart {
   display: block;
   width: 100%;
   color: var(--am-navy);
 }
-.am-ui-chart figcaption {
+body.am-app .am-ui-chart figcaption {
   font-size: var(--am-fs-xs);
   color: var(--am-color-text-muted);
   margin-top: 6px;
 }
-.am-ui-chart svg { width: 100%; height: auto; overflow: visible; }
+body.am-app .am-ui-chart svg { width: 100%; height: auto; overflow: visible; }
 
 @media (prefers-reduced-motion: reduce) {
-  .am-ui-page,
-  .am-sheet,
-  .am-overlay,
-  .am-btn:active {
+  body.am-app .am-ui-page,
+  body.am-app .am-sheet,
+  body.am-app .am-overlay,
+  body.am-app .am-btn:active {
     animation: none !important;
     transform: none !important;
   }

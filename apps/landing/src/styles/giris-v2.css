@@ -16,11 +16,15 @@
   padding: 0;
   flex: 1;
   min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .am-shell .am-auth,
 .am-auth {
-  min-height: 100dvh;
+  min-height: 100%;
   display: grid;
   grid-template-columns: 1fr minmax(320px, 520px);
   background: var(--am-color-background);
@@ -311,7 +315,7 @@
   .am-auth {
     display: flex;
     flex-direction: column;
-    min-height: 100dvh;
+    min-height: 100%;
     width: 100%;
   }
 
@@ -338,7 +342,7 @@
     padding: 16px 20px 32px;
     align-items: stretch;
     flex: 1;
-    overflow-y: auto;
+    overflow: visible;
   }
 
   .am-auth-panel {

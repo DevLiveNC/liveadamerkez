@@ -105,7 +105,7 @@ export function YonetimShell({
         </div>
         <DekorNavCorner />
       </aside>
-      <div className="am-main">
+      <main id="yonetim-icerik" className="am-main">
         <header className="am-topbar">
           <div className="am-work-title-row">
             <h1>{title}</h1>
@@ -115,7 +115,7 @@ export function YonetimShell({
           </div>
         </header>
         <div className="am-work">{children}</div>
-      </div>
+      </main>
       <nav className="am-dash-tabbar" aria-label={yonetimApp.panelName}>
         {LINKS.map((link) => (
           <Link

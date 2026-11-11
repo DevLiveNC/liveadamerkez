@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+/** Lucide’den türetilmiş yollar (ISC). Lisans: /THIRD_PARTY.md */
+
 type IconName =
   | "home"
   | "calendar"

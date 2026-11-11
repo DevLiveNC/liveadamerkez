@@ -124,7 +124,13 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       }
     >
       {hideChrome ? (
-        children
+        isAuth ? (
+          <main id="icerik" className="am-main am-ui-main">
+            {children}
+          </main>
+        ) : (
+          children
+        )
       ) : (
         <PullToRefresh
           onRefresh={() => router.refresh()}

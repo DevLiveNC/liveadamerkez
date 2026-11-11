@@ -56,6 +56,15 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   expect(oflText).toMatch(/Inter Project Authors/);
   expect(oflText).toMatch(/Plus Jakarta Sans Project Authors/);
   expect((await page.request.get("/fonts/PlusJakartaSans-Variable.woff2")).status()).toBe(404);
+  await expect(page.locator("body.landing")).toHaveCount(1);
+  await expect(page.locator("body.am-app")).toHaveCount(0);
+  const landingOverflow = await page.evaluate(() => getComputedStyle(document.body).overflow);
+  expect(landingOverflow).not.toBe("hidden");
+  const landingBtnTrack = await page
+    .getByRole("link", { name: "Erken erişime kaydol" })
+    .first()
+    .evaluate((el) => getComputedStyle(el).letterSpacing);
+  expect(landingBtnTrack).not.toBe("-0.01em");
   await expect(page.locator("body")).not.toContainText(/KKTC/i);
   await expect(page.locator("body")).not.toContainText(/ücretsiz kurulum/i);
   await expect(page.locator("body")).not.toContainText(/ilk ve tek/i);

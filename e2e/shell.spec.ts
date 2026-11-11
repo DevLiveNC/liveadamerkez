@@ -5,6 +5,9 @@ test("uygulama kabuğu mobil ve masaüstünde durur", async ({ page }) => {
   await page.goto("/app");
   await expect(page.getByRole("heading", { name: "Yarın için uygun saat" })).toBeVisible();
   await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute("href", "#icerik");
+  await expect(page.getByRole("main")).toHaveAttribute("id", "icerik");
+  const mainPad = await page.locator("#icerik").evaluate((el) => getComputedStyle(el).paddingLeft);
+  expect(Number.parseFloat(mainPad)).toBeGreaterThanOrEqual(16);
   const nav = page.getByRole("navigation", { name: "Müşteri gezinme" });
   await expect(nav).toBeVisible();
   await expect(nav.getByRole("link", { name: "Keşif" })).toHaveAttribute("aria-current", "page");
@@ -48,5 +51,7 @@ test("giriş kabuğu sekmesiz kalır ve sayfa geçişi çalışır", async ({ pa
   await expect(page.getByRole("heading", { name: "Adada randevu ve rezervasyon dağılmasın." })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Müşteri gezinme" })).toHaveCount(0);
   await expect(page.getByRole("tab", { name: "Müşteri" })).toBeVisible();
+  await expect(page.getByRole("main")).toHaveAttribute("id", "icerik");
+  await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute("href", "#icerik");
   await page.screenshot({ path: "artifacts/app-giris-mobile-390.png", fullPage: false });
 });

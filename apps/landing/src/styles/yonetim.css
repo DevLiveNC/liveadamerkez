@@ -33,6 +33,19 @@ body:has(.yonetim-app) .am-main {
   z-index: 1;
 }
 
+.yonetim-app.am-dash {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.yonetim-app.am-dash > .am-main {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
 .yonetim-shell {
   display: flex;
   flex-direction: column;
