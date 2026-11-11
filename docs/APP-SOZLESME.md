@@ -102,7 +102,8 @@ Sunucu yetkisi: `apps/api/src/lib/auth.ts` → `sessionOr401`, `requireRole`. Ki
 ## PWA
 
 - Manifest: `/app/manifest.json` — `start_url=/app?source=pwa`, `scope=/app`, `display=standalone`. `scope=/app/` prefix olarak `/app` kökünü kapsamaz; Next.js kanonik yol `/app` olduğu için kapsam `/app`.
-- Landing HTML (`/`) app manifest’ini link’ler (iOS ana ekrana eklemede o anki sayfa URL’sini kullanır). Standalone / `navigator.standalone` ise render’dan önce `/app`’e yönlenir.
+- Landing HTML (`/`) app manifest’ini link’ler (iOS ana ekrana eklemede o anki sayfa URL’sini kullanır). Standalone / `navigator.standalone` yönlendirmesi yalnızca `pathname === '/'` için; KVKK/gizlilik sayfaları PWA içinde kalabilir. `location.replace` başarısızsa görünürlük geri açılır.
+- Eski `scope=/app/` service worker kaydı güvenle unregister edilir; aktif kayıt `/app`.
 - İkonlar: `/app/icons/` (192, 512, maskable-512, apple-touch-180)
 - iOS splash: `/app/splash/` + `apple-touch-startup-image` (`IosSplashLinks`)
 - Kısayol: Keşif `/app`, Randevularım `/app/randevular`
