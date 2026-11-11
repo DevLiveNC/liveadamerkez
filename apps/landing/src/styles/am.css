@@ -4,6 +4,7 @@
 */
 
 @import "@ada-merkez/brand/tokens.css";
+@import "@ada-merkez/brand/tokens-v3.css";
 
 :root {
   --am-wrap: 1280px;
@@ -11,13 +12,13 @@
   --am-gutter: 24px;
   --am-pad: 80px;
   --am-nav: 72px;
-  --am-motion-fast: var(--am-dur-fast);
-  --am-motion-base: var(--am-dur-base);
-  --am-motion-med: var(--am-dur-medium);
-  --am-motion-slow: var(--am-dur-slow);
-  --am-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --am-ease-in-out: cubic-bezier(0.45, 0, 0.15, 1);
-  --am-ease-press: cubic-bezier(0.3, 0, 0.7, 1);
+  --am-motion-fast: var(--motion-duration-fast);
+  --am-motion-base: var(--motion-duration-base);
+  --am-motion-med: var(--motion-duration-medium);
+  --am-motion-slow: var(--motion-duration-slow);
+  --am-ease-out: var(--motion-ease-out);
+  --am-ease-in-out: var(--motion-ease-in-out);
+  --am-ease-press: var(--motion-ease-press);
   --am-focus-ring: 0 0 0 3px #fff, 0 0 0 5px var(--am-color-focus);
 }
 

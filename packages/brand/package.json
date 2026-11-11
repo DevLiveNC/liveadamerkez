@@ -4,6 +4,8 @@
   "private": true,
   "exports": {
     "./tokens.css": "./tokens.css",
-    "./tokens.json": "./tokens.json"
+    "./tokens.json": "./tokens.json",
+    "./tokens-v3.css": "./tokens-v3.css",
+    "./tokens-v3.json": "./tokens-v3.json"
   }
 }

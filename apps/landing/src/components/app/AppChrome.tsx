@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { app, ui } from "@ada-merkez/copy";
+import { app, nav, ui } from "@ada-merkez/copy";
 import {
   AppShell,
   BottomNav,
   PageFade,
   PullToRefresh,
+  TopBar,
   UiIcon,
   startAppTransition,
   type BottomNavItem,
 } from "@ada-merkez/ui";
+import { Logo } from "../Logo";
 import { AppSwRegister } from "./AppSwRegister";
 import { AppInstallSheet } from "./AppInstallSheet";
 

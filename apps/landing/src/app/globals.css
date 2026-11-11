@@ -19,7 +19,9 @@ body.landing {
 }
 
 .consent-banner {
-  position: sticky;
+  position: fixed;
+  left: 0;
+  right: 0;
   bottom: 0;
   z-index: 40;
   margin: 0;
@@ -127,7 +129,15 @@ body.landing {
   }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-  .btn:active { transform: none; }
+  .btn:active,
+  .btn:hover,
+  .card:hover,
+  .am-biz:hover,
+  .am-card:hover {
+    transform: none;
+  }
 }

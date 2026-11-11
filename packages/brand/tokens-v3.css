@@ -1,0 +1,376 @@
+/* Ada Merkez renk sistemi v3.0.0 — kaynak: ui-v3/tokens.css (Faz A).
+   --am3-* palet; --am-* v2 adları bu değerlere köprülenir.
+   Desen URL'leri uygulama kökü /v3/desen/. */
+
+:root {
+  --am3-lacivert-50: #E8EEF4;
+  --am3-lacivert-100: #C9D6E3;
+  --am3-lacivert-200: #8FA7BF;
+  --am3-lacivert-400: #3C5A78;
+  --am3-lacivert-600: #1C3D5A;
+  --am3-lacivert-800: #0F2C44;
+  --am3-lacivert-900: #081A2A;
+  --am3-mercan-50: #FDEDE7;
+  --am3-mercan-100: #FBD3C4;
+  --am3-mercan-200: #F6A68A;
+  --am3-mercan-400: #E4572E;
+  --am3-mercan-600: #C2410C;
+  --am3-mercan-800: #8A2A08;
+  --am3-akdeniz-50: #E2F7F5;
+  --am3-akdeniz-100: #BDEDE8;
+  --am3-akdeniz-200: #7EDDD5;
+  --am3-akdeniz-400: #22B8AF;
+  --am3-akdeniz-600: #0E7C78;
+  --am3-akdeniz-800: #0A4F4D;
+  --am3-derin-50: #E3EEFA;
+  --am3-derin-100: #BFD7F2;
+  --am3-derin-200: #82B1E6;
+  --am3-derin-400: #2D7DD2;
+  --am3-derin-600: #0B5FA5;
+  --am3-derin-800: #083E6E;
+  --am3-gunbatimi-50: #FFF0E3;
+  --am3-gunbatimi-100: #FFD9B8;
+  --am3-gunbatimi-200: #FFB57A;
+  --am3-gunbatimi-400: #FF8A3D;
+  --am3-gunbatimi-600: #B04A0A;
+  --am3-gunbatimi-800: #7F3A0A;
+  --am3-hellim-50: #FFFBF2;
+  --am3-hellim-100: #FBF1DA;
+  --am3-hellim-200: #F4E2B8;
+  --am3-hellim-400: #E8C77E;
+  --am3-hellim-600: #9A7429;
+  --am3-hellim-800: #5E4614;
+  --am3-zeytin-50: #F1F4E3;
+  --am3-zeytin-100: #DDE5BC;
+  --am3-zeytin-200: #BCCB7E;
+  --am3-zeytin-400: #8DA33A;
+  --am3-zeytin-600: #5C6E1E;
+  --am3-zeytin-800: #3A4612;
+  --am3-begonvil-50: #FDE8F2;
+  --am3-begonvil-100: #F9C6DE;
+  --am3-begonvil-200: #F28DBB;
+  --am3-begonvil-400: #E03A8C;
+  --am3-begonvil-600: #B0196A;
+  --am3-begonvil-800: #700E43;
+  --am3-mor-50: #F2EAFA;
+  --am3-mor-100: #DDCBF1;
+  --am3-mor-200: #B996E0;
+  --am3-mor-400: #8A4FC6;
+  --am3-mor-600: #6A2FA3;
+  --am3-mor-800: #45196E;
+  --am3-limon-50: #FFFBE0;
+  --am3-limon-100: #FFF3A8;
+  --am3-limon-200: #FBE66A;
+  --am3-limon-400: #F5D21E;
+  --am3-limon-600: #8C7600;
+  --am3-limon-800: #574900;
+  --am3-harnup-50: #F6EEE8;
+  --am3-harnup-100: #E8D5C7;
+  --am3-harnup-200: #CFAA90;
+  --am3-harnup-400: #9A6544;
+  --am3-harnup-600: #6E4227;
+  --am3-harnup-800: #4A2A16;
+  --am3-grad-gunbatimi: linear-gradient(135deg, #FFB57A 0%, #FF8A3D 30%, #E4572E 62%, #E03A8C 100%);
+  --am3-grad-akdeniz: linear-gradient(160deg, #7EDDD5 0%, #22B8AF 40%, #0B5FA5 100%);
+  --am3-grad-begonvil: linear-gradient(135deg, #F28DBB 0%, #E03A8C 45%, #8A4FC6 100%);
+  --am3-grad-limonluk: linear-gradient(135deg, #FFF3A8 0%, #F5D21E 45%, #8DA33A 100%);
+  --am3-grad-hellim: linear-gradient(180deg, #FFFBF2 0%, #FBF1DA 55%, #F4E2B8 100%);
+  --am3-grad-gece: linear-gradient(180deg, #081A2A 0%, #0F2C44 45%, #083E6E 100%);
+  --am3-grad-metin: linear-gradient(100deg, #C2410C 0%, #B0196A 55%, #6A2FA3 100%);
+  --am3-grad-ufuk: linear-gradient(180deg, #FFD9B8 0%, #FBF1DA 38%, #BDEDE8 100%);
+  --am3-kat-kuafor-zemin: #F2EAFA;
+  --am3-kat-kuafor-yumusak: #DDCBF1;
+  --am3-kat-kuafor-vurgu: #8A4FC6;
+  --am3-kat-kuafor-koyu: #6A2FA3;
+  --am3-kat-kuafor-murekkep: #45196E;
+  --am3-kat-kuafor-dolguUstuMetin: #FFFFFF;
+  --am3-kat-guzellik-zemin: #FDE8F2;
+  --am3-kat-guzellik-yumusak: #F9C6DE;
+  --am3-kat-guzellik-vurgu: #E03A8C;
+  --am3-kat-guzellik-koyu: #B0196A;
+  --am3-kat-guzellik-murekkep: #700E43;
+  --am3-kat-guzellik-dolguUstuMetin: #FFFFFF;
+  --am3-kat-klinik-zemin: #E3EEFA;
+  --am3-kat-klinik-yumusak: #BFD7F2;
+  --am3-kat-klinik-vurgu: #2D7DD2;
+  --am3-kat-klinik-koyu: #0B5FA5;
+  --am3-kat-klinik-murekkep: #083E6E;
+  --am3-kat-klinik-dolguUstuMetin: #FFFFFF;
+  --am3-kat-restoran-zemin: #FFF0E3;
+  --am3-kat-restoran-yumusak: #FFD9B8;
+  --am3-kat-restoran-vurgu: #FF8A3D;
+  --am3-kat-restoran-koyu: #B04A0A;
+  --am3-kat-restoran-murekkep: #7F3A0A;
+  --am3-kat-restoran-dolguUstuMetin: #FFFFFF;
+  --am3-kat-kafe-zemin: #F6EEE8;
+  --am3-kat-kafe-yumusak: #E8D5C7;
+  --am3-kat-kafe-vurgu: #9A6544;
+  --am3-kat-kafe-koyu: #6E4227;
+  --am3-kat-kafe-murekkep: #4A2A16;
+  --am3-kat-kafe-dolguUstuMetin: #FFFFFF;
+  --am3-kat-etkinlik-zemin: #FFFBE0;
+  --am3-kat-etkinlik-yumusak: #FFF3A8;
+  --am3-kat-etkinlik-vurgu: #F5D21E;
+  --am3-kat-etkinlik-koyu: #8C7600;
+  --am3-kat-etkinlik-murekkep: #574900;
+  --am3-kat-etkinlik-dolguUstuMetin: #0F2C44;
+  --am3-kat-spor-zemin: #F1F4E3;
+  --am3-kat-spor-yumusak: #DDE5BC;
+  --am3-kat-spor-vurgu: #8DA33A;
+  --am3-kat-spor-koyu: #5C6E1E;
+  --am3-kat-spor-murekkep: #3A4612;
+  --am3-kat-spor-dolguUstuMetin: #FFFFFF;
+  --am3-kat-sahil-zemin: #E2F7F5;
+  --am3-kat-sahil-yumusak: #BDEDE8;
+  --am3-kat-sahil-vurgu: #22B8AF;
+  --am3-kat-sahil-koyu: #0E7C78;
+  --am3-kat-sahil-murekkep: #0A4F4D;
+  --am3-kat-sahil-dolguUstuMetin: #FFFFFF;
+  --am3-bg: #FFFBF2;
+  --am3-bgAlt: #FBF1DA;
+  --am3-surface: #FFFFFF;
+  --am3-surfaceWarm: #FFFBF2;
+  --am3-text: #0F2C44;
+  --am3-textMuted: #4E5A66;
+  --am3-textOnDark: #FFFBF2;
+  --am3-textOnDarkMuted: #C9D6E3;
+  --am3-border: #F4E2B8;
+  --am3-focus: #0B5FA5;
+  --am3-brand: #0F2C44;
+  --am3-accent: #E4572E;
+  --am3-accentText: #C2410C;
+  --am3-confirmed: #0F2C44;
+  --am3-pending: #E4572E;
+  --am3-pendingBg: #FDEDE7;
+  --am3-free: #0E7C78;
+  --am3-freeBg: #E2F7F5;
+  --am3-success: #5C6E1E;
+  --am3-warning: #B04A0A;
+  --am3-danger: #B42318;
+  --am3-info: #0B5FA5;
+  --am3-font-display: "Plus Jakarta Sans", system-ui, sans-serif;
+  --am3-font-body: Inter, system-ui, sans-serif;
+  --am3-radius-sm: 10px;
+  --am3-radius-md: 16px;
+  --am3-radius-lg: 24px;
+  --am3-radius-xl: 36px;
+  --am3-radius-pill: 999px;
+  --am3-shadow-pop: 0 2px 0 rgba(15,44,68,.10), 0 18px 40px -12px rgba(15,44,68,.28);
+  --am3-shadow-sticker: 4px 4px 0 #0F2C44;
+  --am3-ease-out: cubic-bezier(.22,1,.36,1);
+  --am3-ease-spring: cubic-bezier(.34,1.56,.64,1);
+  --am3-ease-inout: cubic-bezier(.65,0,.35,1);
+
+  --motion-duration-fast: 120ms;
+  --motion-duration-base: 180ms;
+  --motion-duration-medium: 240ms;
+  --motion-duration-slow: 320ms;
+  --motion-ease-out: var(--am3-ease-out);
+  --motion-ease-in-out: var(--am3-ease-inout);
+  --motion-ease-spring: var(--am3-ease-spring);
+  --motion-ease-press: cubic-bezier(0.3, 0, 0.7, 1);
+}
+
+.am3-desen-dalga { background-image: url("/v3/desen/dalga.svg"); }
+.am3-desen-kum { background-image: url("/v3/desen/kum.svg"); }
+.am3-desen-lefkara { background-image: url("/v3/desen/lefkara.svg"); }
+.am3-desen-kayik { background-image: url("/v3/desen/kayik.svg"); }
+.am3-desen-harnup { background-image: url("/v3/desen/harnup.svg"); }
+.am3-desen-zeytin { background-image: url("/v3/desen/zeytin-dali.svg"); }
+.am3-desen-begonvil { background-image: url("/v3/desen/begonvil.svg"); }
+
+/* Semantik katman + v2 adları → v3 palet. Tema dosyası değişince UI izler. */
+:root,
+[data-theme="light"] {
+  --color-brand: var(--am3-brand);
+  --color-brand-hover: var(--am3-lacivert-900);
+  --color-on-brand: var(--am3-textOnDark);
+  --color-surface: var(--am3-surface);
+  --color-surface-muted: var(--am3-bgAlt);
+  --color-surface-raised: var(--am3-surface);
+  --color-background: var(--am3-bg);
+  --color-text: var(--am3-text);
+  --color-text-muted: var(--am3-textMuted);
+  --color-text-subtle: var(--am3-lacivert-400);
+  --color-border: var(--am3-border);
+  --color-border-subtle: color-mix(in srgb, var(--am3-border) 70%, transparent);
+  --color-accent-coral: var(--am3-accent);
+  --color-accent-coral-hover: var(--am3-accentText);
+  --color-accent-coral-soft: var(--am3-mercan-50);
+  --color-accent-on-coral: #ffffff;
+  --color-accent-teal: var(--am3-akdeniz-600);
+  --color-accent-teal-hover: var(--am3-akdeniz-800);
+  --color-accent-teal-soft: var(--am3-akdeniz-50);
+  --color-accent-teal-text: var(--am3-akdeniz-800);
+  --color-accent-aegean: var(--am3-derin-400);
+  --color-accent-sand: var(--am3-hellim-50);
+  --color-accent-live: var(--am3-akdeniz-400);
+  --color-accent-begonvil: var(--am3-begonvil-400);
+  --color-accent-limon: var(--am3-limon-400);
+  --color-on-secondary: #ffffff;
+  --color-link: var(--am3-akdeniz-800);
+  --color-focus: var(--am3-focus);
+  --color-success: var(--am3-success);
+  --color-success-subtle: var(--am3-zeytin-50);
+  --color-warning: var(--am3-warning);
+  --color-warning-subtle: var(--am3-gunbatimi-50);
+  --color-danger: var(--am3-danger);
+  --color-danger-subtle: var(--am3-mercan-50);
+  --color-info: var(--am3-info);
+  --color-info-subtle: var(--am3-derin-50);
+  --color-status-confirmed-bg: var(--am3-confirmed);
+  --color-status-confirmed-fg: var(--am3-textOnDark);
+  --color-status-pending-bg: var(--am3-pendingBg);
+  --color-status-pending-fg: var(--am3-text);
+  --color-status-pending-accent: var(--am3-pending);
+  --color-status-pending-text: var(--am3-accentText);
+  --color-status-free-bg: var(--am3-freeBg);
+  --color-status-free-fg: var(--am3-free);
+  --color-status-cancelled-bg: var(--am3-hellim-200);
+  --color-status-cancelled-fg: var(--am3-textMuted);
+}
+
+[data-theme="dark"] {
+  --color-brand: var(--am3-hellim-50);
+  --color-brand-hover: #ffffff;
+  --color-on-brand: var(--am3-lacivert-800);
+  --color-surface: var(--am3-lacivert-800);
+  --color-surface-muted: var(--am3-lacivert-600);
+  --color-surface-raised: var(--am3-lacivert-600);
+  --color-background: var(--am3-lacivert-900);
+  --color-text: var(--am3-textOnDark);
+  --color-text-muted: var(--am3-textOnDarkMuted);
+  --color-text-subtle: var(--am3-lacivert-200);
+  --color-border: var(--am3-lacivert-600);
+  --color-border-subtle: color-mix(in srgb, var(--am3-lacivert-600) 80%, transparent);
+  --color-accent-coral: var(--am3-mercan-400);
+  --color-accent-coral-hover: var(--am3-mercan-200);
+  --color-accent-coral-soft: var(--am3-mercan-800);
+  --color-accent-teal: var(--am3-akdeniz-200);
+  --color-accent-teal-hover: var(--am3-akdeniz-100);
+  --color-accent-teal-soft: var(--am3-akdeniz-800);
+  --color-accent-teal-text: var(--am3-akdeniz-200);
+  --color-link: var(--am3-akdeniz-200);
+  --color-focus: var(--am3-mercan-200);
+  --color-success: var(--am3-zeytin-200);
+  --color-success-subtle: var(--am3-zeytin-800);
+  --color-warning: var(--am3-gunbatimi-200);
+  --color-warning-subtle: var(--am3-gunbatimi-800);
+  --color-danger: var(--am3-mercan-200);
+  --color-danger-subtle: var(--am3-mercan-800);
+  --color-info: var(--am3-derin-200);
+  --color-info-subtle: var(--am3-derin-800);
+  --color-status-confirmed-bg: var(--am3-lacivert-800);
+  --color-status-confirmed-fg: var(--am3-textOnDark);
+  --color-status-pending-bg: var(--am3-mercan-800);
+  --color-status-pending-fg: var(--am3-mercan-50);
+  --color-status-pending-accent: var(--am3-pending);
+  --color-status-pending-text: var(--am3-mercan-200);
+  --color-status-free-bg: var(--am3-akdeniz-800);
+  --color-status-free-fg: var(--am3-akdeniz-50);
+  --color-status-cancelled-bg: var(--am3-lacivert-600);
+  --color-status-cancelled-fg: var(--am3-textOnDarkMuted);
+  --color-on-secondary: var(--am3-lacivert-900);
+}
+
+:root,
+[data-theme="light"],
+[data-theme="dark"] {
+  --am-color-background: var(--color-background);
+  --am-color-surface: var(--color-surface);
+  --am-color-surface-muted: var(--color-surface-muted);
+  --am-color-surface-raised: var(--color-surface-raised);
+  --am-color-text: var(--color-text);
+  --am-color-text-muted: var(--color-text-muted);
+  --am-color-text-subtle: var(--color-text-subtle);
+  --am-color-border: var(--color-border);
+  --am-color-border-subtle: var(--color-border-subtle);
+  --am-color-primary: var(--color-brand);
+  --am-color-primary-hover: var(--color-brand-hover);
+  --am-color-on-primary: var(--color-on-brand);
+  --am-color-secondary: var(--color-accent-teal);
+  --am-color-secondary-hover: var(--color-accent-teal-hover);
+  --am-color-secondary-text: var(--color-accent-teal-text);
+  --am-color-secondary-soft: var(--color-accent-teal-soft);
+  --am-color-on-secondary: var(--color-on-secondary);
+  --am-color-accent: var(--color-accent-coral);
+  --am-color-accent-hover: var(--color-accent-coral-hover);
+  --am-color-accent-soft: var(--color-accent-coral-soft);
+  --am-color-on-accent: var(--color-accent-on-coral);
+  --am-color-success: var(--color-success);
+  --am-color-success-fill: var(--color-success);
+  --am-color-success-subtle: var(--color-success-subtle);
+  --am-color-warning: var(--color-warning);
+  --am-color-warning-fill: var(--color-warning);
+  --am-color-warning-subtle: var(--color-warning-subtle);
+  --am-color-danger: var(--color-danger);
+  --am-color-danger-fill: var(--color-danger);
+  --am-color-danger-subtle: var(--color-danger-subtle);
+  --am-color-info: var(--color-info);
+  --am-color-info-fill: var(--color-info);
+  --am-color-info-subtle: var(--color-info-subtle);
+  --am-color-focus: var(--color-focus);
+  --am-color-live: var(--color-accent-live);
+  --am-color-link: var(--color-link);
+  --am-color-icon: var(--am3-brand);
+  --am-color-icon-muted: var(--color-text-muted);
+  --am-status-confirmed-bg: var(--color-status-confirmed-bg);
+  --am-status-confirmed-fg: var(--color-status-confirmed-fg);
+  --am-status-pending-bg: var(--color-status-pending-bg);
+  --am-status-pending-fg: var(--color-status-pending-fg);
+  --am-status-pending-accent: var(--color-status-pending-accent);
+  --am-status-pending-text: var(--color-status-pending-text);
+  --am-status-free-bg: var(--color-status-free-bg);
+  --am-status-free-fg: var(--color-status-free-fg);
+  --am-status-cancelled-bg: var(--color-status-cancelled-bg);
+  --am-status-cancelled-fg: var(--color-status-cancelled-fg);
+
+  --am-brand-navy: var(--am3-lacivert-800);
+  --am-brand-navy-deep: var(--am3-lacivert-900);
+  --am-brand-navy-mid: var(--am3-lacivert-600);
+  --am-brand-aegean: var(--am3-derin-400);
+  --am-brand-teal: var(--am3-akdeniz-600);
+  --am-brand-teal-dark: var(--am3-akdeniz-800);
+  --am-brand-teal-soft: var(--am3-akdeniz-50);
+  --am-brand-teal-light: var(--am3-akdeniz-200);
+  --am-brand-coral: var(--am3-mercan-400);
+  --am-brand-coral-dark: var(--am3-mercan-600);
+  --am-brand-coral-light: var(--am3-mercan-200);
+  --am-brand-coral-soft: var(--am3-mercan-50);
+  --am-brand-sand: var(--am3-hellim-50);
+  --am-brand-sand-dark: var(--am3-hellim-100);
+  --am-brand-cream: var(--am3-hellim-50);
+  --am-brand-white: var(--am3-surface);
+  --am-brand-ink: var(--am3-lacivert-900);
+  --am-brand-muted: var(--am3-textMuted);
+  --am-brand-live: var(--am3-akdeniz-400);
+
+  --am-navy: var(--am3-lacivert-800);
+  --am-coral: var(--am3-mercan-400);
+  --am-teal: var(--am3-akdeniz-600);
+  --am-teal-dark: var(--am3-akdeniz-800);
+  --am-teal-soft: var(--am3-akdeniz-50);
+  --am-sand: var(--am3-hellim-50);
+  --am-cream: var(--am3-hellim-50);
+  --am-white: var(--am3-surface);
+
+  --am-motion-fast: var(--motion-duration-fast);
+  --am-motion-base: var(--motion-duration-base);
+  --am-motion-medium: var(--motion-duration-medium);
+  --am-motion-med: var(--motion-duration-medium);
+  --am-motion-slow: var(--motion-duration-slow);
+  --am-dur-fast: var(--motion-duration-fast);
+  --am-dur-base: var(--motion-duration-base);
+  --am-ease-out: var(--motion-ease-out);
+  --am-ease-in-out: var(--motion-ease-in-out);
+  --am-ease-press: var(--motion-ease-press);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 0.01ms;
+    --motion-duration-base: 0.01ms;
+    --motion-duration-medium: 0.01ms;
+    --motion-duration-slow: 0.01ms;
+  }
+}
