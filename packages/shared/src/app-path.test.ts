@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { isAppPath, loginUrl, parseAppRoleParam, readNextParam, safeAppPath } from "./app-path.js";
+import {
+  authPageUrl,
+  isAppPath,
+  loginUrl,
+  parseAppRoleParam,
+  parseAuthModeParam,
+  readNextParam,
+  safeAppPath,
+} from "./app-path.js";
 
 describe("safeAppPath", () => {
   it("allows /app and nested app paths", () => {
@@ -51,5 +59,18 @@ describe("loginUrl", () => {
     expect(parseAppRoleParam("yonetici")).toBe("admin");
     expect(parseAppRoleParam("musteri")).toBe("customer");
     expect(parseAppRoleParam("nope")).toBe("customer");
+  });
+
+  it("parses mod and kayit, keeps next on auth URLs", () => {
+    expect(parseAuthModeParam("kayit")).toBe("register");
+    expect(parseAuthModeParam("giris", "1")).toBe("register");
+    expect(parseAuthModeParam("giris")).toBe("login");
+    expect(authPageUrl({ role: "admin", mode: "register", next: "/app/yonetim" })).toBe(
+      "/app/giris?rol=yonetici&mod=kayit&next=%2Fapp%2Fyonetim",
+    );
+    expect(authPageUrl({ role: "business", mode: "register", next: "/app/isletme" })).toBe(
+      "/app/giris?rol=isletme&mod=kayit&kayit=1&next=%2Fapp%2Fisletme",
+    );
+    expect(authPageUrl({ role: "customer", next: "https://evil.test" })).toBe("/app/giris");
   });
 });

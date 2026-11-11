@@ -14,11 +14,14 @@ export {
   APP_LOGIN,
   SESSION_COOKIE,
   isAppPath,
+  authPageUrl,
   loginUrl,
   parseAppRoleParam,
+  parseAuthModeParam,
   readNextParam,
   roleToQuery,
   safeAppPath,
 } from "./app-path.js";
+export type { AuthMode } from "./app-path.js";
 export { SESSION_ROLES, isSessionRole } from "./roles.js";
 export type { SessionRole } from "./roles.js";

@@ -21,6 +21,38 @@ export function parseAppRoleParam(value: string | null | undefined): SessionRole
   return "customer";
 }
 
+export type AuthMode = "login" | "register";
+
+/** `mod=kayit` veya geriye dönük `kayit=1`. */
+export function parseAuthModeParam(
+  mod?: string | null,
+  kayit?: string | null,
+): AuthMode {
+  const raw = mod?.trim().toLowerCase();
+  if (raw === "kayit" || raw === "register" || kayit === "1") return "register";
+  return "login";
+}
+
+export function authPageUrl(options: {
+  role: SessionRole;
+  mode?: AuthMode;
+  next?: string | null;
+}): string {
+  const params = new URLSearchParams();
+  if (options.role !== "customer") params.set("rol", roleToQuery(options.role));
+  const mode = options.mode ?? "login";
+  if (mode === "register") {
+    params.set("mod", "kayit");
+    if (options.role !== "admin") params.set("kayit", "1");
+  } else if (options.role !== "customer") {
+    params.set("mod", "giris");
+  }
+  const next = options.next ? safeAppPath(options.next) : APP_HOME;
+  if (next !== APP_HOME) params.set("next", next);
+  const query = params.toString();
+  return query ? `${APP_LOGIN}?${query}` : APP_LOGIN;
+}
+
 export function roleToQuery(role: SessionRole): string {
   return ROLE_QUERY[role];
 }

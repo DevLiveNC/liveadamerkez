@@ -82,12 +82,26 @@ test("PWA app shell is guest-visible and login is role-tabbed", async ({ page })
   await expect(page.getByRole("button", { name: "Kayıt" })).toBeVisible();
 
   await page.getByRole("tab", { name: "Yönetici" }).click();
-  await expect(page.getByText("Yönetici kaydı yoktur")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Kayıt" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Kayıt" })).toBeVisible();
+  await page.getByRole("button", { name: "Kayıt" }).click();
+  await expect(page.getByText("Yönetici hesabı davetle açılır")).toBeVisible();
+  await expect(page.getByLabel("Telefon")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Kod gönder" })).toHaveCount(0);
 
-  await page.goto("/app/giris?rol=isletme&kayit=1");
+  await page.goto("/app/giris?rol=yonetici&mod=kayit&next=/app/yonetim");
+  await expect(page.getByRole("tab", { name: "Yönetici" })).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByText("Yönetici hesabı davetle açılır")).toBeVisible();
+  await expect(page).toHaveURL(/next=(%2Fapp%2Fyonetim|\/app\/yonetim)/);
+  await page.getByRole("button", { name: "Girişe dön" }).click();
+  await expect(page.getByLabel("Telefon")).toBeVisible();
+  await expect(page).toHaveURL(/next=(%2Fapp%2Fyonetim|\/app\/yonetim)/);
+
+  await page.goto("/app/giris?rol=isletme&kayit=1&next=/app/isletme");
   await expect(page.getByRole("tab", { name: "İşletme" })).toHaveAttribute("aria-selected", "true");
   await expect(page.getByRole("button", { name: "Kayıt" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page).toHaveURL(/next=(%2Fapp%2Fisletme|\/app\/isletme)/);
+  await page.getByRole("tab", { name: "Müşteri" }).click();
+  await expect(page).toHaveURL(/next=(%2Fapp%2Fisletme|\/app\/isletme)/);
 
   await page.goto("/app/giris?next=https://evil.test/steal");
   await expect(page.locator("body")).not.toContainText("evil.test");
