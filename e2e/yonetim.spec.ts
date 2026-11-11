@@ -67,8 +67,8 @@ test("yönetici paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar",
   await expect(page.getByRole("heading", { name: "Bekleyen işletme yok" })).toBeVisible();
   const emptyImg = page.getByAltText("Kabuki, Ada Merkez maskotu, düşünüyor");
   await expect(emptyImg).toBeVisible();
-  await expect(emptyImg).toHaveAttribute("width", "320");
-  await expect(emptyImg).toHaveAttribute("height", "320");
+  await expect(emptyImg).toHaveAttribute("width", "160");
+  await expect(emptyImg).toHaveAttribute("height", "160");
 
   await page.goto("/app/yonetim/sistem-durumu");
   await expect(page).toHaveURL(/\/app\/yonetim\/sistem$/);
