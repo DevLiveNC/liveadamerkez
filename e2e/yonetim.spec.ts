@@ -62,7 +62,7 @@ test("yönetici paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar",
   await expect(page.locator("body")).not.toContainText("localStorage");
 
   await page.goto("/app/yonetim/onaylar");
-  await expect(page.getByRole("heading", { name: "İşletme onayları" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "İşletme onayları", level: 1 })).toBeVisible();
   await page.getByRole("button", { name: "Reddedilen" }).click();
   await expect(page.getByRole("heading", { name: "Bekleyen işletme yok" })).toBeVisible();
   const emptyImg = page.getByAltText("Kabuki, Ada Merkez maskotu, düşünüyor");
@@ -72,6 +72,6 @@ test("yönetici paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar",
 
   await page.goto("/app/yonetim/sistem-durumu");
   await expect(page).toHaveURL(/\/app\/yonetim\/sistem$/);
-  await expect(page.getByRole("heading", { name: "Sistem" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Sistem durumu" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Sistem", exact: true, level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Sistem durumu", level: 2 })).toBeVisible();
 });
