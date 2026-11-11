@@ -13,6 +13,21 @@ async function assertScrollport(locator: Locator) {
   expect(minHeight).toBe("0px");
 }
 
+async function assertScrollTopGrows(locator: Locator) {
+  const before = await locator.evaluate((el) => el.scrollTop);
+  const after = await locator.evaluate((el) => {
+    if (el.scrollHeight <= el.clientHeight + 1) {
+      const pad = document.createElement("div");
+      pad.style.height = "1600px";
+      pad.setAttribute("data-testid", "e2e-scroll-pad");
+      el.appendChild(pad);
+    }
+    el.scrollTop = el.scrollHeight;
+    return el.scrollTop;
+  });
+  expect(after).toBeGreaterThan(before);
+}
+
 async function sendButtonReachable(page: Page, viewport: { width: number; height: number }) {
   await page.setViewportSize(viewport);
   await page.goto("/app/giris");
@@ -97,13 +112,12 @@ test("işletme talepler tablosu ve profil formu am-main içinde kayar", async ({
   await expect(isletmeMain).toBeVisible();
   await expect(page.getByRole("heading", { name: "Gelen talepler", level: 1 })).toBeVisible();
   await assertScrollport(isletmeMain);
-  await isletmeMain.evaluate((el) => {
-    el.scrollTop = el.scrollHeight;
-  });
+  await assertScrollTopGrows(isletmeMain);
 
   await page.goto("/app/isletme/profil");
   await expect(page.getByRole("heading", { name: "Ayarlar", level: 1 })).toBeVisible();
   await assertScrollport(page.locator("#isletme-icerik"));
+  await assertScrollTopGrows(page.locator("#isletme-icerik"));
   const profileEnd = page.locator("#isletme-icerik").locator("button, [type=submit], h2").last();
   await profileEnd.scrollIntoViewIfNeeded();
   await expect(profileEnd).toBeVisible();
@@ -151,7 +165,5 @@ test("yönetim onaylar listesi am-main içinde kayar", async ({ page, request })
   await expect(yonetimMain).toBeVisible();
   await expect(page.getByRole("heading", { name: "İşletme onayları", level: 1 })).toBeVisible();
   await assertScrollport(yonetimMain);
-  await yonetimMain.evaluate((el) => {
-    el.scrollTop = el.scrollHeight;
-  });
+  await assertScrollTopGrows(yonetimMain);
 });

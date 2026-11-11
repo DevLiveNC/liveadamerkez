@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cta, ctaEn, isletmeApp, later, laterEn } from "./index.js";
+import { app, cta, ctaEn, isletmeApp, later, laterEn } from "./index.js";
 
 describe("kontrol takip kopyası", () => {
   it("ana CTA Uygulamayı aç / Kendi işletmeni ekle", () => {
@@ -7,6 +7,10 @@ describe("kontrol takip kopyası", () => {
     expect(cta.business).toBe("Kendi işletmeni ekle");
     expect(ctaEn.openApp).toBe("Open the app");
     expect(ctaEn.business).toBe("Add your business");
+  });
+
+  it("arama placeholder etkinlik vaadi taşımaz", () => {
+    expect(app.searchPlaceholder).not.toMatch(/etkinlik/i);
   });
 
   it("işletme form hataları kopyadan gelir", () => {

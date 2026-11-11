@@ -27,9 +27,11 @@ export default async function FavorilerPage() {
       </header>
       {favorites.length ? (
         <>
-          <p className="am-kicker">
-            {favorites.length} {app.sampleSaves}
-          </p>
+          {favorites.every((row) => row.sample) ? (
+            <p className="am-kicker">
+              {favorites.length} {app.sampleSaves}
+            </p>
+          ) : null}
           <div className="am-stack mt-3">
             {favorites.map((row) => (
               <article className="am-biz am-biz--row" key={row.id}>

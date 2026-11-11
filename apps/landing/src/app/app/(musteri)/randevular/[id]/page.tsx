@@ -26,7 +26,7 @@ export default async function TalepIletildiPage({ params }: { params: Promise<{ 
     : "";
 
   return (
-    <>
+    <main id="icerik" className="am-main am-ui-main">
       <header className="am-header">
         <Link className="am-icon-btn" href="/app" aria-label={app.bookingBackDiscover}>
           ×
@@ -79,6 +79,6 @@ export default async function TalepIletildiPage({ params }: { params: Promise<{ 
           {app.bookingBackDiscover}
         </Link>
       </div>
-    </>
+    </main>
   );
 }

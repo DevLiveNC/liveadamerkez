@@ -1,4 +1,17 @@
-import { search, site } from "@ada-merkez/copy";
+import { app, search, site } from "@ada-merkez/copy";
+
+export function greetingForNicosia(now = new Date(), timeZone = site.timezone) {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone,
+      hour: "numeric",
+      hourCycle: "h23",
+    }).format(now),
+  );
+  if (hour < 12) return app.greetingMorning;
+  if (hour < 18) return app.greetingAfternoon;
+  return app.greetingEvening;
+}
 
 /** Europe/Nicosia takvim gününe 1 gün ekler; «Yarın, 11 Kasım» biçimi. */
 export function tomorrowWhenLabel(now = new Date(), timeZone = site.timezone) {

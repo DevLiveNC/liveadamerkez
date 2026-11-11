@@ -128,6 +128,11 @@ body.landing {
     --am-dur-medium: 80ms;
     --am-dur-slow: 80ms;
     --am-dur-sheet: 80ms;
+    --motion-duration-fast: 80ms;
+    --motion-duration-base: 80ms;
+    --motion-duration-medium: 80ms;
+    --motion-duration-slow: 80ms;
+    --am-motion-base: 80ms;
   }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

@@ -8,6 +8,8 @@ import { DiscoverSkeleton } from "../../components/app/DiscoverSkeleton";
 import { EmptyState } from "../../components/app/EmptyState";
 import { getSession } from "../../lib/app-auth";
 import { loadDiscover } from "../../lib/discover";
+import { greetingForNicosia } from "../../lib/nicosia-date";
+import { skeletonQueryEnabled } from "../../lib/skeleton-query";
 
 const FILTERS = [
   { id: "all", label: app.all, category: "" },
@@ -56,7 +58,7 @@ async function HomeInner({
             />
           </div>
           <div className="am-balloon">
-            <p>{app.greeting}</p>
+            <p>{greetingForNicosia()}</p>
             <p className="am-slogan">{app.slogan}</p>
           </div>
         </div>
@@ -103,9 +105,11 @@ async function HomeInner({
       {fromExamples ? <p className="am-banner">{app.demoBanner}</p> : null}
       {listMode ? (
         <>
-          <p className="am-kicker mt-4">
-            {cards.length} {app.sampleResults}
-          </p>
+          {fromExamples ? (
+            <p className="am-kicker mt-4">
+              {cards.length} {app.sampleResults}
+            </p>
+          ) : null}
           {cards.length ? (
             <div className="am-stack mt-3">
               {cards.map((card) => (
@@ -172,7 +176,7 @@ export default async function AppHomePage({
   const q = params.q?.trim() ?? "";
   const category = params.category?.trim() ?? "";
   const listMode = Boolean(q) || params.liste === "1";
-  if (params.iskelet === "1") {
+  if (params.iskelet === "1" && skeletonQueryEnabled()) {
     return <DiscoverSkeleton />;
   }
   return (

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CikisButton } from "./CikisButton";
 import { ProfileNameForm } from "./ProfileNameForm";
-import { UiIcon } from "@ada-merkez/ui";
 
 const TR = {
   title: "Hesap",
@@ -17,6 +16,7 @@ const TR = {
   addToHome: "Ana ekrana ekle",
   whatsapp: "WhatsApp ile yaz",
   legal: "Aydınlatma ve koşullar",
+  soon: "Yakında",
 } as const;
 
 const EN = {
@@ -30,13 +30,11 @@ const EN = {
   addToHome: "Add to Home Screen",
   whatsapp: "Message on WhatsApp",
   legal: "Privacy and terms",
+  soon: "Soon",
 } as const;
-
-const CURRENCIES = ["TL", "GBP", "EUR"] as const;
 
 export function AccountPanel({ name, phone }: { name: string; phone: string }) {
   const [lang, setLang] = useState<"tr" | "en">("tr");
-  const [currency, setCurrency] = useState<(typeof CURRENCIES)[number]>("TL");
   const t = lang === "en" ? EN : TR;
   const initial = (name || "?").slice(0, 1).toLocaleUpperCase("tr-TR");
 
@@ -44,11 +42,6 @@ export function AccountPanel({ name, phone }: { name: string; phone: string }) {
     document.documentElement.lang = lang === "en" ? "en" : "tr";
     document.cookie = `am_lang=${lang}; path=/; max-age=31536000; samesite=lax`;
   }, [lang]);
-
-  function nextCurrency() {
-    const i = CURRENCIES.indexOf(currency);
-    setCurrency(CURRENCIES[(i + 1) % CURRENCIES.length] ?? "TL");
-  }
 
   return (
     <>
@@ -80,33 +73,32 @@ export function AccountPanel({ name, phone }: { name: string; phone: string }) {
             </button>
           </div>
         </div>
-        <button type="button" className="am-row" onClick={nextCurrency}>
+        <div className="am-row" aria-disabled="true">
           <span className="am-row-body">
             <h3>{t.currency}</h3>
             <p>{t.currencyHint}</p>
           </span>
-          <span className="am-muted" style={{ fontWeight: 600 }}>
-            {currency}
-          </span>
-          <UiIcon name="chevron" />
-        </button>
+          <span className="am-muted">{t.soon}</span>
+        </div>
       </div>
       <div className="am-card-block">
-        <div className="am-row">
+        <div className="am-row" aria-disabled="true">
           <span className="am-row-body">
             <h3>{t.notifications}</h3>
           </span>
+          <span className="am-muted">{t.soon}</span>
         </div>
         <Link className="am-row" href="/app">
           <span className="am-row-body">
             <h3>{t.addToHome}</h3>
           </span>
         </Link>
-        <p className="am-row">
+        <div className="am-row" aria-disabled="true">
           <span className="am-row-body">
             <h3>{t.whatsapp}</h3>
           </span>
-        </p>
+          <span className="am-muted">{t.soon}</span>
+        </div>
       </div>
       <div className="am-card-block">
         <Link className="am-row" href="/yasal/aydinlatma">
