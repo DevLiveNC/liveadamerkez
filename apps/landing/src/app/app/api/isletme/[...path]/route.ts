@@ -37,7 +37,7 @@ async function proxy(request: Request, context: { params: Promise<{ path: string
   }
   const { path } = await context.params;
   const suffix = path.join("/");
-  if (!isAllowedBffUpstream("isletme", suffix)) {
+  if (!isAllowedBffUpstream("isletme", suffix, request.method)) {
     return NextResponse.json(
       { ok: false, code: "NOT_FOUND", message: apiMessages.notFound },
       { status: 404, headers },

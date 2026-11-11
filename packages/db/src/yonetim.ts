@@ -17,11 +17,7 @@ export async function withAdminDb<T>(fn: (db: Database) => Promise<T>): Promise<
   try {
     await client.query("BEGIN");
     await client.query("SELECT set_config('app.is_admin', 'true', true)");
-    try {
-      await client.query("SET LOCAL ROLE ada_app");
-    } catch {
-      /* rol yoksa app.is_admin ile devam */
-    }
+    await client.query("SET LOCAL ROLE ada_app");
     const scoped = drizzle(client, { schema });
     const value = await fn(scoped);
     await client.query("COMMIT");

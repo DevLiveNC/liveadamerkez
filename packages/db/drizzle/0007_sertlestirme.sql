@@ -1,4 +1,7 @@
 -- Yönetici RLS yolu: ada_app + app.is_admin. FORCE yok; giriş getDb() ile tablo sahibinde kalır.
+-- 0006 müşteri paneli içindir; eski 0006_sertlestirme journal kaydı varsa düşer.
+
+DELETE FROM schema_migration WHERE id = '0006_sertlestirme.sql';
 
 ALTER TABLE app_account ENABLE ROW LEVEL SECURITY;
 ALTER TABLE business_application ENABLE ROW LEVEL SECURITY;

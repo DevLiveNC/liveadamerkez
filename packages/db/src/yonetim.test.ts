@@ -1,10 +1,12 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { existsSync } from "node:fs";
 import { randomUUID } from "node:crypto";
+import { fileURLToPath } from "node:url";
 import { closePool, getPool, isDatabaseConfigured } from "./client.js";
 import { migrate } from "./migrate.js";
 import { createAccount } from "./accounts.js";
 import { ForbiddenRoleError, upsertSeedUser } from "./isletme.js";
-import { listAdminBookings, listAdminUsers } from "./yonetim.js";
+import { listAdminBookings, listAdminUsers, withAdminDb } from "./yonetim.js";
 
 const hasDb = isDatabaseConfigured();
 
@@ -67,5 +69,44 @@ describe.skipIf(!hasDb)("yonetim seed, roller ve KVKK", () => {
     const admin = await upsertSeedUser({ phone, role: "admin", displayName: "Yönetici" });
     const users = await listAdminUsers();
     expect(users.some((row) => row.id === admin.id && row.role === "admin")).toBe(true);
+  });
+
+  it("sertleştirme migrasyonu 0007 journal kimliği taşır", () => {
+    const drizzleDir = fileURLToPath(new URL("../drizzle/", import.meta.url));
+    expect(existsSync(`${drizzleDir}0007_sertlestirme.sql`)).toBe(true);
+    expect(existsSync(`${drizzleDir}0006_sertlestirme.sql`)).toBe(false);
+  });
+
+  it("withAdminDb SET LOCAL ROLE hatasını yutmaz; callback çalışmaz", async () => {
+    const pool = getPool();
+    const connect = pool.connect.bind(pool);
+    const spy = vi.spyOn(pool, "connect").mockImplementation(async () => {
+      const client = await connect();
+      const query = client.query.bind(client);
+      const wrapped = ((...args: Parameters<typeof client.query>) => {
+        const text =
+          typeof args[0] === "string"
+            ? args[0]
+            : String((args[0] as { text?: string }).text ?? args[0]);
+        if (text.includes("SET LOCAL ROLE ada_app")) {
+          return Promise.reject(Object.assign(new Error("rol yok"), { code: "42704" }));
+        }
+        return query(...args);
+      }) as typeof client.query;
+      client.query = wrapped;
+      return client;
+    });
+    let ran = false;
+    try {
+      await expect(
+        withAdminDb(async () => {
+          ran = true;
+          return 1;
+        }),
+      ).rejects.toMatchObject({ code: "42704" });
+      expect(ran).toBe(false);
+    } finally {
+      spy.mockRestore();
+    }
   });
 });
