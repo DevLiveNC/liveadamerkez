@@ -43,6 +43,7 @@ export const category = pgTable("category", {
   name: text("name").notNull(),
   kind: text("kind").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const location = pgTable("location", {
@@ -357,3 +358,17 @@ export const rateLimitWindow = pgTable("rate_limit_window", {
     .defaultNow(),
   hitCount: integer("hit_count").notNull().default(0),
 });
+
+export const auditLog = pgTable(
+  "audit_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    actorUserId: uuid("actor_user_id").references(() => appAccount.id),
+    action: text("action").notNull(),
+    entityKind: text("entity_kind").notNull(),
+    entityId: uuid("entity_id"),
+    detail: jsonb("detail"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("audit_log_created_idx").on(t.createdAt)],
+);

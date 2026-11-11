@@ -1,0 +1,269 @@
+/* Yönetici paneli — token v1.4.1, mobil öncelikli. data-dekor=app-yonetici */
+
+body:has(.yonetim-app) > a.skip,
+body:has(.yonetim-app) > header.nav,
+body:has(.yonetim-app) .util,
+body:has(.yonetim-app) > footer.foot,
+body:has(.yonetim-app) .consent-banner,
+body:has(.yonetim-app) .install-sheet,
+body:has(.yonetim-app) .am-top,
+body:has(.yonetim-app) .am-tabs {
+  display: none !important;
+}
+
+body:has(.yonetim-app) .am-shell {
+  max-width: none;
+}
+
+body:has(.yonetim-app) .am-main {
+  padding: 0;
+  max-width: none;
+}
+
+.yonetim-app {
+  min-height: 100dvh;
+  background: var(--am-color-background);
+  color: var(--am-color-text);
+  position: relative;
+  z-index: 1;
+}
+
+.yonetim-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.yonetim-side {
+  display: none;
+}
+
+.yonetim-main {
+  flex: 1;
+  padding: 16px 16px 96px;
+  min-width: 0;
+}
+
+.yonetim-head h1 {
+  font-family: var(--am-font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin: 4px 0 8px;
+}
+
+.yonetim-tabs {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 72px;
+  padding: 8px 8px 14px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--am-color-surface);
+  border-top: 1px solid var(--am-color-border);
+  z-index: 20;
+}
+
+.yonetim-tabs a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--am-color-text-subtle);
+  text-align: center;
+}
+
+.yonetim-tabs a.on {
+  color: var(--am-brand-navy);
+  font-weight: 600;
+}
+
+.yonetim-login {
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 48px 16px;
+}
+
+.yonetim-form {
+  padding: 24px;
+}
+
+.yonetim-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.yonetim-table th,
+.yonetim-table td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--am-color-border);
+  vertical-align: middle;
+}
+
+.yonetim-table th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--am-color-text-muted);
+}
+
+.yonetim-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 16px;
+}
+
+.yonetim-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.yonetim-badge.wait {
+  background: var(--am-status-pending-bg);
+  color: var(--am-status-pending-fg);
+}
+
+.yonetim-badge.ok {
+  background: var(--am-status-confirmed-bg);
+  color: var(--am-status-confirmed-fg);
+}
+
+.yonetim-badge.off {
+  background: var(--am-status-cancelled-bg);
+  color: var(--am-status-cancelled-fg);
+}
+
+.yonetim-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.status-card {
+  background: var(--am-color-surface);
+  border: 1px solid var(--am-color-border);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  margin-right: 8px;
+}
+
+.status-dot.ok { background: var(--am-color-success); }
+.status-dot.off { background: var(--am-color-text-subtle); }
+.status-dot.warn { background: var(--am-status-pending-accent); }
+
+.yonetim-stats {
+  display: grid;
+  gap: 12px;
+}
+
+.yonetim-stat {
+  background: var(--am-color-surface);
+  border: 1px solid var(--am-color-border);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.yonetim-stat strong {
+  display: block;
+  font-family: var(--am-font-display);
+  font-size: 28px;
+  margin-top: 4px;
+}
+
+.yonetim-list {
+  display: grid;
+  gap: 10px;
+}
+
+.yonetim-card {
+  background: var(--am-color-surface);
+  border: 1px solid var(--am-color-border);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+@media (min-width: 900px) {
+  .yonetim-shell {
+    flex-direction: row;
+  }
+
+  .yonetim-side {
+    display: flex;
+    flex-direction: column;
+    width: 240px;
+    flex: none;
+    padding: 24px 16px;
+    background: var(--am-color-surface);
+    border-right: 1px solid var(--am-color-border);
+    position: relative;
+    z-index: 1;
+  }
+
+  .yonetim-side .who {
+    font-size: 13px;
+    color: var(--am-color-text-muted);
+    margin: 16px 0 24px;
+    line-height: 1.4;
+  }
+
+  .yonetim-side a {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--am-color-text-muted);
+  }
+
+  .yonetim-side a.on,
+  .yonetim-side a:hover {
+    background: var(--am-color-surface-muted);
+    color: var(--am-brand-navy);
+  }
+
+  .yonetim-side .sec {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--am-color-text-subtle);
+    margin-bottom: 8px;
+  }
+
+  .yonetim-main {
+    padding: 32px 40px 48px;
+  }
+
+  .yonetim-tabs {
+    display: none;
+  }
+
+  .status-grid,
+  .yonetim-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

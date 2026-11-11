@@ -8,7 +8,7 @@ import {
 } from "@ada-merkez/db";
 import { isSessionRole, toE164 } from "@ada-merkez/shared";
 import { isAuthConfigured, signSession } from "@ada-merkez/shared/node";
-import { authCors, corsHeaders, json, readJson } from "../../../../lib/http";
+import { authCors, json, readJson } from "../../../../lib/http";
 
 export const dynamic = "force-dynamic";
 
@@ -110,5 +110,5 @@ export async function POST(request: Request) {
 }
 
 export function OPTIONS(request: Request) {
-  return json({ ok: true }, 204, corsHeaders(request));
+  return json({ ok: true }, 204, authCors(request));
 }
