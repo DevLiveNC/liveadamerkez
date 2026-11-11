@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cta, nav } from "@ada-merkez/copy";
 import { Logo } from "./Logo";
 import { UtilBar } from "./UtilBar";
@@ -19,15 +19,57 @@ const LANDING_LINKS = [
 export function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const variant =
     pathname.startsWith("/basvuru") || pathname.startsWith("/bekleme") || pathname.startsWith("/q")
       ? "form"
       : "landing";
 
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+    queueMicrotask(() => menuBtnRef.current?.focus());
+  }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const first = panelRef.current?.querySelector<HTMLElement>("a, button");
+    first?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeMenu();
+      }
+    };
+    const onPointer = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (headerRef.current?.contains(target)) return;
+      setMenuOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointer);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointer);
+    };
+  }, [menuOpen, closeMenu]);
+
   return (
     <>
       {variant === "landing" ? <UtilBar /> : null}
-      <header className="nav">
+      {variant === "landing" && menuOpen ? (
+        <div
+          className="am-land-scrim"
+          aria-hidden="true"
+          onPointerDown={(event) => {
+            event.preventDefault();
+            closeMenu();
+          }}
+        />
+      ) : null}
+      <header className="nav" ref={headerRef}>
         <div className="wrap nav-in am-land-nav">
           <Link href="/" aria-label={nav.homeAria}>
             <Logo className="logo-h" height={32} />
@@ -60,17 +102,19 @@ export function Header() {
               <Link className="am-btn am-btn--ghost am-btn--sm desk-only" href="/app/giris">
                 {cta.signIn}
               </Link>
-              <Link className="am-btn am-btn--primary am-btn--sm desk-only" href="/#yakinda">
-                {cta.customer}
-              </Link>
-              <Link className="am-btn am-btn--ghost am-btn--sm desk-only" href="/app">
+              <Link className="am-btn am-btn--primary am-btn--sm desk-only" href="/app">
                 {cta.openApp}
               </Link>
+              <Link className="am-btn am-btn--ghost am-btn--sm desk-only" href="/app/giris?rol=isletme&kayit=1">
+                {cta.business}
+              </Link>
               <button
+                ref={menuBtnRef}
                 className="am-icon-btn am-land-mob-nav"
                 type="button"
                 aria-label={nav.menu}
                 aria-expanded={menuOpen}
+                aria-controls="am-land-menu"
                 onClick={() => setMenuOpen((open) => !open)}
               >
                 <svg className="am-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -80,18 +124,26 @@ export function Header() {
             </div>
           ) : null}
         </div>
-        {variant === "landing" && menuOpen ? (
-          <div className="am-land-panel is-open">
+        {variant === "landing" ? (
+          <div
+            id="am-land-menu"
+            ref={panelRef}
+            className={`am-land-panel${menuOpen ? " is-open" : ""}`}
+            hidden={!menuOpen}
+          >
             {LANDING_LINKS.map((item) => (
-              <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)}>
+              <Link key={item.href} href={item.href} onClick={closeMenu}>
                 {item.label}
               </Link>
             ))}
-            <Link href="/app/giris" onClick={() => setMenuOpen(false)}>
+            <Link href="/app/giris" onClick={closeMenu}>
               {cta.signIn}
             </Link>
-            <Link href="/app" onClick={() => setMenuOpen(false)}>
+            <Link href="/app" onClick={closeMenu}>
               {cta.openApp}
+            </Link>
+            <Link href="/app/giris?rol=isletme&kayit=1" onClick={closeMenu}>
+              {cta.business}
             </Link>
           </div>
         ) : null}

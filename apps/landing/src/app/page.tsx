@@ -767,15 +767,15 @@ export default function HomePage() {
               <p>{closeCta.body}</p>
             </div>
             <div className="close-actions am-hero-cta">
-              <button className="am-btn am-btn--primary" type="button" disabled>
-                {waitlist.closedShort}
-              </button>
+              <a className="am-btn am-btn--primary" href="/app">
+                {cta.openApp}
+              </a>
               <a className="am-btn am-btn--ghost" href="/app/giris?rol=isletme&kayit=1">
                 {cta.business}
               </a>
-              <a className="am-btn am-btn--soft" href="/app">
-                {cta.openApp}
-              </a>
+              <button className="am-btn am-btn--soft" type="button" disabled>
+                {waitlist.closedShort}
+              </button>
             </div>
           </div>
         </div>

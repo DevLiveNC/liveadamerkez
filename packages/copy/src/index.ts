@@ -17,10 +17,15 @@ export const site = {
 } as const;
 
 export const cta = {
-  customer: "Erken erişime kaydol",
+  customer: "Erken erişim yakında",
   business: "Kendi işletmeni ekle",
   signIn: "Giriş",
   openApp: "Uygulamayı aç",
+} as const;
+
+export const ctaEn = {
+  openApp: "Open the app",
+  business: "Add your business",
 } as const;
 
 export const nav = {
@@ -45,7 +50,7 @@ export const hero = {
   kicker: "Kuzey Kıbrıs ve Türkiye için",
   title: "Adada randevu ve rezervasyon dağılmasın.",
   lead: "Kuaför, klinik veya restoranı bul; uygun saati seç. Dilersen uygulama indirmeden WhatsApp’tan hallet.",
-  primaryCta: cta.customer,
+  primaryCta: cta.openApp,
   secondaryCta: cta.business,
 } as const;
 
@@ -226,7 +231,7 @@ export const businessApply = {
 export const qrPage = {
   kicker: "QR kanalı",
   lead: "Kuaför ve klinikte randevu, restoranda masa; dilerseniz WhatsApp üzerinden. Uygulama indirmek zorunda değilsiniz.",
-  cta: cta.customer,
+  cta: cta.openApp,
 } as const;
 
 export const trackingConsent = {
@@ -576,6 +581,7 @@ export const yonetimApp = {
   weekVolume: "Haftalık hacim",
   weekVolumeSample: "Örnek haftalık hacim",
   reportsChartNote: "Örnek veri. Gerçek ciro, büyüme veya kullanıcı sayısı iddiası yoktur.",
+  listTruncated: "Liste 200 kayıtla sınırlı; toplam sayı sunucuda sayılır.",
   healthTitle: "Sistem durumu",
   healthLead: "Bileşenler gerçek kontrolden doldurulur. Yüzde veya kestirme kesinti yazılmaz.",
   healthWaitlistBody: "Ürün kuralı — liste açık değil",
@@ -859,8 +865,13 @@ export const later = {
   posBody: "Yazar kasa ile tahsilat, aynı çatı altında.",
   ticketTitle: "Etkinlik bileti",
   ticketBody: "Konser ve etkinlik bileti, randevunun yanında.",
-  campusTitle: "Öğrenci indirimi",
-  campusBody: "Ada Kampüs kimliğiyle indirim, abartısız sonraki adım.",
+  campusTitle: "Öğrenci avantajları",
+  campusBody: "Ada Kampüs kimliğinle öğrencilere özel fırsatlar yakında.",
+} as const;
+
+export const laterEn = {
+  campusTitle: "Student perks",
+  campusBody: "Exclusive offers for Ada Kampüs members, coming soon.",
 } as const;
 
 export const closeCta = {
@@ -958,6 +969,7 @@ export const isletmeApp = {
   start: "Başlangıç",
   end: "Bitiş",
   addHours: "Saat ekle",
+  formError: "Kayıt kaydedilemedi. Alanları kontrol edip tekrar deneyin.",
   save: "Kaydet",
   saved: "Kaydedildi.",
   statsTitle: "İstatistik",

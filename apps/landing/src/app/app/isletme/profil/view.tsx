@@ -37,6 +37,7 @@ export function ProfilView() {
   const [staff, setStaff] = useState<StaffRow[]>([]);
   const [rules, setRules] = useState<AvailabilityRow[]>([]);
   const [saved, setSaved] = useState(false);
+  const [hoursError, setHoursError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const [mine, hours, people] = await Promise.all([fetchMe(), fetchAvailability(), fetchStaff()]);
@@ -71,14 +72,19 @@ export function ProfilView() {
     const end = String(form.get("end") ?? "18:00");
     const [sh, sm] = start.split(":").map(Number);
     const [eh, em] = end.split(":").map(Number);
-    await createAvailability({
-      staffId: String(form.get("hourStaff") ?? "") || null,
-      weekday: Number(form.get("weekday")),
-      startsAtMinutes: (sh ?? 9) * 60 + (sm ?? 0),
-      endsAtMinutes: (eh ?? 18) * 60 + (em ?? 0),
-    });
-    event.currentTarget.reset();
-    await load();
+    setHoursError(null);
+    try {
+      await createAvailability({
+        staffId: String(form.get("hourStaff") ?? "") || null,
+        weekday: Number(form.get("weekday")),
+        startsAtMinutes: (sh ?? 9) * 60 + (sm ?? 0),
+        endsAtMinutes: (eh ?? 18) * 60 + (em ?? 0),
+      });
+      event.currentTarget.reset();
+      await load();
+    } catch {
+      setHoursError(isletmeApp.formError);
+    }
   }
 
   const biz = me?.business;
@@ -124,6 +130,11 @@ export function ProfilView() {
       </form>
 
       <h2 className="mt-4">{isletmeApp.hoursTitle}</h2>
+      {hoursError ? (
+        <p className="am-error" role="alert">
+          {hoursError}
+        </p>
+      ) : null}
       {rules.map((rule) => (
         <div key={rule.id} className="am-entity">
           <div className="am-entity-body">

@@ -113,6 +113,10 @@ describe.skipIf(!hasDb)("yönetici paneli yetki", () => {
       new Request("http://api.test/v1/admin/users", { headers: auth(admin.id, "admin") }),
     );
     expect(users.status).toBe(200);
+    const usersText = await users.text();
+    expect(usersText).not.toContain(adminPhone);
+    expect(usersText).not.toContain(customerPhone);
+    expect(usersText).toContain("•••");
 
     const reports = await reportsGet(
       new Request("http://api.test/v1/admin/reports", { headers: auth(admin.id, "admin") }),
@@ -159,5 +163,50 @@ describe.skipIf(!hasDb)("yönetici paneli yetki", () => {
       }),
     );
     expect(blocked.status).toBe(403);
+  });
+
+  it("admin bookings from<to ve en fazla 31 gün ister", async () => {
+    process.env.ALLOW_ADMIN_SEED = "true";
+    const adminPhone = `+90555${Math.floor(Math.random() * 1_000_000)
+      .toString()
+      .padStart(7, "0")}`;
+    const admin = await upsertSeedUser({
+      phone: adminPhone,
+      role: "admin",
+      displayName: "Yönetici",
+    });
+    const inverted = await bookingsGet(
+      new Request(
+        "http://api.test/v1/admin/bookings?from=2026-01-08T00:00:00.000Z&to=2026-01-01T00:00:00.000Z",
+        { headers: auth(admin.id, "admin") },
+      ),
+    );
+    expect(inverted.status).toBe(400);
+    expect((await inverted.json()) as { code?: string }).toMatchObject({ code: "invalid_range" });
+
+    const wide = await bookingsGet(
+      new Request(
+        "http://api.test/v1/admin/bookings?from=2026-01-01T00:00:00.000Z&to=2026-02-15T00:00:00.000Z",
+        { headers: auth(admin.id, "admin") },
+      ),
+    );
+    expect(wide.status).toBe(400);
+    expect((await wide.json()) as { code?: string }).toMatchObject({ code: "range_too_large" });
+
+    const week = await bookingsGet(
+      new Request(
+        "http://api.test/v1/admin/bookings?from=2026-01-01T00:00:00.000Z&to=2026-01-08T00:00:00.000Z",
+        { headers: auth(admin.id, "admin") },
+      ),
+    );
+    expect(week.status).toBe(200);
+    const weekBody = (await week.json()) as {
+      truncated?: boolean;
+      total?: number;
+      counted?: { total?: number };
+    };
+    expect(typeof weekBody.total).toBe("number");
+    expect(typeof weekBody.truncated).toBe("boolean");
+    expect(typeof weekBody.counted?.total).toBe("number");
   });
 });

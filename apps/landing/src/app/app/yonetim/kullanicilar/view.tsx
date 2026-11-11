@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { yonetimApp } from "@ada-merkez/copy";
+import { maskPhone } from "@ada-merkez/shared";
 import { EmptyState } from "../../../../components/app/EmptyState";
 import { fetchUsers, type AdminUser } from "../../../../lib/yonetim-api";
 
@@ -12,12 +13,6 @@ function roleLabel(role: string) {
   if (role === "business") return yonetimApp.roleBusiness;
   if (role === "admin") return yonetimApp.roleAdmin;
   return role;
-}
-
-function maskPhone(phone: string) {
-  const trimmed = phone.trim();
-  if (trimmed.length <= 4) return "••••";
-  return `${trimmed.slice(0, 2)}•••${trimmed.slice(-2)}`;
 }
 
 function accountLabel(row: AdminUser) {

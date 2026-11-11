@@ -426,6 +426,7 @@
   background: none;
   color: inherit;
   cursor: pointer;
+  text-decoration: none;
 }
 .am-btn:active { transform: scale(0.98); }
 .am-btn:focus-visible { box-shadow: var(--am-focus-ring); outline: none; }
