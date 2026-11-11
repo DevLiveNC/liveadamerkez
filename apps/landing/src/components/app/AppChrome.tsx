@@ -55,6 +55,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/app/yonetici");
   const isAuth = pathname.startsWith("/app/giris");
   const hideChrome = isPanel || isAuth;
+  const hideCustomerTop = hideChrome || pathname.startsWith("/app/favoriler");
 
   const items: BottomNavItem[] = TABS.map((tab) => ({
     href: tab.href,
@@ -75,7 +76,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       }
       skipLabel={ui.skipToContent}
       header={
-        hideChrome ? null : (
+        hideCustomerTop ? null : (
           <TopBar className="am-top" blur>
             <Link href="/app" aria-label={app.title}>
               <Logo height={28} />
