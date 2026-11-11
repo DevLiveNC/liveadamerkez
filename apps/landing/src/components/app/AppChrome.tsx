@@ -58,7 +58,8 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     hideChrome ||
     pathname === "/app" ||
     pathname.startsWith("/app/isletmeler") ||
-    pathname.startsWith("/app/randevular");
+    pathname.startsWith("/app/randevular") ||
+    pathname.startsWith("/app/favoriler");
 
   const items: BottomNavItem[] = TABS.map((tab) => ({
     href: tab.href,
