@@ -42,3 +42,14 @@ export async function createAccount(input: {
   if (!row) throw new Error("Hesap oluşturulamadı.");
   return row;
 }
+
+export async function updateAccountName(accountId: string, name: string): Promise<AppAccount | null> {
+  const trimmed = name.trim();
+  if (trimmed.length < 2) return null;
+  const [row] = await getDb()
+    .update(appAccount)
+    .set({ name: trimmed, updatedAt: new Date() })
+    .where(eq(appAccount.id, accountId))
+    .returning();
+  return row ?? null;
+}

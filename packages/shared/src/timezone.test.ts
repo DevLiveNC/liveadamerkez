@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   formatInNicosia,
+  nicosiaDateKey,
+  nicosiaTomorrowDateKey,
   nicosiaWallTimeToUtc,
+  nicosiaWeekday,
+  parseNicosiaDateKey,
   utcToNicosiaParts,
 } from "./timezone.js";
 
@@ -42,5 +46,13 @@ describe("Europe/Nicosia timezone helpers", () => {
     const text = formatInNicosia(new Date("2026-01-15T10:00:00.000Z"));
     expect(text).toMatch(/15/);
     expect(text).toMatch(/12/);
+  });
+
+  it("builds Nicosia date keys and weekdays", () => {
+    expect(nicosiaDateKey(new Date("2026-01-15T10:00:00.000Z"))).toBe("2026-01-15");
+    expect(nicosiaWeekday(new Date("2026-01-16T10:00:00.000Z"))).toBe(5);
+    expect(parseNicosiaDateKey("2026-07-15")).toEqual({ year: 2026, month: 7, day: 15 });
+    expect(parseNicosiaDateKey("2026-13-01")).toBeNull();
+    expect(nicosiaTomorrowDateKey(new Date("2026-01-15T10:00:00.000Z"))).toBe("2026-01-16");
   });
 });

@@ -1,45 +1,81 @@
 import Link from "next/link";
-import { app, examples } from "@ada-merkez/copy";
+import { app } from "@ada-merkez/copy";
+import { EmptyState } from "../../components/app/EmptyState";
+import { loadDiscover } from "../../lib/discover";
 
 const COLORS = ["#0F2C44", "#1F6A8F", "#E4572E", "#0E7C78"];
 
-export default function AppHomePage() {
+const FILTERS = [
+  { id: "all", label: app.all, category: "" },
+  { id: "hair", label: app.hair, category: "kuafor" },
+  { id: "clinic", label: app.clinic, category: "klinik" },
+  { id: "resto", label: app.resto, category: "restoran" },
+] as const;
+
+export default async function AppHomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; category?: string }>;
+}) {
+  const params = await searchParams;
+  const q = params.q?.trim() ?? "";
+  const category = params.category?.trim() ?? "";
+  const { cards, fromExamples } = await loadDiscover({ q, category });
+
   return (
     <>
       <header className="am-head">
         <p className="t-label">{app.kicker}</p>
         <h1>{app.homeTitle}</h1>
-        <input
-          className="am-search"
-          type="search"
-          placeholder={app.searchPlaceholder}
-          aria-label={app.searchPlaceholder}
-        />
+        <form>
+          <input
+            className="am-search"
+            type="search"
+            name="q"
+            defaultValue={q}
+            placeholder={app.searchPlaceholder}
+            aria-label={app.searchPlaceholder}
+          />
+          {category ? <input type="hidden" name="category" value={category} /> : null}
+        </form>
         <div className="am-chips">
-          <span className="filter on">{app.all}</span>
-          <span className="filter">{app.hair}</span>
-          <span className="filter">{app.clinic}</span>
-          <span className="filter">{app.resto}</span>
+          {FILTERS.map((filter) => {
+            const href = filter.category
+              ? `/app?category=${encodeURIComponent(filter.category)}${q ? `&q=${encodeURIComponent(q)}` : ""}`
+              : q
+                ? `/app?q=${encodeURIComponent(q)}`
+                : "/app";
+            const on = (category || "") === filter.category;
+            return (
+              <Link key={filter.id} className={on ? "filter on" : "filter"} href={href}>
+                {filter.label}
+              </Link>
+            );
+          })}
           <span className="filter" style={{ opacity: 0.55 }}>
             {app.events} <span className="badge-soon">{app.soon}</span>
           </span>
         </div>
       </header>
-      <p className="am-banner">{app.demoBanner}</p>
-      {examples.cards.map((card, index) => (
-        <Link className="am-biz" href={`/app/isletmeler/${index + 1}`} key={card.name}>
-          <div className="am-biz-av" style={{ background: COLORS[index % COLORS.length] }}>
-            {card.name.replace("Örnek ", "").slice(0, 1)}
-          </div>
-          <div>
-            <h2>{card.name}</h2>
-            <p>
-              {card.city} · {card.service}
-            </p>
-          </div>
-          <span className="badge-ornek">{app.example}</span>
-        </Link>
-      ))}
+      {fromExamples ? <p className="am-banner">{app.demoBanner}</p> : null}
+      {cards.length ? (
+        cards.map((card, index) => (
+          <Link className="am-biz" href={`/app/isletmeler/${card.id}`} key={card.id}>
+            <div className="am-biz-av" style={{ background: COLORS[index % COLORS.length] }}>
+              {card.name.replace("Örnek ", "").slice(0, 1)}
+            </div>
+            <div>
+              <h2>{card.name}</h2>
+              <p>
+                {[card.city, card.serviceName ?? card.category].filter(Boolean).join(" · ")}
+              </p>
+            </div>
+            {card.sample || fromExamples ? <span className="badge-ornek">{app.example}</span> : null}
+          </Link>
+        ))
+      ) : (
+        <EmptyState kind="sonuc-yok" />
+      )}
     </>
   );
 }

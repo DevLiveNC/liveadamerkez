@@ -26,6 +26,8 @@ test("PWA app shell is guest-visible and login is role-tabbed", async ({ page })
   const home = await page.goto("/app");
   expect(home?.ok()).toBeTruthy();
   await expect(page.getByRole("heading", { name: "Yarın için uygun saat" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Kuaför" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Klinik" })).toBeVisible();
   await expect(page.getByText("Örnek").first()).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("data-dekor", "app-musteri");
   await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-musteri");
@@ -102,6 +104,9 @@ test("PWA app shell is guest-visible and login is role-tabbed", async ({ page })
   await page.goto("/app/isletmeler/1");
   await expect(page.locator("html")).toHaveAttribute("data-dekor", "app-musteri");
   await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-musteri");
+  await expect(page.getByText("Puan veya yorum yoktur")).toBeVisible();
+  await expect(page.locator("body")).not.toContainText(/⭐|★|rating/i);
+  await expect(page.getByRole("link", { name: "Randevu için giriş yap." })).toBeVisible();
 });
 
 test("landing CTAs point at the app and waitlist stays closed", async ({ page }) => {

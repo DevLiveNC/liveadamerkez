@@ -39,6 +39,7 @@ export type NewBooking = {
   resourceId?: string | null;
   serviceId?: string | null;
   customerId?: string | null;
+  accountId?: string | null;
   locationId?: string | null;
   status?: BookingStatus;
   displayTimezone?: string;
@@ -86,6 +87,7 @@ export async function createBooking(input: NewBooking) {
           resourceId: input.resourceId ?? null,
           serviceId: input.serviceId ?? null,
           customerId: input.customerId ?? null,
+          accountId: input.accountId ?? null,
           locationId: input.locationId ?? null,
           status: input.status ?? "pending",
           displayTimezone: input.displayTimezone ?? "Europe/Nicosia",

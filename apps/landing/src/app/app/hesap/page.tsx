@@ -2,6 +2,7 @@ import Link from "next/link";
 import { app } from "@ada-merkez/copy";
 import { loginUrl } from "@ada-merkez/shared";
 import { CikisButton } from "../../../components/app/CikisButton";
+import { ProfileNameForm } from "../../../components/app/ProfileNameForm";
 import { getSession } from "../../../lib/app-auth";
 
 function roleLabel(role: string): string {
@@ -36,6 +37,7 @@ export default async function HesapPage() {
         </p>
       </header>
       <p className="am-banner">{roleLabel(session.role)}</p>
+      <ProfileNameForm initial={session.name ?? ""} />
       {session.role === "business" ? (
         <p>
           <Link className="btn btn-ghost" href="/app/isletme">

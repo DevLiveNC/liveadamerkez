@@ -75,7 +75,7 @@ await requireRole(["admin"], "/app/yonetim");
 - `requireRole(role, next)` oturum yoksa girişe, rol uymazsa `/app/yetki` sayfasına gider.
 - Open redirect yok: `next` her okumada `safeAppPath` / `readNextParam` ile süzülür (`/apple` ve `https://` elenir).
 
-Çerez: `am_session`, `HttpOnly`, `Path=/app`, `SameSite=Lax`. Landing BFF: `POST/DELETE /app/api/oturum`. BFF mutasyonları `Origin` / `Sec-Fetch-Site` ile aynı origin ister. `/app/api` yanıtları `Cache-Control: no-store`. `DELETE` ayrıca `Clear-Site-Data: "cache"` döner ve SW’ye `CLEAR_CACHES` mesajı gider.
+Çerez: `am_session`, `HttpOnly`, `Path=/app`, `SameSite=Lax`. Landing BFF: `POST/DELETE /app/api/oturum`, `POST/DELETE /app/api/randevular`, `POST/DELETE /app/api/favoriler`, `PATCH /app/api/hesap`. BFF mutasyonları `Origin` / `Sec-Fetch-Site` ile aynı origin ister. `/app/api` yanıtları `Cache-Control: no-store`. `DELETE /app/api/oturum` ayrıca `Clear-Site-Data: "cache"` döner ve SW’ye `CLEAR_CACHES` mesajı gider.
 
 ## API
 
@@ -84,6 +84,14 @@ await requireRole(["admin"], "/app/yonetim");
 | `POST /v1/otp/request` | herkes | Mevcut OTP; WhatsApp henüz bağlı değil |
 | `POST /v1/auth/verify` | herkes | OTP doğrula, oturum jetonu ver |
 | `GET /v1/auth/me` | Bearer | Hesap özeti |
+| `GET /v1/public/businesses` | herkes | Keşif; boşsa landing örnek kartlara düşer |
+| `GET /v1/public/businesses/:id` | herkes | Yayımlanmış işletme |
+| `GET /v1/public/businesses/:id/slots` | herkes | `date=YYYY-MM-DD` Europe/Nicosia |
+| `GET/POST /v1/me/bookings` | oturum `sub` | Sahiplik `account_id`; IDOR yok |
+| `DELETE /v1/me/bookings/:id` | oturum `sub` | Yalnız kendi kaydı |
+| `GET/POST /v1/me/favorites` | oturum `sub` | Yalnız kendi favorisi |
+| `DELETE /v1/me/favorites/:businessId` | oturum `sub` | Yalnız kendi favorisi |
+| `PATCH /v1/me` | oturum `sub` | Ad güncelle |
 | `GET/POST /v1/bookings` | `business` \| `admin` + `tenantId` | Müşteri bu ucu kullanmaz |
 
 `POST /v1/auth/verify` gövde: `{ phone, code, role, mode: "login" \| "register", name? }`. `role=admin` ve `mode=register` → `403 ADMIN_REGISTER_DISABLED`.

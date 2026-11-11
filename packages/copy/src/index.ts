@@ -353,6 +353,18 @@ export const app = {
   authUnavailable: "Giriş şu anda alınamıyor. Lütfen sonra yeniden dene.",
   codeSent: "Kod gönderildi. Telefonuna gelen kodu yaz.",
   codeDev: "Geliştirme kodu (yalnız bu ortam):",
+  cancelBooking: "İptal et",
+  addFavorite: "Favoriye ekle",
+  removeFavorite: "Favoriden çıkar",
+  slotsTitle: "Boş saatler",
+  noSlots: "Bu günde boş saat yok.",
+  saveName: "Adı kaydet",
+  nameSaved: "Ad güncellendi.",
+  tomorrow: "Yarın",
+  bookingPending: "Onay bekleniyor",
+  bookingConfirmed: "Onaylandı",
+  bookingCancelled: "İptal",
+  bookingNoShow: "Gelmedi",
 } as const;
 
 export const legal = {

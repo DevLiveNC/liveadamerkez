@@ -85,3 +85,38 @@ export function assertSlotStoredAsUtc(date: Date): void {
     throw new Error("Slot zamanı geçerli bir UTC Date olmalıdır.");
   }
 }
+
+export function nicosiaDateKey(utc: Date, timeZone: string = getAppTimezone()): string {
+  const parts = utcToNicosiaParts(utc, timeZone);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${parts.year}-${pad(parts.month)}-${pad(parts.day)}`;
+}
+
+/** 0 = Pazar … 6 = Cumartesi, Europe/Nicosia. */
+export function nicosiaWeekday(utc: Date, timeZone: string = getAppTimezone()): number {
+  const label = new Intl.DateTimeFormat("en-US", { timeZone, weekday: "short" }).format(utc);
+  return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(label);
+}
+
+export function parseNicosiaDateKey(
+  key: string,
+  timeZone: string = getAppTimezone(),
+): { year: number; month: number; day: number } | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(key.trim());
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  if (!year || month < 1 || month > 12 || day < 1 || day > 31) return null;
+  const probe = nicosiaWallTimeToUtc(year, month, day, 12, 0, 0, timeZone);
+  const round = utcToNicosiaParts(probe, timeZone);
+  if (round.year !== year || round.month !== month || round.day !== day) return null;
+  return { year, month, day };
+}
+
+export function nicosiaTomorrowDateKey(now = new Date(), timeZone: string = getAppTimezone()): string {
+  const today = utcToNicosiaParts(now, timeZone);
+  const noon = nicosiaWallTimeToUtc(today.year, today.month, today.day, 12, 0, 0, timeZone);
+  const next = new Date(noon.getTime() + 24 * 60 * 60 * 1000);
+  return nicosiaDateKey(next, timeZone);
+}

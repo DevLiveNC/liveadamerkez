@@ -72,6 +72,10 @@ body.am-app {
   margin-bottom: 12px;
 }
 
+.am-chips a.filter {
+  text-decoration: none;
+}
+
 .am-tabs {
   height: 72px;
   padding: 8px 8px 14px;
@@ -222,7 +226,8 @@ body.am-app {
   font-weight: 600;
 }
 
-.am-field input {
+.am-field input,
+.am-field select {
   height: 44px;
   border: 1px solid var(--am-color-border);
   border-radius: 12px;
@@ -231,7 +236,8 @@ body.am-app {
   background: #fff;
 }
 
-.am-field input:focus-visible {
+.am-field input:focus-visible,
+.am-field select:focus-visible {
   outline: none;
   box-shadow: var(--am-focus-ring);
 }
