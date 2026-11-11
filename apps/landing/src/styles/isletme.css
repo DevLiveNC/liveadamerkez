@@ -16,6 +16,11 @@ body:has(.isletme-app) .am-shell {
   border: 0;
 }
 
+body:has(.isletme-app) .am-main {
+  padding: 0;
+  max-width: none;
+}
+
 .isletme-app {
   flex: 1;
   min-height: 0;
@@ -24,6 +29,19 @@ body:has(.isletme-app) .am-shell {
   flex-direction: column;
   background: var(--am-color-background);
   color: var(--am-color-text);
+}
+
+.isletme-app.am-dash {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.isletme-app.am-dash > .am-main {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .isletme-shell {

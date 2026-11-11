@@ -65,6 +65,8 @@ test("işletme paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar", 
   ]);
   await page.goto("/app/isletme");
   await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-isletme");
+  await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute("href", "#isletme-icerik");
+  await expect(page.getByRole("main")).toHaveAttribute("id", "isletme-icerik");
   await expect(page.getByRole("heading", { name: "Genel bakış" })).toBeVisible();
   await expect(page.getByText("Örnek").first()).toBeVisible();
   await expect(page.locator(".am-dash-tabbar")).toHaveCount(1);

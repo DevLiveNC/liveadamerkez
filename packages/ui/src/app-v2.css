@@ -1,3 +1,5 @@
+/* Yalnız body.am-app — landing .am-btn / .am-icon kuralları landing-v2.css’te kalır. */
+body.am-app {
 /* Ada Merkez UI v2 bileşenleri — kaynak: tasarim/ui-v2/css/app.css (html/body reset yok) */
 .am-icon { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 .am-icon-sm { width: 16px; height: 16px; }
@@ -905,3 +907,4 @@
 .am-biz--row .am-heart { width: 28px; height: 28px; top: 8px; right: 8px; }
 .am-biz-title-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .am-biz-title-row h3 { flex: 1; min-width: 0; }
+}

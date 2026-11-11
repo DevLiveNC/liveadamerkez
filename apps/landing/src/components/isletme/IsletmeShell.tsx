@@ -118,7 +118,7 @@ export function IsletmeShell({
         </div>
         <DekorNavCorner />
       </aside>
-      <div className="am-main">
+      <main id="isletme-icerik" className="am-main">
         <header className="am-topbar">
           <div className="am-work-title-row">
             <h1>{active?.label ?? isletmeApp.loginTitle}</h1>
@@ -144,7 +144,7 @@ export function IsletmeShell({
           </div>
         ) : null}
         <div className="am-work">{children}</div>
-      </div>
+      </main>
       <nav className="am-dash-tabbar" aria-label={isletmeApp.loginTitle}>
         {LINKS.map((link) => (
           <Link
