@@ -19,6 +19,11 @@ async function assertScrollTopGrows(locator: Locator) {
     if (el.scrollHeight <= el.clientHeight + 1) {
       const pad = document.createElement("div");
       pad.style.height = "1600px";
+      // .am-main bir flex kolonudur; flex-shrink bırakılırsa pad öğesi
+      // küçülüp konteyneri hiç taşmaz ve scrollHeight hep clientHeight
+      // kalır. Pad gerçek içerik gibi davransın diye küçülmez işaretlenir.
+      pad.style.flex = "0 0 auto";
+      pad.style.width = "100%";
       pad.setAttribute("data-testid", "e2e-scroll-pad");
       el.appendChild(pad);
     }
