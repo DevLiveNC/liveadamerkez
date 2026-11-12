@@ -73,7 +73,7 @@ export function AccountPanel({ name, phone }: { name: string; phone: string }) {
             </button>
           </div>
         </div>
-        <div className="am-row" aria-disabled="true">
+        <div className="am-row am-row--static">
           <span className="am-row-body">
             <h3>{t.currency}</h3>
             <p>{t.currencyHint}</p>
@@ -82,18 +82,27 @@ export function AccountPanel({ name, phone }: { name: string; phone: string }) {
         </div>
       </div>
       <div className="am-card-block">
-        <div className="am-row" aria-disabled="true">
+        <div className="am-row am-row--static">
           <span className="am-row-body">
             <h3>{t.notifications}</h3>
           </span>
           <span className="am-muted">{t.soon}</span>
         </div>
-        <Link className="am-row" href="/app">
+        <button
+          className="am-row am-row--button"
+          type="button"
+          onClick={() => {
+            window.dispatchEvent(new CustomEvent("am:install-request"));
+          }}
+        >
           <span className="am-row-body">
             <h3>{t.addToHome}</h3>
           </span>
-        </Link>
-        <div className="am-row" aria-disabled="true">
+          <span className="am-row-chevron" aria-hidden="true">
+            ›
+          </span>
+        </button>
+        <div className="am-row am-row--static">
           <span className="am-row-body">
             <h3>{t.whatsapp}</h3>
           </span>

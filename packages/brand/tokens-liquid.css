@@ -1,0 +1,130 @@
+/* Ada Merkez — Liquid Glass tasarım jetonları v1.0.0
+   Palet: #E4572E · #FF5A24 · #0F2C44 · #FFF9F4 · #FFE7DC · #D8F1EF
+
+   Kural: yalnız eklemeli. Bu dosya --am-lg-* ad alanını tanımlar; v1/v3
+   jetonlarını (--am-*, --am3-*) ezmez. Yüzey dili packages/ui/src/liquid.css
+   içinde bu jetonları okur. */
+
+:root,
+[data-theme="light"] {
+  /* ——— Ham palet ——— */
+  --am-lg-coral: #e4572e;
+  --am-lg-coral-hot: #ff5a24;
+  --am-lg-navy: #0f2c44;
+  --am-lg-cream: #fff9f4;
+  --am-lg-peach: #ffe7dc;
+  --am-lg-mint: #d8f1ef;
+
+  /* ——— Türev tonlar ——— */
+  --am-lg-coral-deep: #c2410c;
+  --am-lg-coral-soft: #fbd3c4;
+  --am-lg-navy-soft: #1c3d5a;
+  --am-lg-navy-mute: #5a7186;
+  --am-lg-peach-deep: #ffd3be;
+  --am-lg-mint-deep: #b6e7e2;
+  --am-lg-white: #ffffff;
+
+  /* ——— Cam yüzeyler ——— */
+  --am-lg-glass-bg: rgba(255, 255, 255, 0.62);
+  --am-lg-glass-bg-strong: rgba(255, 255, 255, 0.84);
+  --am-lg-glass-bg-soft: rgba(255, 255, 255, 0.38);
+  --am-lg-glass-bg-tint: rgba(255, 249, 244, 0.58);
+  --am-lg-glass-border: rgba(255, 255, 255, 0.72);
+  --am-lg-glass-hairline: rgba(15, 44, 68, 0.08);
+  --am-lg-glass-sheen: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.34) 44%,
+    rgba(255, 255, 255, 0.58) 100%
+  );
+  --am-lg-glass-tint: linear-gradient(
+    150deg,
+    rgba(255, 231, 220, 0.62) 0%,
+    rgba(216, 241, 239, 0.5) 100%
+  );
+  --am-lg-glass-mint: linear-gradient(
+    150deg,
+    rgba(216, 241, 239, 0.72) 0%,
+    rgba(255, 255, 255, 0.42) 100%
+  );
+  --am-lg-glass-coral: linear-gradient(
+    140deg,
+    var(--am-lg-coral-hot) 0%,
+    var(--am-lg-coral) 58%,
+    var(--am-lg-coral-deep) 100%
+  );
+  --am-lg-blur: 18px;
+  --am-lg-blur-strong: 28px;
+  --am-lg-saturate: 165%;
+  --am-lg-blur-filter: blur(var(--am-lg-blur)) saturate(var(--am-lg-saturate));
+
+  /* ——— Derinlik ——— */
+  --am-lg-shadow-1: 0 1px 2px rgba(15, 44, 68, 0.06), 0 8px 24px -12px rgba(15, 44, 68, 0.18);
+  --am-lg-shadow-2: 0 2px 4px rgba(15, 44, 68, 0.06), 0 18px 40px -18px rgba(15, 44, 68, 0.28);
+  --am-lg-shadow-3: 0 24px 64px -24px rgba(15, 44, 68, 0.36);
+  --am-lg-inner-light: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  --am-lg-focus: 0 0 0 3px var(--am-lg-cream), 0 0 0 5px var(--am-lg-coral);
+
+  /* ——— Köşe yarıçapı ——— */
+  --am-lg-r-xs: 10px;
+  --am-lg-r-sm: 14px;
+  --am-lg-r-md: 18px;
+  --am-lg-r-lg: 24px;
+  --am-lg-r-xl: 30px;
+  --am-lg-r-pill: 999px;
+
+  /* ——— Aralık ——— */
+  --am-lg-s-1: 4px;
+  --am-lg-s-2: 8px;
+  --am-lg-s-3: 12px;
+  --am-lg-s-4: 16px;
+  --am-lg-s-5: 20px;
+  --am-lg-s-6: 28px;
+
+  /* ——— Hareket ——— */
+  --am-lg-dur-fast: 140ms;
+  --am-lg-dur-base: 220ms;
+  --am-lg-dur-slow: 320ms;
+  --am-lg-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --am-lg-ease-press: cubic-bezier(0.3, 0, 0.7, 1);
+}
+
+/* Koyu tema: cam yüzey lacivertten okunur, metin krem kalır. */
+[data-theme="dark"] {
+  --am-lg-glass-bg: rgba(22, 52, 79, 0.6);
+  --am-lg-glass-bg-strong: rgba(22, 52, 79, 0.86);
+  --am-lg-glass-bg-soft: rgba(22, 52, 79, 0.38);
+  --am-lg-glass-bg-tint: rgba(15, 44, 68, 0.62);
+  --am-lg-glass-border: rgba(255, 255, 255, 0.16);
+  --am-lg-glass-hairline: rgba(255, 255, 255, 0.12);
+  --am-lg-glass-sheen: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.04) 46%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  --am-lg-inner-light: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --am-lg-focus: 0 0 0 3px var(--am-lg-navy), 0 0 0 5px var(--am-lg-coral-hot);
+  --am-lg-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px -14px rgba(0, 0, 0, 0.6);
+  --am-lg-shadow-2: 0 2px 6px rgba(0, 0, 0, 0.42), 0 20px 44px -20px rgba(0, 0, 0, 0.7);
+}
+
+/* Saydamlık azaltma: cam yerine opak yüzey. */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --am-lg-glass-bg: var(--am-lg-cream);
+    --am-lg-glass-bg-strong: var(--am-lg-white);
+    --am-lg-glass-bg-soft: var(--am-lg-cream);
+    --am-lg-glass-bg-tint: var(--am-lg-peach);
+    --am-lg-blur-filter: none;
+  }
+}
+
+/* Hareket azaltma: geçişler okunur kalır, süre sıfırlanır. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --am-lg-dur-fast: 1ms;
+    --am-lg-dur-base: 1ms;
+    --am-lg-dur-slow: 1ms;
+  }
+}

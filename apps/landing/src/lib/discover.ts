@@ -1,5 +1,6 @@
 import { examples } from "@ada-merkez/copy";
 import { serverApi } from "./app-api";
+import { matchesCity } from "./pilot-cities";
 
 export type DiscoverCard = {
   id: string;
@@ -29,6 +30,7 @@ export function exampleCard(id: string): DiscoverCard | null {
 export async function loadDiscover(filters?: {
   q?: string;
   category?: string;
+  city?: string;
 }): Promise<{ cards: DiscoverCard[]; fromExamples: boolean }> {
   const params = new URLSearchParams();
   if (filters?.q) params.set("q", filters.q);
@@ -37,8 +39,11 @@ export async function loadDiscover(filters?: {
   const data = await serverApi<{ ok?: boolean; businesses?: DiscoverCard[] }>(
     `/v1/public/businesses${query ? `?${query}` : ""}`,
   );
+  const city = filters?.city?.trim() ?? "";
   const live = data?.ok && Array.isArray(data.businesses) ? data.businesses : [];
-  if (live.length) return { cards: live, fromExamples: false };
+  if (live.length) {
+    return { cards: city ? live.filter((card) => matchesCity(card.city, city)) : live, fromExamples: false };
+  }
   let cards = EXAMPLE_CARDS;
   const q = filters?.q?.trim().toLocaleLowerCase("tr-TR");
   const cat = filters?.category?.trim().toLocaleLowerCase("tr-TR");
@@ -57,5 +62,6 @@ export async function loadDiscover(filters?: {
       return hay.includes(cat);
     });
   }
+  if (city) cards = cards.filter((card) => matchesCity(card.city, city));
   return { cards, fromExamples: true };
 }

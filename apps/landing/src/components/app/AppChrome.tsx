@@ -125,7 +125,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
                 }}
               >
                 {item.icon}
-                {item.label}
+                <span className="am-tab-label">{item.label}</span>
               </Link>
             )}
           />

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { app, emptyState } from "@ada-merkez/copy";
-import { Badge } from "@ada-merkez/ui";
+import { AppHeader, Badge, UiIcon } from "@ada-merkez/ui";
 import { formatInNicosia, utcToNicosiaParts } from "@ada-merkez/shared";
+import { AppLink } from "../../../../../components/app/AppLink";
 import { requireRole } from "../../../../../lib/app-auth";
 import { serverApi } from "../../../../../lib/app-api";
 
@@ -27,14 +28,12 @@ export default async function TalepIletildiPage({ params }: { params: Promise<{ 
 
   return (
     <main id="icerik" className="am-main am-ui-main">
-      <header className="am-header">
-        <Link className="am-icon-btn" href="/app" aria-label={app.bookingBackDiscover}>
-          ×
-        </Link>
-        <h1 className="am-header-title">{app.bookingSentTitle}</h1>
-        <span style={{ width: 44 }} />
-      </header>
-      <div className="am-success">
+      <AppHeader
+        title={app.bookingSentTitle}
+        back={{ href: "/app", label: app.bookingBackDiscover, icon: <UiIcon name="close" /> }}
+        link={AppLink}
+      />
+      <div className="am-success atla-glass atla-glass--mint" style={{ padding: "20px 16px" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/landing/maskot/kabuki-dusunen-512.webp"
@@ -47,10 +46,8 @@ export default async function TalepIletildiPage({ params }: { params: Promise<{ 
         <div style={{ margin: "8px 0 12px" }}>
           <Badge tone="pending">{app.bookingPending}</Badge>
         </div>
-        <h1>{app.bookingSentHeading}</h1>
-        <p className="lead">
-          {row ? `${row.businessName} ${app.bookingSentLead}` : app.bookingSentLeadGeneric}
-        </p>
+        <h2>{app.bookingSentHeading}</h2>
+        <p className="lead">{row ? `${row.businessName} ${app.bookingSentLead}` : app.bookingSentLeadGeneric}</p>
       </div>
       {row ? (
         <article className="am-appt am-appt--pending">
@@ -60,9 +57,7 @@ export default async function TalepIletildiPage({ params }: { params: Promise<{ 
           </div>
           <div style={{ minWidth: 0 }}>
             <h3>{row.businessName}</h3>
-            <p>
-              {[row.serviceName, formatInNicosia(new Date(row.startsAt))].filter(Boolean).join(" · ")}
-            </p>
+            <p>{[row.serviceName, formatInNicosia(new Date(row.startsAt))].filter(Boolean).join(" · ")}</p>
             {row.city ? <p>{row.city}</p> : null}
             <div className="am-appt-badges">
               <Badge tone="pending">{app.bookingPending}</Badge>

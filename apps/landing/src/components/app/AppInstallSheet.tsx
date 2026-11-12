@@ -15,6 +15,7 @@ export function AppInstallSheet() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [ios, setIos] = useState(false);
   const [hidden, setHidden] = useState(true);
+  const [requested, setRequested] = useState(false);
 
   useEffect(() => {
     const standalone =
@@ -35,7 +36,20 @@ export function AppInstallSheet() {
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
   }, [pathname]);
 
-  const open = !hidden && pathname === "/app" && Boolean(deferred || ios);
+  /* Hesap ekranındaki "Ana ekrana ekle" düğmesi bu olayı yayar. */
+  useEffect(() => {
+    const onRequest = () => {
+      setRequested(true);
+      setHidden(false);
+    };
+    window.addEventListener("am:install-request", onRequest);
+    return () => window.removeEventListener("am:install-request", onRequest);
+  }, []);
+
+  /* Yönerge yalnız kurulum gerçekten mümkünse gösterilir:
+     tarayıcı istemi hazırsa veya iOS'ta elle ekleme gerekiyorsa. */
+  const installable = Boolean(deferred || ios);
+  const open = installable && (requested || (!hidden && pathname === "/app"));
   if (!open) return null;
 
   return (
@@ -43,6 +57,7 @@ export function AppInstallSheet() {
       open={open}
       onClose={() => {
         setHidden(true);
+        setRequested(false);
         sessionStorage.setItem("am_app_install", "1");
       }}
       titleId="app-install-title"

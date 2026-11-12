@@ -6,6 +6,7 @@
     "./tokens.css": "./tokens.css",
     "./tokens.json": "./tokens.json",
     "./tokens-v3.css": "./tokens-v3.css",
-    "./tokens-v3.json": "./tokens-v3.json"
+    "./tokens-v3.json": "./tokens-v3.json",
+    "./tokens-liquid.css": "./tokens-liquid.css"
   }
 }
