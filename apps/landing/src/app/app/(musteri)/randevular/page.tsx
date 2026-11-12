@@ -1,4 +1,5 @@
 import { app } from "@ada-merkez/copy";
+import { AppHeader } from "@ada-merkez/ui";
 import { AppointmentBoard, type AppointmentRow } from "../../../../components/app/AppointmentBoard";
 import { EmptyState } from "../../../../components/app/EmptyState";
 import { NotificationList, type NotificationRow } from "../../../../components/app/NotificationList";
@@ -22,9 +23,7 @@ export default async function RandevularPage() {
 
   return (
     <>
-      <header className="am-header am-header--blur">
-        <h1 className="am-header-title">{app.bookingsTitle}</h1>
-      </header>
+      <AppHeader title={app.bookingsTitle} eyebrow={app.bookings} />
       <NotificationList items={notifications} />
       <AppointmentBoard
         upcoming={upcoming}

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { app } from "@ada-merkez/copy";
+import { FormField, TextField } from "@ada-merkez/ui";
 
 export function ProfileNameForm({ initial }: { initial: string }) {
   const router = useRouter();
@@ -40,21 +41,18 @@ export function ProfileNameForm({ initial }: { initial: string }) {
         }
       }}
     >
-      <div className="am-field">
-        <label htmlFor="profil-ad">{app.name}</label>
-        <input
-          id="profil-ad"
-          name="ad"
-          autoComplete="name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-        />
-      </div>
-      {error ? (
-        <p className="am-error" role="alert">
-          {error}
-        </p>
-      ) : null}
+      <FormField id="profil-ad" label={app.name} error={error}>
+        {({ id, describedBy }) => (
+          <TextField
+            id={id}
+            describedBy={describedBy}
+            name="ad"
+            autoComplete="name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+          />
+        )}
+      </FormField>
       {saved ? <p className="am-note">{app.nameSaved}</p> : null}
       <button className="btn btn-coral" type="submit" disabled={busy}>
         {app.saveName}

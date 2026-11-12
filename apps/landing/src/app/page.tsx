@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   businessPanel,
   categories,
@@ -636,9 +637,9 @@ export default function HomePage() {
             </aside>
           </div>
           <div className="biz-cta">
-            <a className="btn btn-coral" href="/app/giris?rol=isletme&kayit=1">
+            <Link className="btn btn-coral" href="/app/giris?rol=isletme&kayit=1">
               {cta.business}
-            </a>
+            </Link>
             <span className="note status-soon">{waitlist.closedShort}</span>
           </div>
         </div>
@@ -780,12 +781,12 @@ export default function HomePage() {
               <p>{closeCta.body}</p>
             </div>
             <div className="close-actions am-hero-cta">
-              <a className="am-btn am-btn--primary" href="/app">
+              <Link className="am-btn am-btn--primary" href="/app">
                 {cta.openApp}
-              </a>
-              <a className="am-btn am-btn--ghost" href="/app/giris?rol=isletme&kayit=1">
+              </Link>
+              <Link className="am-btn am-btn--ghost" href="/app/giris?rol=isletme&kayit=1">
                 {cta.business}
-              </a>
+              </Link>
               <button className="am-btn am-btn--soft" type="button" disabled>
                 {waitlist.closedShort}
               </button>

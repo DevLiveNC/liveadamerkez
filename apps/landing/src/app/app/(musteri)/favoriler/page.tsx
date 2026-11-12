@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { app } from "@ada-merkez/copy";
-import { Badge } from "@ada-merkez/ui";
+import { AppHeader, Badge, BusinessCard } from "@ada-merkez/ui";
+import { AppLink } from "../../../../components/app/AppLink";
 import { FavoriteToggle } from "../../../../components/app/FavoriteToggle";
 import { EmptyState } from "../../../../components/app/EmptyState";
 import { requireRole } from "../../../../lib/app-auth";
@@ -22,9 +23,7 @@ export default async function FavorilerPage() {
 
   return (
     <>
-      <header className="am-header am-header--blur">
-        <h1 className="am-header-title">{app.favoritesTitle}</h1>
-      </header>
+      <AppHeader title={app.favoritesTitle} eyebrow={app.favorites} />
       {favorites.length ? (
         <>
           {favorites.every((row) => row.sample) ? (
@@ -34,34 +33,23 @@ export default async function FavorilerPage() {
           ) : null}
           <div className="am-stack mt-3">
             {favorites.map((row) => (
-              <article className="am-biz am-biz--row" key={row.id}>
-                <div className="am-biz-photo">
-                  <Link href={`/app/isletmeler/${row.businessId}`} aria-label={row.name}>
-                    <span className="am-biz-av" aria-hidden="true">
-                      {row.name.replace("Örnek ", "").slice(0, 1)}
-                    </span>
-                  </Link>
-                  {row.sample ? (
-                    <div className="am-badges-left">
-                      <Badge tone="sample" className="am-badge--on-img">
-                        {app.example}
-                      </Badge>
-                    </div>
-                  ) : null}
-                  <div className="am-heart is-on">
-                    <FavoriteToggle businessId={row.businessId} initial />
-                  </div>
-                </div>
-                <div className="am-biz-body">
-                  <div className="am-biz-title-row">
-                    <h3>
-                      <Link href={`/app/isletmeler/${row.businessId}`}>{row.name}</Link>
-                    </h3>
-                    {row.sample ? <Badge tone="sample">{app.example}</Badge> : null}
-                  </div>
-                  <p className="am-biz-meta">{[row.city, row.category].filter(Boolean).join(" · ")}</p>
-                </div>
-              </article>
+              <BusinessCard
+                key={row.id}
+                href={`/app/isletmeler/${row.businessId}`}
+                name={row.name}
+                meta={[row.city, row.category].filter(Boolean).join(" · ")}
+                row
+                link={AppLink}
+                badges={
+                  row.sample ? (
+                    <Badge tone="sample" className="am-badge--on-img">
+                      {app.example}
+                    </Badge>
+                  ) : null
+                }
+                heart={<FavoriteToggle businessId={row.businessId} initial />}
+                heartOn
+              />
             ))}
           </div>
         </>
