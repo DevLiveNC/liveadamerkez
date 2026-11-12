@@ -304,6 +304,12 @@ body:has(.yonetim-app) .am-main {
   }
 }
 
+.yonetim-app .am-empty-art {
+  width: 96px;
+  max-width: 96px;
+  height: auto;
+}
+
 .am-kpi-val.is-text {
   font-size: 22px;
   line-height: 28px;

@@ -66,7 +66,7 @@ export function ConsentBanner() {
           <>
             <button
               type="button"
-              className="btn btn-ghost"
+              className="btn btn-ghost on-dark"
               onClick={() => {
                 rejectTrackingConsent();
                 setVisible(false);
@@ -84,7 +84,7 @@ export function ConsentBanner() {
             >
               {trackingConsent.accept}
             </button>
-            <button type="button" className="btn btn-ghost" onClick={() => setSettings(true)}>
+            <button type="button" className="btn btn-ghost on-dark" onClick={() => setSettings(true)}>
               {trackingConsent.settings}
             </button>
           </>

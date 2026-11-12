@@ -17,15 +17,21 @@ export const site = {
 } as const;
 
 export const cta = {
-  customer: "Erken erişime kaydol",
+  customer: "Erken erişim yakında",
   business: "Kendi işletmeni ekle",
   signIn: "Giriş",
   openApp: "Uygulamayı aç",
 } as const;
 
+export const ctaEn = {
+  openApp: "Open the app",
+  business: "Add your business",
+} as const;
+
 export const nav = {
   discover: "Keşif",
   how: "Nasıl çalışır",
+  trust: "Güven",
   whatsapp: "WhatsApp ile",
   business: "İşletmeler",
   pilot: "Pilot",
@@ -43,10 +49,21 @@ export const nav = {
 
 export const hero = {
   kicker: "Kuzey Kıbrıs ve Türkiye için",
+  displayTitle: "Adanın saati, burada.",
+  displayWord1: "Adanın",
+  displayWord2: "saati,",
+  displayWord3: "burada.",
   title: "Adada randevu ve rezervasyon dağılmasın.",
   lead: "Kuaför, klinik veya restoranı bul; uygun saati seç. Dilersen uygulama indirmeden WhatsApp’tan hallet.",
-  primaryCta: cta.customer,
+  primaryCta: cta.openApp,
   secondaryCta: cta.business,
+  chipHair: "Kuaför",
+  chipBeauty: "Güzellik",
+  chipWhatsapp: "WhatsApp’tan hallet",
+  sampleAria: "Örnek randevu kartı",
+  sampleSlotA: "10:30",
+  sampleSlotB: "11:00",
+  pilotLabel: "Pilot:",
 } as const;
 
 export const how = {
@@ -226,7 +243,7 @@ export const businessApply = {
 export const qrPage = {
   kicker: "QR kanalı",
   lead: "Kuaför ve klinikte randevu, restoranda masa; dilerseniz WhatsApp üzerinden. Uygulama indirmek zorunda değilsiniz.",
-  cta: cta.customer,
+  cta: cta.openApp,
 } as const;
 
 export const trackingConsent = {
@@ -299,10 +316,37 @@ export const app = {
   title: "Ada Merkez",
   description: "Kuzey Kıbrıs ve Türkiye için keşif, randevu ve rezervasyon.",
   kicker: "Kuzey Kıbrıs ve Türkiye için",
-  homeTitle: "Yarın için uygun saat",
+  homeTitle: "Keşif",
   searchPlaceholder: "Kuaför, klinik, restoran",
+  greeting: "Günaydın. Bugün ada sakin; uygun saatlere birlikte bakalım.",
+  greetingMorning: "Günaydın. Bugün ada sakin; uygun saatlere birlikte bakalım.",
+  greetingAfternoon: "İyi günler. Bugün ada sakin; uygun saatlere birlikte bakalım.",
+  greetingEvening: "İyi akşamlar. Bugün ada sakin; uygun saatlere birlikte bakalım.",
+  slogan: "Adanın saati, burada.",
+  nearby: "Yakınımdakiler",
+  seeAll: "Tümü",
+  location: "Lefkoşa",
+  locationPicker: "Konum",
+  notifications: "Bildirimler",
+  searchTitle: "Arama",
+  sampleEvents: "Örnek etkinlikler",
+  dateSoon: "Tarih yakında",
+  beauty: "Güzellik",
+  cafe: "Kafe",
+  sport: "Spor",
+  beach: "Sahil",
+  categorySoonBody: "Bu kategori henüz açık değil.",
+  newBadge: "Yeni",
+  clearSearch: "Temizle",
+  filters: "Filtreler",
+  sampleResults: "örnek sonuç",
   discover: "Keşif",
   bookings: "Randevu",
+  bookingsTitle: "Randevularım",
+  upcoming: "Yaklaşan",
+  past: "Geçmiş",
+  statusPending: "Onay bekliyor",
+  statusConfirmed: "Onaylı",
   favorites: "Favori",
   account: "Hesap",
   navAria: "Müşteri gezinme",
@@ -314,7 +358,8 @@ export const app = {
   admin: "Yönetici",
   roleTabs: "Hesap türü",
   phone: "Telefon",
-  phonePlaceholder: "05xx xxx xx xx",
+  phonePlaceholder: "+90 5xx xxx xx xx",
+  phoneHint: "Yalnız +90 (Kuzey Kıbrıs ve Türkiye).",
   name: "Ad",
   namePlaceholder: "Adınız",
   code: "Doğrulama kodu",
@@ -341,10 +386,35 @@ export const app = {
   emptyTitle: "Şimdilik boş",
   emptyDiscover: "Yayımlanmış işletme yok. Örnek kartlar aşağıda, gerçek işletme değildir.",
   emptyBookings: "Henüz randevun yok.",
-  emptyFavorites: "Favorin yok.",
+  emptyFavorites: "Henüz favorin yok",
+  emptyFavoritesLead: "Beğendiğin örnek işletmeleri kalp ile kaydedebilirsin. Sonra buradan dönersin.",
+  favoritesCta: "Keşfet",
+  favoritesTitle: "Favoriler",
+  sampleSaves: "örnek kayıt",
   loginToBook: "Randevu için giriş yap.",
   loginToFavorite: "Favori için giriş yap.",
-  book: "Saat ayır",
+  book: "Rezervasyon yap",
+  services: "Hizmetler",
+  servicesTitle: "Hizmetler",
+  priceAsk: "Fiyat için sorun",
+  messageWa: "WhatsApp ile sorun",
+  share: "Paylaş",
+  minutes: "dk",
+  bookingTitle: "Rezervasyon",
+  bookingService: "Hizmet",
+  bookingDate: "Tarih",
+  bookingSlots: "Uygun saat",
+  bookingSend: "Talep gönder",
+  bookingPendingNote:
+    "Talep işletmeye iletilir. Onay gelince haber veririz. Dilersen WhatsApp ile de sorabilirsin.",
+  bookingSentTitle: "Talep iletildi",
+  bookingSentHeading: "Talebin iletildi",
+  bookingSentLead:
+    "talebini görünce onaylayacak. Durumu Randevularım’dan takip edebilirsin.",
+  bookingSentLeadGeneric:
+    "İşletme talebini görünce onaylayacak. Durumu Randevularım’dan takip edebilirsin.",
+  bookingGoAppointments: "Randevularıma git",
+  bookingBackDiscover: "Keşfe dön",
   profileGuest: "Randevuların ve favorilerin için giriş yap.",
   forbiddenTitle: "Bu panele yetkin yok",
   forbiddenBody: "Bu sayfa başka bir rol içindir. Doğru hesapla giriş yap.",
@@ -358,8 +428,8 @@ export const app = {
   resto: "Restoran",
   events: "Etkinlik",
   back: "Geri",
-  invalidPhone: "Geçerli bir telefon yaz.",
-  invalidCode: "Kodu kontrol et.",
+  invalidPhone: "Yalnız +90 numarası kabul edilir.",
+  invalidCode: "6 haneli kodu yaz.",
   invalidName: "Ad en az iki karakter olmalı.",
   authUnavailable: "Giriş şu anda alınamıyor. Lütfen sonra yeniden dene.",
   codeSent: "Kod gönderildi. Telefonuna gelen kodu yaz.",
@@ -376,6 +446,13 @@ export const app = {
   bookingConfirmed: "Onaylandı",
   bookingCancelled: "İptal",
   bookingNoShow: "Gelmedi",
+  notifyTitle: "Bildirimler",
+  notifyEmptyTitle: "Bildirim yok",
+  notifyEmptyBody: "Onay veya başka saat önerisi gelince burada görünür.",
+  notifyConfirmedTitle: "Randevun onaylandı",
+  notifyConfirmedBody: "talebini onayladı.",
+  notifySuggestTitle: "Başka saat önerildi",
+  notifySuggestBody: "başka bir saat önerdi.",
 } as const;
 
 export const ui = {
@@ -386,6 +463,46 @@ export const ui = {
   releaseToRefresh: "Bırakınca yenilenir",
   loading: "Yükleniyor",
   sample: "Örnek",
+} as const;
+
+export const splash = {
+  aria: "Ada Merkez açılış ekranı: A işareti ve Kabuki. Adanın saati, burada.",
+  sloganLead: "Adanın saati,",
+  sloganEm: "burada.",
+  geo: site.regionLine,
+  skip: "Atla",
+  skipAria: "Açılış animasyonunu atla",
+  en: {
+    aria: "Ada Merkez opening screen: A mark and Kabuki. The island's time is here.",
+    sloganLead: "The island's time,",
+    sloganEm: "is here.",
+    geo: "For Northern Cyprus and Turkey",
+    skip: "Skip",
+    skipAria: "Skip the opening animation",
+  },
+} as const;
+
+export const onboarding = {
+  title: "Nasıl çalışır",
+  skip: "Atla",
+  next: "İleri",
+  done: "Keşfe geç",
+  steps: [
+    { title: how.steps[0].title, body: how.steps[0].body },
+    { title: how.steps[1].title, body: how.steps[1].body },
+    { title: how.steps[2].title, body: how.steps[2].body },
+  ],
+  en: {
+    title: "How it works",
+    skip: "Skip",
+    next: "Next",
+    done: "Start exploring",
+    steps: [
+      { title: "Find a business", body: "City and category" },
+      { title: "Pick a time", body: "Europe/Nicosia" },
+      { title: "Confirm", body: "Waiting for approval" },
+    ],
+  },
 } as const;
 
 export const legal = {
@@ -528,6 +645,7 @@ export const yonetimApp = {
   weekVolume: "Haftalık hacim",
   weekVolumeSample: "Örnek haftalık hacim",
   reportsChartNote: "Örnek veri. Gerçek ciro, büyüme veya kullanıcı sayısı iddiası yoktur.",
+  listTruncated: "Liste 200 kayıtla sınırlı; toplam sayı sunucuda sayılır.",
   healthTitle: "Sistem durumu",
   healthLead: "Bileşenler gerçek kontrolden doldurulur. Yüzde veya kestirme kesinti yazılmaz.",
   healthWaitlistBody: "Ürün kuralı — liste açık değil",
@@ -675,6 +793,25 @@ export const events = {
   ],
 } as const;
 
+export const trust = {
+  kicker: "Güven",
+  title: "Nasıl çalışır",
+  lede: "İşletmeyi bul, saati seç, onay bekle. Aşağıdaki maddeler ürünün bugün yaptığı işlerdir.",
+  s1Title: "İşletmeyi bul",
+  s1Body: "Şehir ve kategori ile bak. Uygulama keşif listesini açar.",
+  s2Title: "Saati seç",
+  s2Body: "Uygun saati görür, talep gönderirsin. Talep onay bekler.",
+  s3Title: "Onayı takip et",
+  s3Body: "İşletme onaylar veya başka saat önerir. Durum Randevularım’da durur.",
+  securityTitle: "Güvenlik",
+  otp: "Giriş tek kullanımlık 6 haneli kodla.",
+  tls: "Bağlantı HTTPS ile şifrelenir.",
+  mask: "Telefon numarası listelerde maskelenir.",
+  kvkkTitle: "KVKK uyumuna hazırlık",
+  kvkkBody:
+    "Aydınlatma metni ve silme talebi vardır. Bu bir sertifika, denetim veya tam uyum iddiası değildir.",
+} as const;
+
 export const howBoard = {
   kicker: "Nasıl çalışır",
   title: "Saat sormak için hattı meşgul etmeden.",
@@ -796,7 +933,7 @@ export const faq = {
     },
     {
       q: "Ücret var mı?",
-      a: "Fiyat ve paketler henüz yayımlanmadı. Paylaşılınca burada yazarız.",
+      a: "Müşteriye ücretsiz. İşletme paketleri henüz yayımlanmadı; paylaşılınca burada yazarız.",
     },
   ],
 } as const;
@@ -811,8 +948,13 @@ export const later = {
   posBody: "Yazar kasa ile tahsilat, aynı çatı altında.",
   ticketTitle: "Etkinlik bileti",
   ticketBody: "Konser ve etkinlik bileti, randevunun yanında.",
-  campusTitle: "Öğrenci indirimi",
-  campusBody: "Ada Kampüs kimliğiyle indirim, abartısız sonraki adım.",
+  campusTitle: "Öğrenci avantajları",
+  campusBody: "Ada Kampüs kimliğinle öğrencilere özel fırsatlar yakında.",
+} as const;
+
+export const laterEn = {
+  campusTitle: "Student perks",
+  campusBody: "Exclusive offers for Ada Kampüs members, coming soon.",
 } as const;
 
 export const closeCta = {
@@ -885,6 +1027,9 @@ export const isletmeApp = {
   appChannel: "Uygulama",
   approve: "Onayla",
   reject: "Reddet",
+  suggestSlot: "Başka saat öner",
+  suggestSend: "Öneriyi gönder",
+  suggestWhen: "Önerilen saat",
   inboxEmptyTitle: "Bekleyen istek yok",
   inboxEmptyBody: "Gelen rezervasyon veya WhatsApp talebi olunca burada listelenir.",
   slotsTitle: "Boş saatler",
@@ -910,6 +1055,7 @@ export const isletmeApp = {
   start: "Başlangıç",
   end: "Bitiş",
   addHours: "Saat ekle",
+  formError: "Kayıt kaydedilemedi. Alanları kontrol edip tekrar deneyin.",
   save: "Kaydet",
   saved: "Kaydedildi.",
   statsTitle: "İstatistik",

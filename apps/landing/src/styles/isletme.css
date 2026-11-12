@@ -420,3 +420,17 @@ body:has(.isletme-app) .am-main {
     align-items: start;
   }
 }
+
+.isletme-app .am-empty-art {
+  width: 96px;
+  max-width: 96px;
+  height: auto;
+}
+
+.am-suggest {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 6px;
+}

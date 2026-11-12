@@ -47,6 +47,14 @@ body.am-app .am-ui-topbar {
   padding-top: max(8px, var(--am-safe-top));
 }
 
+body.am-app .am-ui-main .am-header {
+  margin: 0 calc(-1 * var(--am-page-pad));
+  padding-left: var(--am-page-pad);
+  padding-right: var(--am-page-pad);
+  padding-top: max(8px, var(--am-safe-top));
+  background: var(--am-color-background);
+}
+
 body.am-app .am-tabbar {
   position: relative;
   left: auto;
@@ -77,6 +85,110 @@ body.am-app .am-scroll {
 body.am-app .am-ui-main {
   padding: 0 var(--am-page-pad) 16px;
 }
+
+body.am-app .am-ui-main .am-scroll {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 16px;
+  overflow: visible;
+  flex: none;
+}
+
+body.am-app .am-chips {
+  flex-wrap: nowrap;
+}
+
+body.am-app .am-chip {
+  text-decoration: none;
+  flex: none;
+  white-space: nowrap;
+}
+
+body.am-app .am-biz-photo .am-biz-av {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 112px;
+  font-family: var(--am-font-display);
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--am-cream);
+  background: var(--am-navy);
+}
+
+body.am-app .am-biz-body a {
+  color: inherit;
+  text-decoration: none;
+}
+
+body.am-app .am-ui-main .am-gallery {
+  margin: 0 calc(-1 * var(--am-page-pad));
+}
+
+body.am-app .am-gallery-track {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+body.am-app .am-gallery-track::-webkit-scrollbar { display: none; }
+body.am-app .am-gallery-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+}
+body.am-app .am-gallery-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+body.am-app .am-ui-main .am-cta-bar {
+  position: sticky;
+  left: auto;
+  right: auto;
+  bottom: 0;
+  margin: 0 calc(-1 * var(--am-page-pad));
+}
+
+body.am-app .am-heart .btn {
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 0;
+  color: var(--am-coral);
+}
+
+body.am-app .am-ui-main .am-header {
+  margin: 0 calc(-1 * var(--am-page-pad));
+  padding-left: var(--am-page-pad);
+  padding-right: var(--am-page-pad);
+  padding-top: max(8px, var(--am-safe-top));
+}
+
+body.am-app .am-profile-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 8px 0 20px;
+}
+body.am-app .am-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--am-navy);
+  color: var(--am-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--am-font-display);
+  font-weight: 700;
+}
+body.am-app .am-avatar--lg { width: 72px; height: 72px; font-size: 28px; }
+body.am-app .am-card-block { margin-bottom: 12px; }
 
 body.am-app .am-ui-ptr {
   position: relative;

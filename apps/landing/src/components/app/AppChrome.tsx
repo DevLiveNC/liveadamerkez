@@ -16,6 +16,7 @@ import {
 import { Logo } from "../Logo";
 import { AppSwRegister } from "./AppSwRegister";
 import { AppInstallSheet } from "./AppInstallSheet";
+import { AppLaunch } from "./AppLaunch";
 
 const TABS = [
   {
@@ -54,7 +55,15 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/app/yonetim/") ||
     pathname.startsWith("/app/yonetici");
   const isAuth = pathname.startsWith("/app/giris");
-  const hideChrome = isPanel || isAuth;
+  const bookingSent = /^\/app\/randevular\/[^/]+$/.test(pathname);
+  const hideChrome = isPanel || isAuth || bookingSent;
+  const hideCustomerTop =
+    hideChrome ||
+    pathname === "/app" ||
+    pathname.startsWith("/app/isletmeler") ||
+    pathname.startsWith("/app/randevular") ||
+    pathname.startsWith("/app/favoriler") ||
+    pathname.startsWith("/app/hesap");
 
   const items: BottomNavItem[] = TABS.map((tab) => ({
     href: tab.href,
@@ -75,7 +84,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       }
       skipLabel={ui.skipToContent}
       header={
-        hideChrome ? null : (
+        hideCustomerTop ? null : (
           <TopBar className="am-top" blur>
             <Link href="/app" aria-label={app.title}>
               <Logo height={28} />
@@ -144,6 +153,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       )}
       <AppSwRegister />
       <AppInstallSheet />
+      <AppLaunch />
     </AppShell>
   );
 }

@@ -205,10 +205,14 @@ export async function fetchBookings(query: {
   return request<{ ok: true; bookings: BookingRow[] }>(`/v1/bookings${suffix}`);
 }
 
-export async function patchBooking(id: string, status: "confirmed" | "cancelled") {
+export async function patchBooking(
+  id: string,
+  status: "confirmed" | "cancelled" | { suggestStartsAt: string },
+) {
+  const body = typeof status === "string" ? { status } : status;
   return request<{ ok: true; booking: BookingRow }>(`/v1/bookings/${id}`, {
     method: "PATCH",
-    body: JSON.stringify({ status }),
+    body: JSON.stringify(body),
   });
 }
 

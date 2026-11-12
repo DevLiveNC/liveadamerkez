@@ -1,0 +1,280 @@
+{
+  "$meta": {
+    "ad": "Ada Merkez renk sistemi",
+    "surum": "3.0.0",
+    "tarih": "2026-11-11",
+    "not": "v2 bileşen ölçüleri, font ve aralık tokenları geçerli; bu dosya rengi ve dokuyu yeniden tanımlar. Lacivert #0F2C44 ve mercan #E4572E korunur."
+  },
+  "renk": {
+    "lacivert": {
+      "ad": "Lacivert gece",
+      "not": "Marka çekirdeği; metin ve koyu zemin",
+      "50": "#E8EEF4",
+      "100": "#C9D6E3",
+      "200": "#8FA7BF",
+      "400": "#3C5A78",
+      "600": "#1C3D5A",
+      "800": "#0F2C44",
+      "900": "#081A2A"
+    },
+    "mercan": {
+      "ad": "Kabuki mercanı",
+      "not": "Marka çekirdeği; Kabuki kabuğu, ana vurgu",
+      "50": "#FDEDE7",
+      "100": "#FBD3C4",
+      "200": "#F6A68A",
+      "400": "#E4572E",
+      "600": "#C2410C",
+      "800": "#8A2A08"
+    },
+    "akdeniz": {
+      "ad": "Akdeniz turkuazı",
+      "not": "Sığ deniz, sahil, olumlu durum",
+      "50": "#E2F7F5",
+      "100": "#BDEDE8",
+      "200": "#7EDDD5",
+      "400": "#22B8AF",
+      "600": "#0E7C78",
+      "800": "#0A4F4D"
+    },
+    "derin": {
+      "ad": "Derin mavi",
+      "not": "Açık deniz, klinik, bilgi",
+      "50": "#E3EEFA",
+      "100": "#BFD7F2",
+      "200": "#82B1E6",
+      "400": "#2D7DD2",
+      "600": "#0B5FA5",
+      "800": "#083E6E"
+    },
+    "gunbatimi": {
+      "ad": "Gün batımı turuncusu",
+      "not": "Restoran, akşam, sıcak vurgu",
+      "50": "#FFF0E3",
+      "100": "#FFD9B8",
+      "200": "#FFB57A",
+      "400": "#FF8A3D",
+      "600": "#B04A0A",
+      "800": "#7F3A0A"
+    },
+    "hellim": {
+      "ad": "Hellim / kum sarısı",
+      "not": "Ana sayfa zemini, kart, sıcak nötr",
+      "50": "#FFFBF2",
+      "100": "#FBF1DA",
+      "200": "#F4E2B8",
+      "400": "#E8C77E",
+      "600": "#9A7429",
+      "800": "#5E4614"
+    },
+    "zeytin": {
+      "ad": "Zeytin yeşili",
+      "not": "Spor, doğa, başarı tonu",
+      "50": "#F1F4E3",
+      "100": "#DDE5BC",
+      "200": "#BCCB7E",
+      "400": "#8DA33A",
+      "600": "#5C6E1E",
+      "800": "#3A4612"
+    },
+    "begonvil": {
+      "ad": "Begonvil pembesi",
+      "not": "Güzellik, eğlence, öne çıkan",
+      "50": "#FDE8F2",
+      "100": "#F9C6DE",
+      "200": "#F28DBB",
+      "400": "#E03A8C",
+      "600": "#B0196A",
+      "800": "#700E43"
+    },
+    "mor": {
+      "ad": "Begonvil moru",
+      "not": "Kuaför, akşam, etkinlik ikincil",
+      "50": "#F2EAFA",
+      "100": "#DDCBF1",
+      "200": "#B996E0",
+      "400": "#8A4FC6",
+      "600": "#6A2FA3",
+      "800": "#45196E"
+    },
+    "limon": {
+      "ad": "Limon",
+      "not": "Etkinlik, Yakında, neşeli vurgu",
+      "50": "#FFFBE0",
+      "100": "#FFF3A8",
+      "200": "#FBE66A",
+      "400": "#F5D21E",
+      "600": "#8C7600",
+      "800": "#574900"
+    },
+    "harnup": {
+      "ad": "Harnup kahvesi",
+      "not": "Kafe, sıcak koyu nötr",
+      "50": "#F6EEE8",
+      "100": "#E8D5C7",
+      "200": "#CFAA90",
+      "400": "#9A6544",
+      "600": "#6E4227",
+      "800": "#4A2A16"
+    }
+  },
+  "gradyan": {
+    "gunbatimi": {
+      "ad": "Gün batımı",
+      "css": "linear-gradient(135deg, #FFB57A 0%, #FF8A3D 30%, #E4572E 62%, #E03A8C 100%)"
+    },
+    "akdeniz": {
+      "ad": "Akdeniz",
+      "css": "linear-gradient(160deg, #7EDDD5 0%, #22B8AF 40%, #0B5FA5 100%)"
+    },
+    "begonvil": {
+      "ad": "Begonvil",
+      "css": "linear-gradient(135deg, #F28DBB 0%, #E03A8C 45%, #8A4FC6 100%)"
+    },
+    "limonluk": {
+      "ad": "Limonluk",
+      "css": "linear-gradient(135deg, #FFF3A8 0%, #F5D21E 45%, #8DA33A 100%)"
+    },
+    "hellim": {
+      "ad": "Hellim sabahı",
+      "css": "linear-gradient(180deg, #FFFBF2 0%, #FBF1DA 55%, #F4E2B8 100%)"
+    },
+    "gece": {
+      "ad": "Ada gecesi",
+      "css": "linear-gradient(180deg, #081A2A 0%, #0F2C44 45%, #083E6E 100%)"
+    },
+    "metin": {
+      "ad": "Metin gradyanı (büyük başlık)",
+      "css": "linear-gradient(100deg, #C2410C 0%, #B0196A 55%, #6A2FA3 100%)"
+    },
+    "ufuk": {
+      "ad": "Ufuk",
+      "css": "linear-gradient(180deg, #FFD9B8 0%, #FBF1DA 38%, #BDEDE8 100%)"
+    }
+  },
+  "kategori": {
+    "kuafor": {
+      "ad": "Kuaför",
+      "ramp": "mor",
+      "zemin": "#F2EAFA",
+      "yumusak": "#DDCBF1",
+      "vurgu": "#8A4FC6",
+      "koyu": "#6A2FA3",
+      "murekkep": "#45196E",
+      "dolguUstuMetin": "#FFFFFF"
+    },
+    "guzellik": {
+      "ad": "Güzellik",
+      "ramp": "begonvil",
+      "zemin": "#FDE8F2",
+      "yumusak": "#F9C6DE",
+      "vurgu": "#E03A8C",
+      "koyu": "#B0196A",
+      "murekkep": "#700E43",
+      "dolguUstuMetin": "#FFFFFF"
+    },
+    "klinik": {
+      "ad": "Klinik",
+      "ramp": "derin",
+      "zemin": "#E3EEFA",
+      "yumusak": "#BFD7F2",
+      "vurgu": "#2D7DD2",
+      "koyu": "#0B5FA5",
+      "murekkep": "#083E6E",
+      "dolguUstuMetin": "#FFFFFF"
+    },
+    "restoran": {
+      "ad": "Restoran",
+      "ramp": "gunbatimi",
+      "zemin": "#FFF0E3",
+      "yumusak": "#FFD9B8",
+      "vurgu": "#FF8A3D",
+      "koyu": "#B04A0A",
+      "murekkep": "#7F3A0A",
+      "dolguUstuMetin": "#FFFFFF"
+    },
+    "kafe": {
+      "ad": "Kafe",
+      "ramp": "harnup",
+      "zemin": "#F6EEE8",
+      "yumusak": "#E8D5C7",
+      "vurgu": "#9A6544",
+      "koyu": "#6E4227",
+      "murekkep": "#4A2A16",
+      "dolguUstuMetin": "#FFFFFF"
+    },
+    "etkinlik": {
+      "ad": "Etkinlik",
+      "ramp": "limon",
+      "zemin": "#FFFBE0",
+      "yumusak": "#FFF3A8",
+      "vurgu": "#F5D21E",
+      "koyu": "#8C7600",
+      "murekkep": "#574900",
+      "dolguUstuMetin": "#0F2C44"
+    },
+    "spor": {
+      "ad": "Spor",
+      "ramp": "zeytin",
+      "zemin": "#F1F4E3",
+      "yumusak": "#DDE5BC",
+      "vurgu": "#8DA33A",
+      "koyu": "#5C6E1E",
+      "murekkep": "#3A4612",
+      "dolguUstuMetin": "#FFFFFF"
+    },
+    "sahil": {
+      "ad": "Sahil",
+      "ramp": "akdeniz",
+      "zemin": "#E2F7F5",
+      "yumusak": "#BDEDE8",
+      "vurgu": "#22B8AF",
+      "koyu": "#0E7C78",
+      "murekkep": "#0A4F4D",
+      "dolguUstuMetin": "#FFFFFF"
+    }
+  },
+  "anlam": {
+    "bg": "#FFFBF2",
+    "bgAlt": "#FBF1DA",
+    "surface": "#FFFFFF",
+    "surfaceWarm": "#FFFBF2",
+    "text": "#0F2C44",
+    "textMuted": "#4E5A66",
+    "textOnDark": "#FFFBF2",
+    "textOnDarkMuted": "#C9D6E3",
+    "border": "#F4E2B8",
+    "focus": "#0B5FA5",
+    "brand": "#0F2C44",
+    "accent": "#E4572E",
+    "accentText": "#C2410C",
+    "confirmed": "#0F2C44",
+    "pending": "#E4572E",
+    "pendingBg": "#FDEDE7",
+    "free": "#0E7C78",
+    "freeBg": "#E2F7F5",
+    "success": "#5C6E1E",
+    "warning": "#B04A0A",
+    "danger": "#B42318",
+    "info": "#0B5FA5"
+  },
+  "font": {
+    "display": "\"Plus Jakarta Sans\", system-ui, sans-serif",
+    "body": "Inter, system-ui, sans-serif",
+    "displayWeight": 800,
+    "heroSize": {
+      "masaustu": "112px/0.95",
+      "mobil": "52px/1.0"
+    },
+    "letterSpacingDisplay": "-0.035em"
+  },
+  "desen": {
+    "dalga": "desen/dalga.svg",
+    "kum": "desen/kum.svg",
+    "lefkara": "desen/lefkara.svg",
+    "kayik": "desen/kayik.svg",
+    "harnup": "desen/harnup.svg",
+    "zeytin": "desen/zeytin-dali.svg",
+    "begonvil": "desen/begonvil.svg"
+  }
+}

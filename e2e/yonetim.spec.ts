@@ -57,7 +57,12 @@ test("yönetici paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar",
   await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-yonetici");
   await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute("href", "#yonetim-icerik");
   await expect(page.getByRole("main")).toHaveAttribute("id", "yonetim-icerik");
+  await expect(page.locator("body.landing")).toHaveCount(0);
+  await expect(page.locator("body.am-app")).toHaveCount(1);
   await expect(page.getByRole("heading", { name: "Genel bakış" })).toBeVisible();
+  const panelIcon = page.locator(".am-icon").first();
+  await expect(panelIcon).toBeVisible();
+  expect(await panelIcon.evaluate((el) => getComputedStyle(el).flexShrink)).toBe("0");
   await expect(page.getByText("Kapalı", { exact: true }).first()).toBeVisible();
   await expect(page.getByRole("button", { name: "Menü" })).toHaveCount(0);
   await expect(page.locator("body")).not.toContainText(/KKTC/i);

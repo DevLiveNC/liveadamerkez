@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   const role = body.role;
   const mode = body.mode === "register" ? "register" : "login";
   const name = typeof body.name === "string" ? body.name.trim() : undefined;
-  if (!phone || !code || !isSessionRole(role)) {
+  if (!phone || !/^\d{6}$/.test(code) || !isSessionRole(role)) {
     return NextResponse.json(
       { ok: false, code: "INVALID", message: apiMessages.invalidAuth },
       { status: 400, headers: NO_STORE },

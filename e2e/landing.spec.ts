@@ -13,7 +13,14 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   const response = await page.goto("/");
   expect(response?.ok()).toBeTruthy();
 
-  await expect(page.getByRole("heading", { name: /Adada randevu ve rezervasyon/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Adanın saati/ })).toBeVisible();
+  await expect(page.getByText("Adada randevu ve rezervasyon dağılmasın.")).toBeVisible();
+  await expect(page.locator(".am-hero-v3 a.h3-btn--coral")).toHaveAttribute("href", "/app");
+  await expect(page.locator(".am-hero-v3 a.h3-btn--sticker")).toHaveAttribute(
+    "href",
+    "/app/giris?rol=isletme&kayit=1",
+  );
+  await expect(page.getByRole("link", { name: "Erken erişim yakında" })).toHaveCount(0);
   await expect(page.getByText("Lefkoşa", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Girne", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Mağusa", { exact: true }).first()).toBeVisible();
@@ -39,8 +46,21 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
       "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
     ).first(),
   ).toBeVisible();
-  await expect(page.getByRole("link", { name: "Erken erişime kaydol" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Uygulamayı aç" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Uygulamayı aç" }).first()).toHaveAttribute("href", "/app");
+  await expect(page.getByRole("heading", { name: "Nasıl çalışır" })).toBeVisible();
+  await expect(page.getByText("Giriş tek kullanımlık 6 haneli kodla.")).toBeVisible();
+  await expect(page.getByText("Bağlantı HTTPS ile şifrelenir.")).toBeVisible();
+  await expect(page.getByText("Telefon numarası listelerde maskelenir.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "KVKK uyumuna hazırlık" })).toBeVisible();
+  await expect(page.locator("body")).toContainText("Müşteriye ücretsiz");
   await expect(page.getByRole("link", { name: "Kendi işletmeni ekle" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Kendi işletmeni ekle" }).first()).toHaveAttribute(
+    "href",
+    "/app/giris?rol=isletme&kayit=1",
+  );
+  await expect(page.getByRole("link", { name: "Erken erişim yakında" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Listeye yazıl" })).toHaveCount(0);
   await expect(page.locator(".search-field").filter({ hasText: "Ne zaman" }).locator("strong")).toHaveText(
     /^Yarın, \d{1,2} \S+$/,
   );
@@ -61,7 +81,7 @@ test("landing smoke: copy, PWA, closed waitlist, legal placeholder", async ({ pa
   const landingOverflow = await page.evaluate(() => getComputedStyle(document.body).overflow);
   expect(landingOverflow).not.toBe("hidden");
   const landingBtnTrack = await page
-    .getByRole("link", { name: "Erken erişime kaydol" })
+    .getByRole("link", { name: "Uygulamayı aç" })
     .first()
     .evaluate((el) => getComputedStyle(el).letterSpacing);
   expect(landingBtnTrack).not.toBe("-0.01em");
@@ -186,4 +206,34 @@ test("mobile screenshot and PWA meta", async ({ page }) => {
     path: path.join(artifactDir, "landing-mobile.png"),
     fullPage: true,
   });
+});
+
+test("mobil menü Esc ve dışarı tıklayınca kapanır, odak döner", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Reddet" }).click();
+  const menu = page.getByRole("button", { name: "Menü" });
+  await expect(menu).toBeVisible();
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await menu.click();
+  await expect(menu).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator("#am-land-menu a").first()).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await expect(menu).toBeFocused();
+  await menu.click();
+  await expect(menu).toHaveAttribute("aria-expanded", "true");
+  await page.locator(".am-land-scrim").click({ position: { x: 8, y: 8 } });
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await expect(menu).toBeFocused();
+});
+
+test("landing v3 hero reduced-motion stops decorative loops", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: /Adanın saati/ })).toBeVisible();
+  const waveAnim = await page.locator(".am-hero-v3 .h3-wave.w1").evaluate((el) => getComputedStyle(el).animationName);
+  expect(waveAnim).toBe("none");
+  const petalDisplay = await page.locator(".am-hero-v3 .h3-petal.p1").evaluate((el) => getComputedStyle(el).display);
+  expect(petalDisplay).toBe("none");
 });

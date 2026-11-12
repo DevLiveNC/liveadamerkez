@@ -8,6 +8,7 @@ export * from "./attribution.js";
 export * from "./qr-channels.js";
 export * from "./referral.js";
 export * from "./events.js";
+export * from "./notify-channels.js";
 export * from "./consent-cookie.js";
 export {
   APP_HOME,

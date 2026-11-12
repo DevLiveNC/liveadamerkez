@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 const Body = z.object({
   id: z.string().uuid(),
   phone: z.string().trim().min(8).max(24),
-  code: z.string().trim().min(4).max(8),
+  code: z.string().trim().regex(/^\d{6}$/),
 });
 
 export async function POST(request: Request) {

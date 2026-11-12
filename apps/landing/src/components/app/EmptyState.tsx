@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { emptyState } from "@ada-merkez/copy";
 import { EmptyState as UiEmptyState } from "@ada-merkez/ui";
 
@@ -7,10 +8,12 @@ export function EmptyState({
   kind,
   title,
   body,
+  action,
 }: {
   kind: EmptyStateKind;
   title?: string;
   body?: string;
+  action?: ReactNode;
 }) {
   const item = emptyState[kind];
   const src = `/app/bos-durum/${kind}.webp`;
@@ -33,6 +36,7 @@ export function EmptyState({
           decoding="async"
         />
       }
+      action={action}
     />
   );
 }

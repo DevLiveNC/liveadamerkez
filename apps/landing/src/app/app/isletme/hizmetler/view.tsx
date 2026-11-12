@@ -43,8 +43,8 @@ export function HizmetlerView() {
       event.currentTarget.reset();
       setAddingService(false);
       await load();
-    } catch (err) {
-      setFormError(err instanceof Error ? err.message : "İstek başarısız.");
+    } catch {
+      setFormError(isletmeApp.formError);
     }
   }
 
@@ -57,8 +57,8 @@ export function HizmetlerView() {
       event.currentTarget.reset();
       setAddingStaff(false);
       await load();
-    } catch (err) {
-      setFormError(err instanceof Error ? err.message : "İstek başarısız.");
+    } catch {
+      setFormError(isletmeApp.formError);
     }
   }
 

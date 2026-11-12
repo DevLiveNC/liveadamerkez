@@ -1,6 +1,7 @@
-/* Landing UI v2 overlay — token v2 aliases + panel.css .am-land. PWA head/SW dokunulmaz. */
+/* Landing UI v2 overlay — token v2 aliases + panel.css .am-land. PWA head/SW dokunulmaz.
+   .am-btn / .am-kicker / .am-icon yalnız body.landing; /app panellerine sızmaz. */
 
-.am-btn {
+body.landing .am-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -19,21 +20,21 @@
   cursor: pointer;
   text-decoration: none;
 }
-.am-btn:active { transform: scale(0.98); }
-.am-btn--sm { min-height: 40px; padding: 0 14px; font-size: 14px; }
-.am-btn--primary { background: var(--am-color-primary); color: var(--am-color-on-primary); }
-.am-btn--ghost {
+body.landing .am-btn:active { transform: scale(0.98); }
+body.landing .am-btn--sm { min-height: 40px; padding: 0 14px; font-size: 14px; }
+body.landing .am-btn--primary { background: var(--am-color-primary); color: var(--am-color-on-primary); }
+body.landing .am-btn--ghost {
   background: transparent;
   color: var(--am-color-text);
   border-color: var(--am-color-border);
 }
-.am-btn--soft {
+body.landing .am-btn--soft {
   background: var(--am-color-secondary-soft, #d8f1ef);
   color: var(--am-color-secondary-text, #0a4f4d);
 }
-.am-btn[disabled] { opacity: 0.45; pointer-events: none; }
+body.landing .am-btn[disabled] { opacity: 0.45; pointer-events: none; }
 
-.am-icon-btn {
+body.landing .am-icon-btn {
   width: 40px;
   height: 40px;
   display: inline-flex;
@@ -45,7 +46,7 @@
   border-radius: 12px;
   cursor: pointer;
 }
-.am-icon {
+body.landing .am-icon {
   width: 20px;
   height: 20px;
   stroke: currentColor;
@@ -55,7 +56,7 @@
   stroke-linejoin: round;
 }
 
-.am-kicker {
+body.landing .am-kicker {
   font-size: 12px;
   line-height: 16px;
   font-weight: 600;
@@ -64,6 +65,11 @@
   color: var(--am-color-secondary-text);
 }
 
+body.landing .am-land-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+}
 body.landing header.nav {
   height: auto;
   min-height: 72px;

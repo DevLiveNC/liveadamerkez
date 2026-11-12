@@ -11,6 +11,7 @@ export * from "./catalog.js";
 export * from "./slots.js";
 export * from "./favorites.js";
 export * from "./customer-bookings.js";
+export * from "./notifications.js";
 export { migrate } from "./migrate.js";
 export { seedIsletme } from "./seed-isletme.js";
 export { seedYonetim } from "./seed-yonetim.js";

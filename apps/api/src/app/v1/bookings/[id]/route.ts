@@ -5,10 +5,12 @@ import {
   getBookingForTenant,
   isDatabaseConfigured,
   markReferralFirstBooking,
+  notifyBookingAccount,
   toPublicBooking,
   updateBookingStatus,
 } from "@ada-merkez/db";
-import { apiMessages } from "@ada-merkez/copy";
+import { apiMessages, app } from "@ada-merkez/copy";
+import { formatInNicosia } from "@ada-merkez/shared";
 import { authCors, corsHeaders, json, readJson } from "../../../../lib/http";
 import { requireRole, sessionOr401 } from "../../../../lib/auth";
 import { dispatchServerEvents } from "../../../../lib/analytics";
@@ -46,12 +48,17 @@ export async function GET(
   }
 }
 
-const PatchBody = z.object({
-  status: z.enum(["pending", "confirmed", "cancelled", "no_show"]),
-  eventId: z.string().uuid().optional(),
-  analyticsConsent: z.boolean().optional(),
-  marketingConsent: z.boolean().optional(),
-});
+const PatchBody = z
+  .object({
+    status: z.enum(["pending", "confirmed", "cancelled", "no_show"]).optional(),
+    suggestStartsAt: z.string().refine((value) => !Number.isNaN(Date.parse(value))).optional(),
+    eventId: z.string().uuid().optional(),
+    analyticsConsent: z.boolean().optional(),
+    marketingConsent: z.boolean().optional(),
+  })
+  .refine((value) => Boolean(value.status) !== Boolean(value.suggestStartsAt), {
+    message: "status or suggestStartsAt",
+  });
 
 export async function PATCH(
   request: Request,
@@ -78,7 +85,19 @@ export async function PATCH(
   }
   const { id } = await context.params;
   try {
-    const row = await updateBookingStatus(auth.session.tenantId, id, parsed.data.status);
+    if (parsed.data.suggestStartsAt) {
+      const existing = await getBookingForTenant(auth.session.tenantId, id);
+      const suggested = new Date(parsed.data.suggestStartsAt);
+      await notifyBookingAccount({
+        bookingId: existing.id,
+        type: "slot_suggested",
+        title: app.notifySuggestTitle,
+        body: `${app.notifySuggestBody} ${formatInNicosia(suggested)}`,
+        payload: { suggestedStartsAt: suggested.toISOString() },
+      });
+      return json({ ok: true, booking: toPublicBooking(existing), suggestedStartsAt: suggested.toISOString() }, 200, headers);
+    }
+    const row = await updateBookingStatus(auth.session.tenantId, id, parsed.data.status!);
     const eventId = parsed.data.eventId ?? crypto.randomUUID();
     if (parsed.data.status === "cancelled") {
       await dispatchServerEvents({
@@ -100,6 +119,14 @@ export async function PATCH(
         request,
       });
       if (row?.referredByCode) await markReferralFirstBooking(row.referredByCode);
+      if (row) {
+        await notifyBookingAccount({
+          bookingId: row.id,
+          type: "booking_confirmed",
+          title: app.notifyConfirmedTitle,
+          body: app.notifyConfirmedBody,
+        });
+      }
     }
     return json({ ok: true, booking: row ? toPublicBooking(row) : row }, 200, headers);
   } catch (error: unknown) {
