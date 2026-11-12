@@ -79,7 +79,7 @@ test("PWA app shell is guest-visible and login is role-tabbed", async ({ page })
   const sw = await page.request.get("/app/sw.js");
   expect(sw.ok()).toBeTruthy();
   const swText = await sw.text();
-  expect(swText).toMatch(/ada-merkez-app-v4/);
+  expect(swText).toMatch(/ada-merkez-app-v5/);
   expect(swText).toMatch(/CLEAR_CACHES/);
   expect(swText).toMatch(/offline\.html/);
   const offline = await page.request.get("/app/offline.html");

@@ -68,3 +68,68 @@ test("giriş kabuğu sekmesiz kalır ve sayfa geçişi çalışır", async ({ pa
   await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute("href", "#icerik");
   await page.screenshot({ path: "artifacts/app-giris-mobile-390.png", fullPage: false });
 });
+
+test("keşif → işletme detayı → geri: yığın korunur, alt şerit içeriği örtmez", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem("am_onboarding_v3", "1");
+      sessionStorage.setItem("am_splash_v3", "1");
+    } catch {
+      /* gizli */
+    }
+  });
+
+  await page.goto("/app?category=kuafor");
+  await expect(page.getByRole("heading", { name: "Keşif" })).toBeVisible();
+
+  /* Alt şerit yüzen cam kapsül: içerik son satırı şeridin altında kalmamalı. */
+  const metrics = await page.evaluate(() => {
+    const main = document.getElementById("icerik");
+    const nav = document.querySelector(".am-tabbar");
+    if (!main || !nav) return null;
+    const navBox = nav.getBoundingClientRect();
+    const mainStyle = getComputedStyle(main);
+    return {
+      paddingBottom: Number.parseFloat(mainStyle.paddingBottom),
+      navHeight: navBox.height,
+      navBottom: window.innerHeight - navBox.bottom,
+      mainScrolls: ["auto", "scroll"].includes(mainStyle.overflowY),
+    };
+  });
+  expect(metrics).not.toBeNull();
+  expect(metrics?.mainScrolls).toBe(true);
+  expect(metrics?.navHeight).toBeGreaterThanOrEqual(56);
+  expect(metrics?.paddingBottom).toBeGreaterThanOrEqual((metrics?.navHeight ?? 0));
+  expect(metrics?.navBottom).toBeGreaterThanOrEqual(0);
+
+  await page.getByRole("link", { name: "Örnek Kuaför" }).first().click();
+  await expect(page).toHaveURL(/\/app\/isletmeler\/1/);
+  const back = page.locator("[data-am-back]");
+  await expect(back).toBeVisible();
+  const backBox = await back.boundingBox();
+  expect(backBox?.width ?? 0).toBeGreaterThanOrEqual(44);
+  expect(backBox?.height ?? 0).toBeGreaterThanOrEqual(44);
+
+  await back.click();
+  await expect(page).toHaveURL(/\/app\?category=kuafor$/);
+  await expect(page.getByRole("heading", { name: "Keşif" })).toBeVisible();
+});
+
+test("doğrudan girişte geri düğmesi üst rotaya iner (geçmiş yok)", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem("am_onboarding_v3", "1");
+      sessionStorage.setItem("am_splash_v3", "1");
+    } catch {
+      /* gizli */
+    }
+  });
+
+  await page.goto("/app/isletmeler/2");
+  await expect(page.getByRole("heading", { name: "Örnek Güzellik" })).toBeVisible();
+  await page.locator("[data-am-back]").click();
+  await expect(page).toHaveURL(/\/app$/);
+  await expect(page.getByRole("navigation", { name: "Müşteri gezinme" })).toBeVisible();
+});

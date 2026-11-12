@@ -130,10 +130,15 @@ body.am-app .am-scroll{
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   padding: 0 var(--am-page-pad) 16px;
-  padding-bottom: calc(var(--am-tab-h) + var(--am-home-ind) + 16px);
+  padding-bottom: var(--am-tabbar-space);
+  padding-left: max(var(--am-page-pad), var(--am-safe-left));
+  padding-right: max(var(--am-page-pad), var(--am-safe-right));
 }
 body.am-app .am-scroll--cta{
   padding-bottom: calc(84px + var(--am-home-ind));
+}
+body.am-app .am-scroll--tabbar{
+  padding-bottom: var(--am-tabbar-space);
 }
 body.am-app .am-scroll--plain{ padding-bottom: 32px; }
 
@@ -345,7 +350,11 @@ body.am-app .am-hscroll{
   padding: 2px var(--am-page-pad) 8px;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--am-page-pad);
 }
+body.am-app .am-hscroll > *{ scroll-snap-align: start; }
 body.am-app .am-hscroll::-webkit-scrollbar{ display: none; }
 
 body.am-app .am-biz{
@@ -499,12 +508,19 @@ body.am-app .am-tab{
   align-items: center;
   justify-content: center;
   gap: 2px;
-  min-height: 48px;
+  min-height: 44px;
   color: var(--am-color-text-muted);
   font-size: 11px;
   font-weight: 500;
   line-height: 14px;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform var(--am-dur-fast) var(--am-ease-press);
 }
+body.am-app .am-tab:active{ transform: scale(0.94); }
 body.am-app .am-tab.is-on{ color: var(--am-color-text); font-weight: 600; }
 body.am-app .am-tab.is-on .am-icon{ stroke-width: 2.1; }
 
@@ -512,7 +528,7 @@ body.am-app .am-tab.is-on .am-icon{ stroke-width: 2.1; }
 body.am-app .am-cta-bar{
   position: absolute;
   left: 0; right: 0; bottom: 0;
-  padding: 12px 20px calc(12px + var(--am-home-ind));
+  padding: 12px max(20px, var(--am-safe-right)) calc(12px + var(--am-home-ind)) max(20px, var(--am-safe-left));
   background: rgba(248, 240, 227, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -532,8 +548,8 @@ body.am-app .am-gallery-track{ display: flex; height: 100%; }
 body.am-app .am-gallery-track img{ width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; }
 body.am-app .am-gallery-nav{
   position: absolute; top: 0; left: 0; right: 0;
-  height: calc(var(--am-status-h) + var(--am-header-h));
-  padding: var(--am-status-h) 16px 0;
+  /* Sabit 47px durum çubuğu varsayımı yerine gerçek güvenli alan. */
+  padding: max(12px, calc(var(--am-safe-top) + 8px)) max(16px, var(--am-safe-right)) 12px max(16px, var(--am-safe-left));
   display: flex; align-items: center; justify-content: space-between;
   z-index: 5;
   background: linear-gradient(to bottom, rgba(15,44,68,.35), transparent 80%);
@@ -599,6 +615,7 @@ body.am-app .am-overlay{
   position: absolute; inset: 0;
   background: var(--am-color-surface-overlay);
   z-index: var(--am-z-overlay);
+  overscroll-behavior: contain;
 }
 body.am-app .am-sheet{
   position: absolute;
@@ -608,8 +625,13 @@ body.am-app .am-sheet{
   box-shadow: var(--am-elev-5);
   z-index: var(--am-z-sheet);
   padding: 8px 20px calc(16px + var(--am-home-ind));
+  padding-left: max(20px, var(--am-safe-left));
+  padding-right: max(20px, var(--am-safe-right));
   max-height: 78%;
+  max-height: 78dvh;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
 }

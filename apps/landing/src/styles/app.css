@@ -1,7 +1,9 @@
 /* Ada Merkez PWA kabuğu — jetonlar v1.4.1, --am-status-* */
 
 body.am-app {
+  min-height: 100vh;
   min-height: 100dvh;
+  height: 100vh;
   height: 100dvh;
   overflow: hidden;
   background-color: var(--am-brand-sand);
@@ -9,7 +11,9 @@ body.am-app {
 }
 
 .am-shell {
+  min-height: 100vh;
   min-height: 100dvh;
+  height: 100vh;
   height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -389,12 +393,85 @@ body.am-app .am-sheet {
   display: grid;
   gap: 8px;
 }
+/* ——— Geri düğmesi ———
+   Tüm ikincil ekranlarda aynı cam yüzey; 44×44 dokunma hedefi. */
+body.am-app .am-back {
+  color: var(--am-brand-navy);
+}
+
+body.am-app .am-back .am-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Fotoğraf üstünde okunurluk için daha opak cam. */
+body.am-app .am-back--on-image {
+  background: rgba(255, 248, 240, 0.94);
+  border-color: rgba(255, 255, 255, 0.65);
+  box-shadow: var(--am-elev-2), var(--am-lg-inner-light);
+}
+
+body.am-app .am-top__back {
+  flex: none;
+}
+
+body.am-app .am-top__brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--am-touch);
+}
+
+/* Uygulama içi yasal sayfa kartı */
+body.am-app .am-legal {
+  margin: 12px 0 24px;
+  padding: 18px 16px 20px;
+  display: grid;
+  gap: 10px;
+}
+
+body.am-app .am-legal .notice {
+  margin: 0;
+}
+
+body.am-app .am-legal p {
+  font-size: var(--am-fs-sm);
+  line-height: var(--am-lh-sm);
+}
+
+/* ——— Sheet kapanışı: giriş kadar yumuşak çıkış ——— */
+body.am-app .am-overlay.is-closing {
+  animation: am-overlay-out 180ms var(--am-ease-out) both;
+}
+
+body.am-app .am-sheet.is-closing {
+  animation: am-sheet-out 180ms var(--am-ease-in-out) both;
+}
+
+@keyframes am-overlay-out {
+  to { opacity: 0; }
+}
+
+@keyframes am-sheet-out {
+  to { transform: translateY(100%); }
+}
+
+/* Klavye açıkken sheet görünür alanda kalır (iOS düzen görünümünü küçültmez). */
+body.am-app[data-keyboard="open"] .am-sheet {
+  transform: translateY(calc(-1 * var(--am-keyboard-inset, 0px)));
+  max-height: 62dvh;
+}
+
 @media (prefers-reduced-motion: reduce) {
   body.am-app a.am-biz:active,
   body.am-app .am-card-block:active {
     transform: none;
   }
-  body.am-app .am-sheet {
+  body.am-app .am-sheet,
+  body.am-app .am-sheet.is-closing,
+  body.am-app .am-overlay.is-closing {
     animation: none;
+  }
+  body.am-app[data-keyboard="open"] .am-sheet {
+    transform: none;
   }
 }

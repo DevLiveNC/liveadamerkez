@@ -164,6 +164,13 @@ body.am-app .am-shell.am-ui-shell:has(.am-auth--page),
   gap: 12px;
 }
 
+/* Giriş ekranından çıkış: standalone PWA'da tarayıcı çubuğu yok, bu yüzden
+   tek tip 44×44 cam geri düğmesi panelin sol üstünde durur. */
+.am-auth-panel .am-auth-back {
+  align-self: flex-start;
+  margin: -8px 0 -4px;
+}
+
 .am-auth-panel h2 {
   font-family: var(--am-font-display);
   font-weight: 700;

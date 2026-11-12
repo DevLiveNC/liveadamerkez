@@ -8,10 +8,17 @@
   "start_url": "/app?source=pwa",
   "scope": "/app",
   "display": "standalone",
+  "display_override": [
+    "standalone"
+  ],
   "orientation": "portrait-primary",
-  "theme_color": "#0F2C44",
-  "background_color": "#FFFBF2",
-  "categories": ["lifestyle", "business"],
+  "theme_color": "#F8F0E3",
+  "background_color": "#fffbf2",
+  "categories": [
+    "lifestyle",
+    "business"
+  ],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/app/icons/icon-192.png",
@@ -37,13 +44,23 @@
       "name": "Keşif",
       "short_name": "Keşif",
       "url": "/app",
-      "icons": [{ "src": "/app/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/app/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Randevularım",
       "short_name": "Randevu",
       "url": "/app/randevular",
-      "icons": [{ "src": "/app/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/app/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }

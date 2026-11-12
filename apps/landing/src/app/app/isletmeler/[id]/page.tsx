@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { app, examples } from "@ada-merkez/copy";
 import { loginUrl } from "@ada-merkez/shared";
 import { Badge, UiIcon } from "@ada-merkez/ui";
+import { BackButton } from "../../../../components/app/BackButton";
 import { BusinessGallery } from "../../../../components/app/BusinessGallery";
 import { FavoriteToggle } from "../../../../components/app/FavoriteToggle";
 import { ReservationFlow } from "../../../../components/app/ReservationFlow";
@@ -108,9 +109,7 @@ export default async function IsletmeDetayPage({
         slides={slides}
         nav={
           <div className="am-gallery-nav">
-            <Link className="am-icon-btn am-icon-btn--light" href="/app" aria-label={app.back}>
-              <UiIcon name="back" />
-            </Link>
+            <BackButton label={app.back} className="am-back--on-image" />
             <div className="am-header-side">
               {session && UUID.test(id) ? (
                 <FavoriteToggle businessId={id} initial={favorited} icon />

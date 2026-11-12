@@ -13,6 +13,7 @@ import {
   type SessionRole,
 } from "@ada-merkez/shared";
 import { Logo } from "../Logo";
+import { BackButton } from "./BackButton";
 import { apiBase } from "../../lib/api";
 
 const ROLES: { id: SessionRole; label: string }[] = [
@@ -227,6 +228,8 @@ export function GirisForm({
             else void sendCode();
           }}
         >
+          <BackButton fallback="/app" label={app.back} className="am-auth-back" />
+
           <div className="am-seg" role="tablist" aria-label={app.roleTabs}>
             {ROLES.map((item) => (
               <button

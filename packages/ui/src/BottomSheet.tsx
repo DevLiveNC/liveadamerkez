@@ -15,6 +15,25 @@ const FOCUSABLE = [
   "\u005Btabindex]:not(\u005Btabindex='-1'])",
 ].join(",");
 
+/** Kapanış animasyonu süresi (CSS ile aynı). */
+const CLOSE_MS = 180;
+
+function reducedMotion(): boolean {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/** Sayfanın kaydırma kabı: sheet açıkken arka plan kaymaz. */
+function scrollHost(): HTMLElement | null {
+  if (typeof document === "undefined") return null;
+  return (
+    document.querySelector<HTMLElement>("#icerik") ??
+    document.querySelector<HTMLElement>("#isletme-icerik") ??
+    document.querySelector<HTMLElement>("#yonetim-icerik") ??
+    document.querySelector<HTMLElement>(".am-ui-main")
+  );
+}
+
 /** Odaklanabilir öğeler. Görünür olmayanlar (display:none, hidden,
  *  aria-hidden) tuzağa alınmaz; aksi halde Tab "kayboluyor" gibi hissettirir. */
 
@@ -49,10 +68,30 @@ export function BottomSheet({
   const generatedId = useId();
   const headingId = titleId ?? generatedId;
   const [mounted, setMounted] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const wasOpen = useRef(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  /* Kapanış animasyonu: içerik hemen kaybolmaz, yumuşak kapanır. */
+  useEffect(() => {
+    if (open) {
+      wasOpen.current = true;
+      setClosing(false);
+      return;
+    }
+    if (!wasOpen.current) return;
+    wasOpen.current = false;
+    if (reducedMotion()) {
+      setClosing(false);
+      return;
+    }
+    setClosing(true);
+    const timer = window.setTimeout(() => setClosing(false), CLOSE_MS);
+    return () => window.clearTimeout(timer);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -92,19 +131,34 @@ export function BottomSheet({
     }
 
     document.addEventListener("keydown", onKey);
-    const prevOverflow = document.body.style.overflow;
+    /* Gövde yerine gerçek kaydırma kabı kilitlenir: body zaten kilitli,
+       asıl kayan içerik arkada kaymasın. */
+    const host = scrollHost();
+    const hostOverflow = host?.style.overflowY ?? "";
+    const hostTop = host?.scrollTop ?? 0;
+    if (host) host.style.overflowY = "hidden";
+    const prevBodyOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prevOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+      if (host) {
+        host.style.overflowY = hostOverflow;
+        host.scrollTop = hostTop;
+      }
       lastFocus.current?.focus();
     };
   }, [open, onClose]);
 
-  if (!open || !mounted) return null;
+  if (!open && !closing) return null;
+  if (!mounted) return null;
 
   const node = (
-    <div className="am-overlay am-sheet-root" role="presentation">
+    <div
+      className={cx("am-overlay", "am-sheet-root", closing && "is-closing")}
+      role="presentation"
+      data-state={open ? "open" : "closed"}
+    >
       <button
         type="button"
         className="am-sheet-scrim"
@@ -115,7 +169,7 @@ export function BottomSheet({
       />
       <div
         ref={panelRef}
-        className={cx("am-sheet", className)}
+        className={cx("am-sheet", closing && "is-closing", className)}
         role="dialog"
         aria-modal="true"
         aria-labelledby={headingId}

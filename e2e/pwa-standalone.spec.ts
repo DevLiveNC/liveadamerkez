@@ -109,7 +109,7 @@ test("app manifest is installable and scope covers /app root", async ({ page }) 
 
   const sw = await page.request.get("/app/sw.js");
   expect(sw.headers()["service-worker-allowed"] ?? "").toBe("/app");
-  expect(await sw.text()).toMatch(/ada-merkez-app-v4/);
+  expect(await sw.text()).toMatch(/ada-merkez-app-v5/);
 
   const client = await page.context().newCDPSession(page);
   const appManifest = (await client.send("Page.getAppManifest")) as {
