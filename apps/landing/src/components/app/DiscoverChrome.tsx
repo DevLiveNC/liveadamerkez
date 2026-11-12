@@ -7,6 +7,7 @@ import { app } from "@ada-merkez/copy";
 import { AppHeader, UiIcon } from "@ada-merkez/ui";
 import { ICON_SRC } from "../Logo";
 import { cityName } from "../../lib/pilot-cities";
+import { BackButton } from "./BackButton";
 import { LocationSheet } from "./LocationSheet";
 
 /** Keşif başlığı — konum seçici cam kapsül, sağda bildirim ve logo. */
@@ -56,7 +57,8 @@ export function DiscoverHeader({ city = "" }: { city?: string }) {
   );
 }
 
-/** Arama sonuç başlığı — işlevsiz süs düğmesi yok, yalnız geri ve başlık. */
+/** Arama sonuç başlığı — işlevsiz süs düğmesi yok, yalnız geri ve başlık.
+ *  Geri, sorguyu bırakıp keşfe döner; geçmiş varsa tarayıcı geçmişini kullanır. */
 export function SearchHeader() {
-  return <AppHeader title={app.searchTitle} back={{ href: "/app", label: app.back }} />;
+  return <AppHeader title={app.searchTitle} leading={<BackButton label={app.back} fallback="/app" />} />;
 }

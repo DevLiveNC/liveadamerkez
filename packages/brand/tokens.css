@@ -233,11 +233,20 @@
   --am-input-h: 48px;
   --am-chip-h: 40px;
   --am-tab-h: 56px;
+  --am-tabbar-inset: 6px;
   --am-header-h: 56px;
   --am-status-h: 47px;
+  /* Ev göstergesi / gestalt çubuğu payı. iPhone'da gerçek güvenli alan (34px)
+     kullanılır; diğer cihazlarda tasarımdaki 20px optik pay korunur.
+     Böylece cihaza özel sabit piksel varsayımı kalmaz. */
   --am-home-ind: 20px;
+  --am-home-ind: max(20px, env(safe-area-inset-bottom, 0px));
   --am-safe-top: env(safe-area-inset-top, 0px);
   --am-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --am-safe-left: env(safe-area-inset-left, 0px);
+  --am-safe-right: env(safe-area-inset-right, 0px);
+  /* Alt gezinme şeridinin içerikten çaldığı toplam yükseklik. */
+  --am-tabbar-space: calc(var(--am-tab-h) + var(--am-home-ind) + var(--am-tabbar-inset) + 16px);
 
   /* Focus */
   --am-focus-ring: 0 0 0 3px #ffffff, 0 0 0 5px #e4572e;
@@ -318,9 +327,6 @@
   --am-space-20: 80px;
   --am-space-24: 96px;
   --am-radius-icon: 22%;
-
-  --am-safe-right: env(safe-area-inset-right, 0px);
-  --am-safe-left: env(safe-area-inset-left, 0px);
 
   --am-shell-header-height: var(--am-header-h);
   --am-shell-tabbar-height: var(--am-tab-h);

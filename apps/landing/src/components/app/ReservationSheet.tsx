@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { app, ui } from "@ada-merkez/copy";
 import { loginUrl } from "@ada-merkez/shared";
 import { Badge, BottomSheet, Button } from "@ada-merkez/ui";
+import { setNavDirection } from "../../lib/app-nav";
 import type { NicosiaDay } from "../../lib/nicosia-days";
 
 export type SheetService = { id: string; name: string; durationMinutes?: number };
@@ -75,6 +76,7 @@ export function ReservationSheet({
         setError(body?.message ?? app.authUnavailable);
         return;
       }
+      setNavDirection("forward");
       router.push(`/app/randevular/${body.booking.id}`);
       router.refresh();
     } finally {

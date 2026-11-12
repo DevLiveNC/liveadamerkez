@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { isletmeApp, site } from "@ada-merkez/copy";
+import { app as appCopy, isletmeApp, site } from "@ada-merkez/copy";
 import { DekorNavCorner } from "@ada-merkez/ui";
+import { BackButton } from "../app/BackButton";
+import { parentOf, setNavDirection } from "../../lib/app-nav";
 import { ICON_SRC } from "../Logo";
 import { clearAppCaches } from "../../lib/clear-app-caches";
 import { fetchMe, type BusinessMe } from "../../lib/isletme-api";
@@ -81,6 +83,8 @@ export function IsletmeShell({
   const pending = me?.business?.status === "pending";
   const who = me?.business?.name || session.name || isletmeApp.registerTitle;
   const active = LINKS.find((link) => isOn(pathname ?? "", link.href));
+  /* Sekmelerin dışındaki panel ekranları (ör. boş saatler) geri düğmesi alır. */
+  const nested = !active;
 
   return (
     <div className="isletme-app am-dash">
@@ -121,6 +125,9 @@ export function IsletmeShell({
       <main id="isletme-icerik" className="am-main">
         <header className="am-topbar">
           <div className="am-work-title-row">
+            {nested ? (
+              <BackButton label={appCopy.back} fallback={parentOf(pathname ?? "/app/isletme")} />
+            ) : null}
             <h1>{active?.label ?? isletmeApp.loginTitle}</h1>
           </div>
           <div className="am-topbar-meta">
@@ -151,6 +158,7 @@ export function IsletmeShell({
             key={link.href}
             className={`am-tab${isOn(pathname ?? "", link.href) ? " is-on" : ""}`}
             href={link.href}
+            onClick={() => setNavDirection("tab")}
           >
             <NavIcon name={link.icon} large />
             <span>{link.short}</span>

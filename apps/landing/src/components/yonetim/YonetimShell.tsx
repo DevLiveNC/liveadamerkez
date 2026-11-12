@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { site, yonetimApp } from "@ada-merkez/copy";
+import { app as appCopy, site, yonetimApp } from "@ada-merkez/copy";
 import { DekorNavCorner } from "@ada-merkez/ui";
+import { BackButton } from "../app/BackButton";
+import { parentOf, setNavDirection } from "../../lib/app-nav";
 import { ICON_SRC } from "../Logo";
 import type { AppSession } from "../../lib/app-auth";
 import { clearAppCaches } from "../../lib/clear-app-caches";
@@ -61,6 +63,9 @@ export function YonetimShell({
   const router = useRouter();
   const active = LINKS.find((link) => isOn(pathname, link.href));
   const title = active?.label ?? EXTRA_TITLES[pathname] ?? yonetimApp.loginTitle;
+  /* Sekme dışı yönetim ekranları (kiracılar, rezervasyonlar, içerik, denetim)
+     üst ekrana dönen bir geri düğmesi taşır. */
+  const nested = !active;
 
   async function logout() {
     await fetch("/app/api/oturum", { method: "DELETE", credentials: "same-origin" });
@@ -108,6 +113,7 @@ export function YonetimShell({
       <main id="yonetim-icerik" className="am-main">
         <header className="am-topbar">
           <div className="am-work-title-row">
+            {nested ? <BackButton label={appCopy.back} fallback={parentOf(pathname)} /> : null}
             <h1>{title}</h1>
           </div>
           <div className="am-topbar-meta">
@@ -122,6 +128,7 @@ export function YonetimShell({
             key={link.href}
             className={`am-tab${isOn(pathname, link.href) ? " is-on" : ""}`}
             href={link.href}
+            onClick={() => setNavDirection("tab")}
           >
             <NavIcon name={link.icon} large />
             <span>{link.short}</span>

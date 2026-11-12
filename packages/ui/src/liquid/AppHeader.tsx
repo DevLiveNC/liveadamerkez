@@ -10,6 +10,7 @@ export function AppHeader({
   eyebrow,
   titleId,
   back,
+  leading,
   side,
   sticky = true,
   className,
@@ -18,6 +19,8 @@ export function AppHeader({
   title: ReactNode;
   eyebrow?: ReactNode;
   titleId?: string;
+  /** Geri/başlık öncesi yuva: uygulama kendi geri düğmesini verir. */
+  leading?: ReactNode;
   back?: { href: string; label: string; icon?: ReactNode };
   side?: ReactNode;
   sticky?: boolean;
@@ -27,11 +30,12 @@ export function AppHeader({
   const Link = linkTag(link);
   return (
     <header className={cx("am-header", "am-header--blur", "atla-header", !sticky && "atla-header--static", className)}>
-      {back ? (
-        <Link className="atla-glass-btn" href={back.href} aria-label={back.label}>
-          {back.icon ?? <UiIcon name="back" />}
-        </Link>
-      ) : null}
+      {leading ??
+        (back ? (
+          <Link className="atla-glass-btn" href={back.href} aria-label={back.label}>
+            {back.icon ?? <UiIcon name="back" />}
+          </Link>
+        ) : null)}
       <div className="atla-header__text">
         {eyebrow ? <p className="atla-header__eyebrow">{eyebrow}</p> : null}
         <h1 className="am-header-title atla-header__title" id={titleId}>

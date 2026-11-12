@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { app, emptyState } from "@ada-merkez/copy";
-import { AppHeader, Badge, UiIcon } from "@ada-merkez/ui";
+import { AppHeader, Badge } from "@ada-merkez/ui";
 import { formatInNicosia, utcToNicosiaParts } from "@ada-merkez/shared";
-import { AppLink } from "../../../../../components/app/AppLink";
+import { BackButton } from "../../../../../components/app/BackButton";
 import { requireRole } from "../../../../../lib/app-auth";
 import { serverApi } from "../../../../../lib/app-api";
 
@@ -30,8 +30,7 @@ export default async function TalepIletildiPage({ params }: { params: Promise<{ 
     <main id="icerik" className="am-main am-ui-main">
       <AppHeader
         title={app.bookingSentTitle}
-        back={{ href: "/app", label: app.bookingBackDiscover, icon: <UiIcon name="close" /> }}
-        link={AppLink}
+        leading={<BackButton label={app.bookingBackDiscover} fallback="/app" />}
       />
       <div className="am-success atla-glass atla-glass--mint" style={{ padding: "20px 16px" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}

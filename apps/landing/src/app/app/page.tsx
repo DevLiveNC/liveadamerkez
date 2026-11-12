@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { app, events } from "@ada-merkez/copy";
-import { Badge, CategoryChip, EventCard, SearchInput, UiIcon } from "@ada-merkez/ui";
+import { Badge, CategoryChip, EventCard, UiIcon } from "@ada-merkez/ui";
 import { BizCard, stockSrc } from "../../components/app/BizCard";
 import { AppLink } from "../../components/app/AppLink";
+import { AppSearch } from "../../components/app/AppSearch";
 import { DiscoverHeader, SearchHeader } from "../../components/app/DiscoverChrome";
 import { DiscoverSkeleton } from "../../components/app/DiscoverSkeleton";
 import { EmptyState } from "../../components/app/EmptyState";
@@ -65,7 +66,7 @@ async function HomeInner({
           </div>
         </div>
       )}
-      <SearchInput
+      <AppSearch
         action="/app"
         defaultValue={q}
         placeholder={app.searchPlaceholder}

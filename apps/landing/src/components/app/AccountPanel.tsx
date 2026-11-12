@@ -82,12 +82,14 @@ export function AccountPanel({ name, phone }: { name: string; phone: string }) {
         </div>
       </div>
       <div className="am-card-block">
-        <div className="am-row am-row--static">
+        <Link className="am-row" href="/app/randevular#bildirimler">
           <span className="am-row-body">
             <h3>{t.notifications}</h3>
           </span>
-          <span className="am-muted">{t.soon}</span>
-        </div>
+          <span className="am-row-chevron" aria-hidden="true">
+            ›
+          </span>
+        </Link>
         <button
           className="am-row am-row--button"
           type="button"
@@ -110,9 +112,12 @@ export function AccountPanel({ name, phone }: { name: string; phone: string }) {
         </div>
       </div>
       <div className="am-card-block">
-        <Link className="am-row" href="/yasal/aydinlatma">
+        <Link className="am-row" href="/app/yasal/aydinlatma">
           <span className="am-row-body">
             <h3>{t.legal}</h3>
+          </span>
+          <span className="am-row-chevron" aria-hidden="true">
+            ›
           </span>
         </Link>
       </div>

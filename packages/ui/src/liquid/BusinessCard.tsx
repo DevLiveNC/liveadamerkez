@@ -45,7 +45,14 @@ export function BusinessCard({
         <Link href={href} aria-label={name} tabIndex={-1}>
           {imageSrc ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={imageSrc} alt={imageAlt} width={456} height={296} />
+            <img
+              src={imageSrc}
+              alt={imageAlt}
+              width={456}
+              height={296}
+              loading="lazy"
+              decoding="async"
+            />
           ) : (
             <span className="am-biz-av" aria-hidden="true">
               {mark}

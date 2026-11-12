@@ -15,12 +15,15 @@ body.am-app .visually-hidden {
   border: 0;
 }
 
-/* Canlı PWA kabuğu: tasarım .am-phone çerçevesinin 100dvh karşılığı */
+/* Canlı PWA kabuğu: tasarım .am-phone çerçevesinin 100dvh karşılığı.
+   yükseklik önce vh, sonra dvh: dvh desteklemeyen tarayıcıda da kabuk taşmaz. */
 body.am-app .am-shell.am-ui-shell,
 body.am-app .am-ui-shell {
   width: 100%;
   max-width: var(--am-app-width);
+  min-height: 100vh;
   min-height: 100dvh;
+  height: 100vh;
   height: 100dvh;
   margin: 0 auto;
   background: var(--am-color-background);
@@ -30,6 +33,8 @@ body.am-app .am-ui-shell {
   display: flex;
   flex-direction: column;
   z-index: 1;
+  /* Yatayda taşan süslemeler sayfayı kaydırmasın. */
+  overflow-x: clip;
 }
 
 @media (min-width: 860px) {
@@ -55,13 +60,22 @@ body.am-app .am-ui-main .am-header {
   background: var(--am-color-background);
 }
 
+/* Yüzen cam kapsül: kabuk içinde mutlak konumlanır (tasarım) ve içerik
+   kendi alt payını --am-tabbar-space ile ayırır. Böylece iki gezinme
+   öğesi çakışmaz ve ev göstergesi payı iki kez sayılmaz. */
+body.am-app .am-ui-shell .am-tabbar,
 body.am-app .am-tabbar {
-  position: relative;
-  left: auto;
-  right: auto;
-  bottom: auto;
+  position: absolute;
+  left: max(10px, var(--am-safe-left));
+  right: max(10px, var(--am-safe-right));
+  bottom: var(--am-tabbar-inset);
+  height: calc(var(--am-tab-h) + var(--am-home-ind));
   flex: none;
-  padding-bottom: calc(var(--am-home-ind) + var(--am-safe-bottom));
+  padding: 6px 6px calc(var(--am-home-ind) + 2px);
+  padding-left: max(6px, var(--am-safe-left));
+  padding-right: max(6px, var(--am-safe-right));
+  transition: transform var(--am-dur-base) var(--am-ease-out),
+    opacity var(--am-dur-base) var(--am-ease-out);
 }
 
 body.am-app .am-tab.is-on,
@@ -79,11 +93,34 @@ body.am-app .am-scroll {
   overflow-x: hidden;
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
 }
 
 body.am-app .am-ui-main {
-  padding: 0 var(--am-page-pad) 16px;
+  padding: 0 var(--am-page-pad) calc(16px + var(--am-safe-bottom));
+  padding-left: max(var(--am-page-pad), var(--am-safe-left));
+  padding-right: max(var(--am-page-pad), var(--am-safe-right));
+  /* Odaklanan alan klavye açıkken görünür kalsın. */
+  scroll-padding-top: calc(var(--am-header-h) + 12px);
+  scroll-padding-bottom: calc(var(--am-header-h) + 24px);
+}
+
+/* Alt gezinme görünürken içerik şeridin altında kalmaz. */
+body.am-app .am-ui-main.am-has-tabbar {
+  padding-bottom: calc(var(--am-tabbar-space));
+  scroll-padding-bottom: calc(var(--am-tabbar-space) + 24px);
+}
+
+/* Klavye açıkken yüzen şerit gizlenir: iOS'ta görsel görünüm küçülür,
+   şerit girdinin üstüne binmesin. */
+body.am-app[data-keyboard="open"] .am-tabbar {
+  transform: translateY(140%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.am-app[data-keyboard="open"] .am-ui-main {
+  padding-bottom: 24px;
+  scroll-padding-bottom: 24px;
 }
 
 body.am-app .am-ui-main .am-scroll {
@@ -212,11 +249,36 @@ body.am-app .am-ui-ptr-indicator {
   flex: none;
 }
 
+/* ——— Sayfa geçişleri ———
+   Yön bilgisi AppChrome'dan gelir: ileri = sağdan hafif kayma, geri = soldan,
+   sekme = yalnız yumuşak belirme. Yalnız opacity/transform: düzen kaymaz. */
 body.am-app .am-ui-page {
-  animation: am-ui-page-in var(--am-dur-medium) var(--am-ease-in-out);
+  animation: none;
 }
 
-@keyframes am-ui-page-in {
+body.am-app .am-ui-page[data-enter] {
+  will-change: opacity, transform;
+}
+
+body.am-app .am-ui-page[data-enter="forward"] {
+  animation: am-page-in-forward var(--am-dur-base) var(--am-ease-out) both;
+}
+body.am-app .am-ui-page[data-enter="back"] {
+  animation: am-page-in-back var(--am-dur-base) var(--am-ease-out) both;
+}
+body.am-app .am-ui-page[data-enter="tab"] {
+  animation: am-page-in-tab var(--am-dur-fast) var(--am-ease-out) both;
+}
+
+@keyframes am-page-in-forward {
+  from { opacity: 0; transform: translate3d(14px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes am-page-in-back {
+  from { opacity: 0; transform: translate3d(-14px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes am-page-in-tab {
   from { opacity: 0; }
   to { opacity: 1; }
 }
@@ -265,11 +327,52 @@ body.am-app .am-ui-chart figcaption {
 }
 body.am-app .am-ui-chart svg { width: 100%; height: auto; overflow: visible; }
 
+/* ——— Dokunma ve kaydırma hijyeni ——— */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body.am-app {
+  -webkit-tap-highlight-color: transparent;
+  /* Yatay taşma kabukta kırpılır; jest ekseni kısıtlanmaz ki yatay
+     karuseller ve tarih şeritleri doğal kaydırılabilsin. */
+  overscroll-behavior: none;
+}
+
+/* Düğme/bağlantı: çift dokunma yakınlaştırması yok, seçim istemsiz başlamaz.
+   Normal metin seçimi ve iki parmak yakınlaştırma korunur. */
+body.am-app a,
+body.am-app button,
+body.am-app [role="button"],
+body.am-app [role="tab"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body.am-app .am-tab,
+body.am-app .am-tabbar,
+body.am-app .am-header,
+body.am-app .atla-glass-btn,
+body.am-app .am-btn {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+body.am-app .am-btn:disabled,
+body.am-app .am-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   body.am-app .am-ui-page,
+  body.am-app .am-ui-page[data-enter],
   body.am-app .am-sheet,
   body.am-app .am-overlay,
-  body.am-app .am-btn:active {
+  body.am-app .am-btn:active,
+  body.am-app .am-tab:active {
     animation: none !important;
     transform: none !important;
   }

@@ -22,7 +22,14 @@ export function EventCard({
       <div className="am-event-photo">
         {imageSrc ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageSrc} alt={imageAlt} width={504} height={264} />
+          <img
+            src={imageSrc}
+            alt={imageAlt}
+            width={504}
+            height={264}
+            loading="lazy"
+            decoding="async"
+          />
         ) : (
           <span className="am-event-photo__mark" aria-hidden="true" />
         )}

@@ -1,4 +1,5 @@
-const CACHE = "ada-merkez-app-v4";
+const CACHE = "ada-merkez-app-v5";
+const STATIC_CACHE = "ada-merkez-app-static-v1";
 const OFFLINE = "/app/offline.html";
 const PRECACHE = [
   OFFLINE,
@@ -23,8 +24,14 @@ function isPublicStatic(url) {
     path.startsWith("/app/icons/") ||
     path.startsWith("/app/splash/") ||
     path.startsWith("/app/bos-durum/") ||
+    path.startsWith("/app/v3/") ||
     path.startsWith("/app/ana-ekrana-ekle/")
   );
+}
+
+/** Next'in hash'li derleme çıktısı: içerik değişmez, güvenle önbelleklenir. */
+function isImmutableAsset(url) {
+  return url.pathname.startsWith("/_next/static/");
 }
 
 function isHtmlOrRsc(request, url) {
@@ -50,7 +57,13 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
       const keys = await caches.keys();
-      await Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)));
+      /* Yalnız kendi (uygulama) sürümlerini temizle: landing SW'sinin
+         önbelleğini silmek pazarlama sitesinin çevrimdışı desteğini bozardı. */
+      await Promise.all(
+        keys
+          .filter((key) => key.startsWith("ada-merkez-app-") && key !== CACHE && key !== STATIC_CACHE)
+          .map((key) => caches.delete(key)),
+      );
       await self.clients.claim();
       await precachePublicShell();
     })(),
@@ -59,10 +72,15 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("message", (event) => {
   const type = event.data && event.data.type;
+  if (type === "SKIP_WAITING") {
+    event.waitUntil(self.skipWaiting());
+    return;
+  }
   if (type !== "CLEAR_CACHES") return;
   const port = event.ports && event.ports[0];
   event.waitUntil(
     (async () => {
+      /* Çıkışta tüm önbellekler silinir: kişisel veri kalmaz. */
       const keys = await caches.keys();
       await Promise.all(keys.map((key) => caches.delete(key)));
       await precachePublicShell();
@@ -77,8 +95,27 @@ self.addEventListener("fetch", (event) => {
   if (!event.clientId && request.mode !== "navigate") return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+  if (url.pathname === "/app/sw.js" || url.pathname === "/sw.js") return;
+
+  /* Derleme çıktısı: önce önbellek, arka planda tazeleme (hızlı açılış). */
+  if (isImmutableAsset(url)) {
+    event.respondWith(
+      caches.open(STATIC_CACHE).then(async (cache) => {
+        const cached = await cache.match(request);
+        if (cached) return cached;
+        try {
+          const response = await fetch(request);
+          if (response.ok) cache.put(request, response.clone());
+          return response;
+        } catch {
+          return cached ?? Response.error();
+        }
+      }),
+    );
+    return;
+  }
+
   if (!isAppPath(url.pathname)) return;
-  if (url.pathname === "/app/sw.js") return;
 
   if (url.pathname.startsWith("/app/api/") || isHtmlOrRsc(request, url)) {
     event.respondWith(

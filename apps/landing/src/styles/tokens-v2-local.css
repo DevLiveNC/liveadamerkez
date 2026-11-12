@@ -55,7 +55,7 @@
   --am-input-h: 48px;
   --am-chip-h: 40px;
   --am-tab-h: 56px;
-  --am-home-ind: 20px;
+  --am-home-ind: max(20px, env(safe-area-inset-bottom, 0px));
   --am-z-tab: 50;
 }
 

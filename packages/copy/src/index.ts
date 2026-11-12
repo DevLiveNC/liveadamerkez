@@ -453,6 +453,8 @@ export const app = {
   notifyConfirmedBody: "talebini onayladı.",
   notifySuggestTitle: "Başka saat önerildi",
   notifySuggestBody: "başka bir saat önerdi.",
+  pageNotFound: "Bu ekran bulunamadı.",
+  pageNotFoundBody: "Bağlantı eski olabilir. Keşfe dönüp yeniden arayabilirsin.",
 } as const;
 
 export const ui = {

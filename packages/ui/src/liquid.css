@@ -108,14 +108,21 @@ body.am-app .am-shell::before {
 .atla-glass--r-sm { border-radius: var(--am-lg-r-sm); }
 .atla-glass--r-xl { border-radius: var(--am-lg-r-xl); }
 
-/* Cam üstü düğme (geri, kalp, kapat) */
+/* Cam üstü düğme (geri, kalp, kapat) — 44×44 dokunma hedefi (Apple HIG) */
 .atla-glass-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: var(--am-touch, 44px);
+  height: var(--am-touch, 44px);
+  min-width: var(--am-touch, 44px);
+  min-height: var(--am-touch, 44px);
   flex: none;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
   border: 1px solid var(--am-lg-glass-border);
   border-radius: var(--am-lg-r-pill);
   background: var(--am-lg-glass-bg-strong);
@@ -297,7 +304,8 @@ body.am-app .am-search:focus-within {
 
 body.am-app .am-search-input {
   color: var(--am-lg-navy);
-  font-size: 15px;
+  /* 16px altındaki alanlarda iOS Safari sayfayı otomatik yakınlaştırır. */
+  font-size: 16px;
 }
 
 body.am-app .am-search-input::placeholder { color: var(--am-lg-navy-mute); opacity: 0.8; }

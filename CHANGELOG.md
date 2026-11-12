@@ -2,6 +2,39 @@
 
 Tüm önemli değişiklikler bu dosyada tutulur. Biçim: Keep a Changelog; sürüm: anlamsal sürümleme.
 
+## [iOS PWA cila 2026-11-12] — ios-pwa-native-polish
+
+`/app` altındaki müşteri uygulaması, iPhone'da "Ana Ekrana Ekle" ile açıldığında
+native his verecek şekilde elden geçirildi. Kapsam yalnızca ön yüz: API sözleşmeleri,
+veritabanı şeması, kimlik doğrulama ve iş kuralları değişmedi; mevcut görsel kimlik
+(fildişi/şeftali/mercan/lacivert, Liquid Glass, Kabuki, splash/onboarding) korundu.
+
+### Eklendi
+
+- `lib/app-nav.ts`: oturum içi gezinme yığını (`sessionStorage`, `am_nav_stack_v1`),
+  `resolveBack` / `parentOf` karar motoru, rota bazlı kaydırma hafızası, yön ipuçları.
+- `AppChrome` içi geri düğmesi (`BackButton`, 44×44 cam), sayfa geçiş animasyonu
+  (`PageTransition`), kaydırma hafızası (`AppScrollMemory`), klavye gözlemcisi
+  (`useKeyboardInset`), istemci tarafı arama (`AppSearch`).
+- `/app` hata sınırı (`error.tsx`), iyileştirilmiş 404 (main/div ayrımı, gerçek metin),
+  `/app/yasal/[tur]` ekranı.
+- Alt menüde iOS davranışı: etkin sekmede köke dön, alt ekranda köke çık.
+- Güvenli alan (Dynamic Island/çentik, home indicator), `100dvh`, klavye açıkken
+  sekme şeridini gizleme, yatay taşma kırpma, yatay karusel ve tarih şeridi desteği.
+
+### Düzeltildi
+
+- `AppChrome`: `am-tabbar am-tabs am-tabbar` çift sınıfı; `/app/isletmeler/[id]`
+  ekranında atlama bağlantısının (`#icerik`) var olmayan öğeyi hedeflemesi.
+- Panel CSS'inde yinelenen sabit sekme geometrisi ortak tokenlara bağlandı.
+- `SearchInput`/`AppSearch`: arama formunun tam sayfa yenilemesi yapması.
+- `EventCard` görselleri tembel yükleme; yeniden render kaynaklı kaydırma sıçramaları.
+
+### Not
+
+- Uçtan uca testler (Playwright) bu ortamda tarayıcı olmadığı için çalıştırılamadı;
+  gerçek iPhone'da standalone doğrulama yapılmadı.
+
 ## [Entegrasyon 2026-11-12] — repository-unification
 
 Tek entegrasyon dalında birleştirilen müşteri ekranları, landing v3, tasarım altyapısı ve

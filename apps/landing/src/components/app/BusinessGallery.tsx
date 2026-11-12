@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode, type UIEvent } from "react";
+import { useRef, useState, type ReactNode, type UIEvent } from "react";
 import { UiIcon } from "@ada-merkez/ui";
 
 export function BusinessGallery({
@@ -11,12 +11,17 @@ export function BusinessGallery({
   nav: ReactNode;
 }) {
   const [index, setIndex] = useState(0);
+  const frame = useRef(0);
 
-
+  /* Kaydırma sırasında her olayda render yok: kare başına tek okuma. */
   function onScroll(event: UIEvent<HTMLDivElement>) {
     const el = event.currentTarget;
-    if (!el.clientWidth) return;
-    setIndex(Math.round(el.scrollLeft / el.clientWidth));
+    if (!el.clientWidth || frame.current) return;
+    frame.current = window.requestAnimationFrame(() => {
+      frame.current = 0;
+      const next = Math.round(el.scrollLeft / el.clientWidth);
+      setIndex((current) => (current === next ? current : next));
+    });
   }
 
   if (!slides.length) {
@@ -38,7 +43,14 @@ export function BusinessGallery({
         {slides.map((src, slideIndex) => (
           <div className="am-gallery-slide" key={`${src}-${slideIndex}`}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={src} alt="" width={780} height={780} />
+            <img
+              src={src}
+              alt=""
+              width={780}
+              height={780}
+              loading={slideIndex === 0 ? "eager" : "lazy"}
+              decoding="async"
+            />
           </div>
         ))}
       </div>

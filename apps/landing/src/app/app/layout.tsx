@@ -14,8 +14,12 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: site.name,
+    /* Açık tema: koyu ikonlu durum çubuğu. `black-translucent` beyaz
+       ikon isterdi; fildişi zeminde okunmazdı. */
     statusBarStyle: "default",
   },
+  /* Metin içindeki telefon/adres otomatik bağlantıya dönüşmesin: native his. */
+  formatDetection: { telephone: false, date: false, address: false, email: false },
   icons: {
     icon: [
       { url: "/app/icons/favicon.svg", type: "image/svg+xml" },
@@ -28,9 +32,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0F2C44",
+  /* Durum çubuğu / adres çubuğu uygulamanın fildişi zeminiyle aynı renkte:
+     standalone açılışta "site" hissi değil "uygulama" hissi. */
+  themeColor: "#F8F0E3",
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
+  /* Çentik / Dynamic Island alanı kabuğa bırakılır; env(safe-area-*) çalışır. */
   viewportFit: "cover",
 };
 
