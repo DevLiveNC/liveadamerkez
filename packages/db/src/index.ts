@@ -15,3 +15,5 @@ export * from "./notifications.js";
 export { migrate } from "./migrate.js";
 export { seedIsletme } from "./seed-isletme.js";
 export { seedYonetim } from "./seed-yonetim.js";
+
+export { provisionTestAccount } from "./test-login.js";

@@ -53,6 +53,16 @@ export function authPageUrl(options: {
   return query ? `${APP_LOGIN}?${query}` : APP_LOGIN;
 }
 
+/**
+ * Rolün giriş sonrası açılış ekranı.
+ * Müşteri keşifte, işletme kendi panelinde, yönetici yönetim panelinde başlar.
+ */
+export function roleHomePath(role: SessionRole): string {
+  if (role === "business") return "/app/isletme";
+  if (role === "admin") return "/app/yonetim";
+  return APP_HOME;
+}
+
 export function roleToQuery(role: SessionRole): string {
   return ROLE_QUERY[role];
 }

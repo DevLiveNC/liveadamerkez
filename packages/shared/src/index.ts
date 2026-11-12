@@ -10,6 +10,7 @@ export * from "./referral.js";
 export * from "./events.js";
 export * from "./notify-channels.js";
 export * from "./consent-cookie.js";
+export * from "./test-login.js";
 export {
   APP_HOME,
   APP_LOGIN,
@@ -20,6 +21,7 @@ export {
   parseAppRoleParam,
   parseAuthModeParam,
   readNextParam,
+  roleHomePath,
   roleToQuery,
   safeAppPath,
 } from "./app-path.js";
