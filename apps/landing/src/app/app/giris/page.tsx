@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { parseAppRoleParam, parseAuthModeParam, readNextParam } from "@ada-merkez/shared";
+import { testLoginPhone, parseAppRoleParam, parseAuthModeParam, readNextParam } from "@ada-merkez/shared";
 import { GirisForm } from "../../../components/app/GirisForm";
 import { getSession } from "../../../lib/app-auth";
 import "../../../styles/tokens-v2-local.css";
@@ -17,5 +17,5 @@ export default async function GirisPage({
   const role = parseAppRoleParam(params.rol);
   const mode = parseAuthModeParam(params.mod, params.kayit);
 
-  return <GirisForm defaultRole={role} registerDefault={mode === "register"} nextPath={next} />;
+  return <GirisForm testPhone={testLoginPhone({ enabledFlag: process.env.AUTH_TEST_LOGIN, phones: process.env.AUTH_TEST_PHONES })} defaultRole={role} registerDefault={mode === "register"} nextPath={next} />;
 }

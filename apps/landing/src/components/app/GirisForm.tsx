@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { app, hero, kabuki } from "@ada-merkez/copy";
 import {
   authPageUrl,
+  roleHomePath,
   OTP_POLICY,
   readNextParam,
   safeAppPath,
@@ -43,10 +44,12 @@ function syncQuery(role: SessionRole, mode: AuthMode, nextPath: string) {
 
 export function GirisForm({
   defaultRole,
+  testPhone = null,
   registerDefault,
   nextPath,
 }: {
   defaultRole: SessionRole;
+  testPhone?: string | null;
   registerDefault: boolean;
   nextPath: string;
 }) {
@@ -54,14 +57,15 @@ export function GirisForm({
   const [role, setRole] = useState<SessionRole>(defaultRole);
   const [mode, setMode] = useState<AuthMode>(registerDefault ? "register" : "login");
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState(testPhone ?? "");
   const [code, setCode] = useState("");
   const [sent, setSent] = useState(false);
   const [debugCode, setDebugCode] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const adminInvite = role === "admin" && mode === "register";
+  const directLogin = Boolean(testPhone && toE164(phone) === testPhone);
+  const adminInvite = !directLogin && role === "admin" && mode === "register";
   const isRegister = role !== "admin" && mode === "register";
   const invalid = Boolean(error);
 
@@ -151,7 +155,7 @@ export function GirisForm({
 
   async function verify() {
     setError(null);
-    if (code.trim().length !== OTP_POLICY.codeLength) {
+    if (!directLogin && code.trim().length !== OTP_POLICY.codeLength) {
       setError(app.invalidCode);
       return;
     }
@@ -187,7 +191,7 @@ export function GirisForm({
         typeof window === "undefined"
           ? safeAppPath(nextPath)
           : readNextParam(new URLSearchParams(window.location.search), nextPath);
-      router.replace(next);
+      router.replace(next === "/app" ? roleHomePath(role) : next);
       router.refresh();
     } catch {
       setError(app.authUnavailable);
@@ -224,7 +228,7 @@ export function GirisForm({
           onSubmit={(event) => {
             event.preventDefault();
             if (adminInvite) return;
-            if (sent) void verify();
+            if (directLogin || sent) void verify();
             else void sendCode();
           }}
         >
@@ -305,10 +309,10 @@ export function GirisForm({
                     onChange={(event) => setPhone(event.target.value)}
                     placeholder={app.phonePlaceholder}
                   />
-                  <p className="am-subtle">{app.phoneHint}</p>
+                  <p className="am-subtle">{directLogin ? app.testLoginHint : app.phoneHint}</p>
                 </div>
 
-                {sent ? (
+                {sent && !directLogin ? (
                   <div className="am-field">
                     <label htmlFor="kod">{app.code}</label>
                     <input
@@ -354,7 +358,7 @@ export function GirisForm({
                 aria-busy={busy}
               >
                 {busy ? <span className="am-spinner" aria-hidden="true" /> : null}
-                {busy ? (sent ? app.verifying : app.sendingCode) : sent ? app.verify : app.sendCode}
+                {busy ? (directLogin || sent ? app.verifying : app.sendingCode) : directLogin ? app.testLogin : sent ? app.verify : app.sendCode}
               </button>
               <p className="am-subtle">{app.guestHint}</p>
             </div>

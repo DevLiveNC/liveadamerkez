@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { apiMessages } from "@ada-merkez/copy";
-import { isSessionRole, SESSION_COOKIE } from "@ada-merkez/shared";
+import { isTestLoginPhone, isSessionRole, SESSION_COOKIE } from "@ada-merkez/shared";
 import { apiBase } from "../../../../lib/api";
 import { isTrustedSameOrigin } from "../../../../lib/bff-origin";
 
@@ -44,7 +44,8 @@ export async function POST(request: Request) {
   const role = body.role;
   const mode = body.mode === "register" ? "register" : "login";
   const name = typeof body.name === "string" ? body.name.trim() : undefined;
-  if (!phone || !/^\d{6}$/.test(code) || !isSessionRole(role)) {
+  const testLogin = isTestLoginPhone(phone, { enabledFlag: process.env.AUTH_TEST_LOGIN, phones: process.env.AUTH_TEST_PHONES });
+  if (!phone || (!testLogin && !/^\d{6}$/.test(code)) || !isSessionRole(role)) {
     return NextResponse.json(
       { ok: false, code: "INVALID", message: apiMessages.invalidAuth },
       { status: 400, headers: NO_STORE },

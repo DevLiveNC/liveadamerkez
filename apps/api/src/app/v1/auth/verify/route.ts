@@ -2,11 +2,12 @@ import { z } from "zod";
 import { apiMessages } from "@ada-merkez/copy";
 import {
   createAccount,
+  provisionTestAccount,
   findAccountByPhoneRole,
   isDatabaseConfigured,
   verifyOtp,
 } from "@ada-merkez/db";
-import { isSessionRole, toE164 } from "@ada-merkez/shared";
+import { isTestLoginPhone, isSessionRole, toE164 } from "@ada-merkez/shared";
 import { isAuthConfigured, signSession } from "@ada-merkez/shared/node";
 import { authCors, json, readJson } from "../../../../lib/http";
 
@@ -14,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 const Body = z.object({
   phone: z.string().trim().min(8).max(24),
-  code: z.string().trim().regex(/^\d{6}$/),
+  code: z.string().trim().max(6).optional(),
   role: z.enum(["customer", "business", "admin"]),
   mode: z.enum(["login", "register"]).optional(),
   name: z.string().trim().min(2).max(80).optional(),
@@ -39,7 +40,8 @@ export async function POST(request: Request) {
     return json({ ok: false, code: "INVALID", message: apiMessages.invalidAuth }, 400, headers);
   }
   const mode = parsed.data.mode ?? "login";
-  if (mode === "register" && role === "admin") {
+  const testLogin = isTestLoginPhone(parsed.data.phone, { enabledFlag: process.env.AUTH_TEST_LOGIN, phones: process.env.AUTH_TEST_PHONES });
+  if (!testLogin && mode === "register" && role === "admin") {
     return json(
       { ok: false, code: "ADMIN_REGISTER_DISABLED", message: apiMessages.adminRegisterDisabled },
       403,
@@ -57,7 +59,10 @@ export async function POST(request: Request) {
       headers,
     );
   }
-  const decision = await verifyOtp(phone, parsed.data.purpose ?? "login", parsed.data.code);
+  if (!testLogin && !/^\d{6}$/.test(parsed.data.code ?? "")) {
+    return json({ ok: false, code: "INVALID", message: apiMessages.invalidAuth }, 400, headers);
+  }
+  const decision = testLogin ? { ok: true as const } : await verifyOtp(phone, parsed.data.purpose ?? "login", parsed.data.code!);
   if (!decision.ok) {
     const status = decision.code === "LOCKED" || decision.code === "MAX_ATTEMPTS" ? 429 : 401;
     return json(
@@ -72,7 +77,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let account = await findAccountByPhoneRole(phone, role);
+  let account = testLogin ? await provisionTestAccount(phone, role) : await findAccountByPhoneRole(phone, role);
   if (!account && mode === "register") {
     account = await createAccount({
       phone,

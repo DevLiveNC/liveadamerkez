@@ -359,6 +359,8 @@ export const app = {
   roleTabs: "Hesap türü",
   phone: "Telefon",
   phonePlaceholder: "+90 5xx xxx xx xx",
+  testLogin: "Kodsuz test girişi",
+  testLoginHint: "Test erişimi açık: Bu numarayla üç panele de kod almadan girebilirsin.",
   phoneHint: "Yalnız +90 (Kuzey Kıbrıs ve Türkiye).",
   name: "Ad",
   namePlaceholder: "Adınız",
