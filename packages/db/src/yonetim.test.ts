@@ -18,13 +18,24 @@ const hasDb = isDatabaseConfigured();
 
 describe("admin booking range", () => {
   it("from < to ister; 31 günden uzun aralığı reddeder", () => {
-    expect(adminBookingRangeError(new Date("2026-01-08T00:00:00Z"), new Date("2026-01-01T00:00:00Z"))).toBe(
-      "invalid_range",
-    );
-    expect(adminBookingRangeError(new Date("2026-01-01T00:00:00Z"), new Date("2026-02-15T00:00:00Z"))).toBe(
-      "range_too_large",
-    );
-    expect(adminBookingRangeError(new Date("2026-01-01T00:00:00Z"), new Date("2026-01-08T00:00:00Z"))).toBeNull();
+    expect(
+      adminBookingRangeError(
+        new Date("2026-01-08T00:00:00Z"),
+        new Date("2026-01-01T00:00:00Z"),
+      ),
+    ).toBe("invalid_range");
+    expect(
+      adminBookingRangeError(
+        new Date("2026-01-01T00:00:00Z"),
+        new Date("2026-02-15T00:00:00Z"),
+      ),
+    ).toBe("range_too_large");
+    expect(
+      adminBookingRangeError(
+        new Date("2026-01-01T00:00:00Z"),
+        new Date("2026-01-08T00:00:00Z"),
+      ),
+    ).toBeNull();
     expect(adminBookingRangeError(new Date("2026-01-01T00:00:00Z"))).toBeNull();
   });
 });
@@ -42,7 +53,11 @@ describe.skipIf(!hasDb)("yonetim seed, roller ve KVKK", () => {
     const phone = `+90552${Math.floor(Math.random() * 1_000_000)
       .toString()
       .padStart(7, "0")}`;
-    const user = await createAccount({ phone, role: "customer", name: "Deneme" });
+    const user = await createAccount({
+      phone,
+      role: "customer",
+      name: "Deneme",
+    });
     expect(user.role).toBe("customer");
 
     process.env.ALLOW_ADMIN_SEED = "false";
@@ -51,7 +66,11 @@ describe.skipIf(!hasDb)("yonetim seed, roller ve KVKK", () => {
     ).rejects.toBeInstanceOf(ForbiddenRoleError);
 
     process.env.ALLOW_ADMIN_SEED = "true";
-    const admin = await upsertSeedUser({ phone, role: "admin", displayName: "Yönetici" });
+    const admin = await upsertSeedUser({
+      phone,
+      role: "admin",
+      displayName: "Yönetici",
+    });
     expect(admin.role).toBe("admin");
   });
 
@@ -73,7 +92,10 @@ describe.skipIf(!hasDb)("yonetim seed, roller ve KVKK", () => {
        VALUES ($1, 'slot', 'pending', $2, $3, $4, 'app', 'Örnek müşteri', $5)`,
       [tenantId, staff.rows[0]?.id, start, end, phone],
     );
-    const listed = await listAdminBookings();
+    const listed = await listAdminBookings({
+      from: new Date(start.getTime() - 60_000),
+      to: new Date(end.getTime() + 60_000),
+    });
     const hit = listed.bookings.find((row) => row.tenantId === tenantId);
     expect(hit).toBeTruthy();
     expect(hit && "customerPhone" in hit).toBe(false);
@@ -86,7 +108,11 @@ describe.skipIf(!hasDb)("yonetim seed, roller ve KVKK", () => {
     const phone = `+90553${Math.floor(Math.random() * 1_000_000)
       .toString()
       .padStart(7, "0")}`;
-    const admin = await upsertSeedUser({ phone, role: "admin", displayName: "Yönetici" });
+    const admin = await upsertSeedUser({
+      phone,
+      role: "admin",
+      displayName: "Yönetici",
+    });
     const users = await listAdminUsers();
     const row = users.find((item) => item.id === admin.id);
     expect(row?.role).toBe("admin");
@@ -97,7 +123,8 @@ describe.skipIf(!hasDb)("yonetim seed, roller ve KVKK", () => {
 
   it("listAdminBookings 200 üstünü kesmez: total ve truncated döner", async () => {
     const tenantId = randomUUID();
-    const offsetMs = Number.parseInt(tenantId.replace(/-/g, "").slice(0, 8), 16) * 1000;
+    const offsetMs =
+      Number.parseInt(tenantId.replace(/-/g, "").slice(0, 8), 16) * 1000;
     const from = new Date(Date.UTC(2040, 0, 1) + offsetMs);
     const to = new Date(from.getTime() + 7 * 24 * 60 * 60 * 1000);
     await getPool().query(
@@ -121,7 +148,9 @@ describe.skipIf(!hasDb)("yonetim seed, roller ve KVKK", () => {
     expect(listed.bookings).toHaveLength(ADMIN_BOOKING_LIST_LIMIT);
     expect(listed.truncated).toBe(true);
     expect(listed.total).toBeGreaterThanOrEqual(ADMIN_BOOKING_LIST_LIMIT + 1);
-    expect(listed.counted.total).toBeGreaterThanOrEqual(ADMIN_BOOKING_LIST_LIMIT + 1);
+    expect(listed.counted.total).toBeGreaterThanOrEqual(
+      ADMIN_BOOKING_LIST_LIMIT + 1,
+    );
     expect(listed.bookings.some((row) => row.tenantId === tenantId)).toBe(true);
   });
 
@@ -143,7 +172,9 @@ describe.skipIf(!hasDb)("yonetim seed, roller ve KVKK", () => {
             ? args[0]
             : String((args[0] as { text?: string }).text ?? args[0]);
         if (text.includes("SET LOCAL ROLE ada_app")) {
-          return Promise.reject(Object.assign(new Error("rol yok"), { code: "42704" }));
+          return Promise.reject(
+            Object.assign(new Error("rol yok"), { code: "42704" }),
+          );
         }
         return query(...args);
       }) as typeof client.query;
@@ -162,5 +193,128 @@ describe.skipIf(!hasDb)("yonetim seed, roller ve KVKK", () => {
     } finally {
       spy.mockRestore();
     }
+  });
+});
+
+describe.skipIf(!hasDb)("panel raporları ve denetim veri azaltımı", () => {
+  beforeAll(async () => {
+    await migrate();
+  });
+  afterAll(async () => {
+    await closePool();
+  });
+
+  it("günlük rapor liste sınırından bağımsız tüm kayıtları ve boş günleri sayar", async () => {
+    const { adminBookingReport } = await import("./yonetim.js");
+    const tenantId = randomUUID();
+    const pool = getPool();
+    try {
+      await pool.query(
+        "INSERT INTO business (id, name, slug, status) VALUES ($1, 'Rapor işletmesi', $2, 'approved')",
+        [tenantId, `rapor-${tenantId.slice(0, 8)}`],
+      );
+      const staffId = randomUUID();
+      await pool.query(
+        "INSERT INTO staff (id, tenant_id, name) VALUES ($1, $2, 'Rapor personeli')",
+        [staffId, tenantId],
+      );
+      await pool.query(
+        `INSERT INTO booking (tenant_id, kind, status, staff_id, starts_at, ends_at, channel)
+        SELECT $1, 'slot', 'confirmed', $2, $3::timestamptz + (g * interval '1 minute'), $3::timestamptz + (g * interval '1 minute') + interval '30 seconds', 'app'
+        FROM generate_series(0, 205) g`,
+        [tenantId, staffId, "2042-07-15T07:00:00Z"],
+      );
+      const report = await adminBookingReport({
+        from: new Date("2042-07-14T21:00:00Z"),
+        to: new Date("2042-07-16T21:00:00Z"),
+      });
+      expect(report.days.map((day) => day.day)).toEqual([
+        "2042-07-15",
+        "2042-07-16",
+      ]);
+      expect(report.days[0]?.total).toBe(206);
+      expect(report.days[1]?.total).toBe(0);
+      expect(report.total).toBe(206);
+      expect(report.active).toBe(206);
+      expect(report.app).toBe(206);
+      expect(report.whatsapp).toBe(0);
+    } finally {
+      await pool.query("DELETE FROM booking WHERE tenant_id = $1", [tenantId]);
+      await pool.query("DELETE FROM staff WHERE tenant_id = $1", [tenantId]);
+      await pool.query("DELETE FROM business WHERE id = $1", [tenantId]);
+    }
+  });
+
+  it("işletme, durum ve kanal süzgeçleri 200 satır sınırından önce uygulanır", async () => {
+    const tenantId = randomUUID();
+    const pool = getPool();
+    try {
+      await pool.query(
+        "INSERT INTO business (id, name, slug, status) VALUES ($1, 'Süzgeç işletmesi', $2, 'approved')",
+        [tenantId, `suzgec-${tenantId.slice(0, 8)}`],
+      );
+      const staff = await pool.query<{ id: string }>(
+        "INSERT INTO staff (tenant_id, name) VALUES ($1, 'Süzgeç personeli') RETURNING id",
+        [tenantId],
+      );
+      const staffId = staff.rows[0]!.id;
+      await pool.query(
+        `INSERT INTO booking (tenant_id, kind, status, staff_id, starts_at, ends_at, channel, customer_phone)
+        SELECT $1, 'slot', 'pending', $2, '2043-01-01T00:00:00Z'::timestamptz + g * interval '1 minute', '2043-01-01T00:00:30Z'::timestamptz + g * interval '1 minute', 'whatsapp', '+905551234567' FROM generate_series(0, 205) g`,
+        [tenantId, staffId],
+      );
+      await pool.query(
+        "INSERT INTO booking (tenant_id, kind, status, staff_id, starts_at, ends_at, channel) VALUES ($1, 'slot', 'cancelled', $2, '2043-01-02T00:00:00Z', '2043-01-02T00:30:00Z', 'app')",
+        [tenantId, staffId],
+      );
+      const result = await listAdminBookings({
+        tenantId,
+        status: "pending",
+        channel: "whatsapp",
+      });
+      expect(result.total).toBe(206);
+      expect(result.bookings).toHaveLength(200);
+      expect(result.truncated).toBe(true);
+      expect(
+        result.bookings.every(
+          (row) =>
+            row.tenantId === tenantId &&
+            row.status === "pending" &&
+            row.channel === "whatsapp",
+        ),
+      ).toBe(true);
+      expect(JSON.stringify(result)).not.toContain("+905551234567");
+      expect(
+        (await listAdminBookings({ tenantId, status: "cancelled" })).total,
+      ).toBe(1);
+    } finally {
+      await pool.query("DELETE FROM booking WHERE tenant_id = $1", [tenantId]);
+      await pool.query("DELETE FROM staff WHERE tenant_id = $1", [tenantId]);
+      await pool.query("DELETE FROM business WHERE id = $1", [tenantId]);
+    }
+  });
+
+  it("denetim listesi yönetici telefonunu maskeler", async () => {
+    const { listAuditLog } = await import("./yonetim.js");
+    const phone = `+90555${Math.floor(Math.random() * 1_000_000)
+      .toString()
+      .padStart(7, "0")}`;
+    const actor = await createAccount({
+      phone,
+      role: "customer",
+      name: "Denetim sorumlusu",
+    });
+    const tenantId = randomUUID();
+    await getPool().query(
+      "INSERT INTO business (id, name, slug, status) VALUES ($1, 'Denetim işletmesi', $2, 'pending')",
+      [tenantId, `denetim-${tenantId.slice(0, 8)}`],
+    );
+    const { setBusinessStatus } = await import("./yonetim.js");
+    await setBusinessStatus(actor.id, tenantId, "approved");
+    const audit = await listAuditLog();
+    const row = audit.find((item) => item.entityId === tenantId);
+    expect(row?.actorPhone).not.toBe(phone);
+    expect(row?.actorPhone).toContain("•••");
+    expect(JSON.stringify(audit)).not.toContain(phone);
   });
 });

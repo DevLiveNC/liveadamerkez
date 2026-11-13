@@ -4,7 +4,8 @@ import pg from "pg";
 import { signSession } from "@ada-merkez/shared/node";
 
 const apiURL = process.env.PLAYWRIGHT_API_URL ?? "http://127.0.0.1:3001";
-const authSecret = process.env.AUTH_SECRET ?? "e2e-auth-secret";
+const authSecret =
+  process.env.E2E_AUTH_SECRET ?? process.env.AUTH_SECRET ?? "e2e-auth-secret";
 
 test("yönetici paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar", async ({
   page,
@@ -14,9 +15,13 @@ test("yönetici paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar",
   await expect(page).toHaveURL(/\/app\/giris/);
   await expect(page.locator("body")).not.toContainText(/KKTC/i);
   await expect(page.locator("body")).not.toContainText("[CTA]");
-  const emptyAsset = await page.request.get("/app/bos-durum/onay-bekliyor.webp");
+  const emptyAsset = await page.request.get(
+    "/app/bos-durum/onay-bekliyor.webp",
+  );
   expect(emptyAsset.ok()).toBeTruthy();
-  const empty2x = await page.request.get("/app/bos-durum/onay-bekliyor@2x.webp");
+  const empty2x = await page.request.get(
+    "/app/bos-durum/onay-bekliyor@2x.webp",
+  );
   expect(empty2x.ok()).toBeTruthy();
 
   const health = await request.get(`${apiURL}/health`);
@@ -54,35 +59,57 @@ test("yönetici paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar",
     },
   ]);
   await page.goto("/app/yonetim");
-  await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-yonetici");
-  await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute("href", "#yonetim-icerik");
+  await expect(page.locator("body")).toHaveAttribute(
+    "data-dekor",
+    "app-yonetici",
+  );
+  await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute(
+    "href",
+    "#yonetim-icerik",
+  );
   await expect(page.getByRole("main")).toHaveAttribute("id", "yonetim-icerik");
   await expect(page.locator("body.landing")).toHaveCount(0);
   await expect(page.locator("body.am-app")).toHaveCount(1);
-  await expect(page.getByRole("heading", { name: "Genel bakış" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Genel bakış" }),
+  ).toBeVisible();
   const panelIcon = page.locator(".am-icon").first();
   await expect(panelIcon).toBeVisible();
-  expect(await panelIcon.evaluate((el) => getComputedStyle(el).flexShrink)).toBe("0");
-  await expect(page.getByText("Kapalı", { exact: true }).first()).toBeVisible();
+  expect(
+    await panelIcon.evaluate((el) => getComputedStyle(el).flexShrink),
+  ).toBe("0");
+  await expect(
+    page.getByRole("heading", { name: "Operasyon merkezi", level: 2 }),
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: "Menü" })).toHaveCount(0);
   await expect(page.locator("body")).not.toContainText(/KKTC/i);
   await expect(page.locator("body")).not.toContainText("localStorage");
 
   await page.goto("/app/yonetim/onaylar");
-  await expect(page.getByRole("heading", { name: "İşletme onayları", level: 1 })).toBeVisible();
-  await page.getByRole("button", { name: "Reddedilen" }).click();
-  await expect(page.getByRole("heading", { name: "Bekleyen işletme yok" })).toBeVisible();
-  const emptyImg = page.getByAltText("Kabuki, Ada Merkez maskotu, düşünüyor");
-  await expect(emptyImg).toBeVisible();
-  await expect(emptyImg).toHaveAttribute("width", "160");
-  await expect(emptyImg).toHaveAttribute("height", "160");
+  await expect(
+    page.getByRole("heading", { name: "İşletme onayları", level: 1 }),
+  ).toBeVisible();
+  await page
+    .getByRole("searchbox", { name: "Ara" })
+    .fill(`eşleşmeyen-${Date.now()}`);
+  await expect(
+    page.getByRole("heading", { name: "Eşleşen kayıt yok" }),
+  ).toBeVisible();
 
   await page.goto("/app/yonetim/sistem-durumu");
   await expect(page).toHaveURL(/\/app\/yonetim\/sistem$/);
-  await expect(page.getByRole("heading", { name: "Sistem", exact: true, level: 1 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Sistem durumu", level: 2 })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Kiracılar" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Denetim" })).toBeVisible();
-  await page.getByRole("link", { name: "Kiracılar" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Sistem", exact: true, level: 1 }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Sistem durumu", level: 2 }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("main").getByRole("link", { name: "Kiracılar" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("main").getByRole("link", { name: "Denetim" }),
+  ).toBeVisible();
+  await page.getByRole("main").getByRole("link", { name: "Kiracılar" }).click();
   await expect(page).toHaveURL(/\/app\/yonetim\/kiracilar$/);
 });

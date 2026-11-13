@@ -1,4 +1,4 @@
-const CACHE = "ada-merkez-app-v5";
+const CACHE = "ada-merkez-app-v6";
 const STATIC_CACHE = "ada-merkez-app-static-v1";
 const OFFLINE = "/app/offline.html";
 const PRECACHE = [
@@ -50,7 +50,8 @@ function precachePublicShell() {
 }
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(self.skipWaiting());
+  /* Güncelleme paneldeki açık kullanıcı onayını bekler; formu zorla yenilemez. */
+  event.waitUntil(precachePublicShell());
 });
 
 self.addEventListener("activate", (event) => {
@@ -80,9 +81,9 @@ self.addEventListener("message", (event) => {
   const port = event.ports && event.ports[0];
   event.waitUntil(
     (async () => {
-      /* Çıkışta tüm önbellekler silinir: kişisel veri kalmaz. */
+      /* Çıkışta yalnız uygulama önbellekleri silinir; landing korunur. */
       const keys = await caches.keys();
-      await Promise.all(keys.map((key) => caches.delete(key)));
+      await Promise.all(keys.filter((key) => key.startsWith("ada-merkez-app-")).map((key) => caches.delete(key)));
       await precachePublicShell();
       if (port) port.postMessage({ ok: true });
     })(),
@@ -105,7 +106,7 @@ self.addEventListener("fetch", (event) => {
         if (cached) return cached;
         try {
           const response = await fetch(request);
-          if (response.ok) cache.put(request, response.clone());
+          if (response.ok) event.waitUntil(cache.put(request, response.clone()).catch(() => undefined));
           return response;
         } catch {
           return cached ?? Response.error();
@@ -140,14 +141,19 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     caches.match(request).then((cached) => {
-      const fetched = fetch(request).then((response) => {
+      const fetched = fetch(request).then(async (response) => {
         if (response.ok) {
           const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put(request, copy));
+          const cache = await caches.open(CACHE);
+          await cache.put(request, copy);
         }
         return response;
       });
-      return cached || fetched;
+      if (cached) {
+        event.waitUntil(fetched.catch(() => undefined));
+        return cached;
+      }
+      return fetched.catch(() => Response.error());
     }),
   );
 });

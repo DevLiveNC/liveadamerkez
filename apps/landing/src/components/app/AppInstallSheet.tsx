@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { addToHome, install, ui } from "@ada-merkez/copy";
+import { addToHome, install, panel, ui } from "@ada-merkez/copy";
 import { BottomSheet } from "@ada-merkez/ui";
+import { isStandalone } from "../../lib/panel-api";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -12,90 +13,134 @@ type BeforeInstallPromptEvent = Event & {
 
 export function AppInstallSheet() {
   const pathname = usePathname() ?? "/app";
-  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
+  const pathRef = useRef(pathname);
+  pathRef.current = pathname;
+  const deferredRef = useRef<BeforeInstallPromptEvent | null>(null);
+  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(
+    null,
+  );
   const [ios, setIos] = useState(false);
-  const [hidden, setHidden] = useState(true);
-  const [requested, setRequested] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const standalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      ("standalone" in navigator && Boolean((navigator as Navigator & { standalone?: boolean }).standalone));
-    if (standalone) return;
-    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if (isStandalone()) return;
+    // iPadOS may identify as Macintosh; touch points distinguish it.
+    const isIos =
+      /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+      (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
     setIos(isIos);
     const onPrompt = (event: Event) => {
       event.preventDefault();
-      setDeferred(event as BeforeInstallPromptEvent);
-      if (pathname === "/app") setHidden(false);
+      const prompt = event as BeforeInstallPromptEvent;
+      deferredRef.current = prompt;
+      setDeferred(prompt);
+      let dismissed = false;
+      try {
+        dismissed = Boolean(sessionStorage.getItem("am_app_install"));
+      } catch {
+        /* storage may be unavailable */
+      }
+      if (pathRef.current === "/app" && !dismissed) setOpen(true);
+    };
+    const onRequest = () => {
+      setError(null);
+      setOpen(true);
+    };
+    const onInstalled = () => {
+      deferredRef.current = null;
+      setDeferred(null);
+      setOpen(false);
     };
     window.addEventListener("beforeinstallprompt", onPrompt);
-    if (isIos && pathname === "/app" && !sessionStorage.getItem("am_app_install")) {
-      setHidden(false);
-    }
-    return () => window.removeEventListener("beforeinstallprompt", onPrompt);
-  }, [pathname]);
-
-  /* Hesap ekranındaki "Ana ekrana ekle" düğmesi bu olayı yayar. */
-  useEffect(() => {
-    const onRequest = () => {
-      setRequested(true);
-      setHidden(false);
-    };
     window.addEventListener("am:install-request", onRequest);
-    return () => window.removeEventListener("am:install-request", onRequest);
+    window.addEventListener("appinstalled", onInstalled);
+    let dismissed = false;
+    try {
+      dismissed = Boolean(sessionStorage.getItem("am_app_install"));
+    } catch {
+      /* storage may be unavailable */
+    }
+    if (isIos && pathRef.current === "/app" && !dismissed) setOpen(true);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onPrompt);
+      window.removeEventListener("am:install-request", onRequest);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
   }, []);
 
-  /* Yönerge yalnız kurulum gerçekten mümkünse gösterilir:
-     tarayıcı istemi hazırsa veya iOS'ta elle ekleme gerekiyorsa. */
-  const installable = Boolean(deferred || ios);
-  const open = installable && (requested || (!hidden && pathname === "/app"));
-  if (!open) return null;
+  function close() {
+    if (busy) return;
+    setOpen(false);
+    try {
+      sessionStorage.setItem("am_app_install", "1");
+    } catch {
+      /* storage may be unavailable */
+    }
+  }
+  async function promptInstall() {
+    const prompt = deferredRef.current;
+    if (!prompt || busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await prompt.prompt();
+      await prompt.userChoice;
+      deferredRef.current = null;
+      setDeferred(null);
+      setOpen(false);
+    } catch {
+      setError(panel.installError);
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
     <BottomSheet
       open={open}
-      onClose={() => {
-        setHidden(true);
-        setRequested(false);
-        sessionStorage.setItem("am_app_install", "1");
-      }}
-      titleId="app-install-title"
+      onClose={close}
+      title={install.title}
       closeLabel={ui.close}
       className="am-pwa-sheet"
     >
       <div className="am-pwa-row">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- fixed-size PWA icon */}
         <img src="/app/icons/icon-192.png" alt="" width={56} height={56} />
         <div>
-          <h2 id="app-install-title" className="t-h3" style={{ fontSize: 18 }}>
-            {install.title}
-          </h2>
-          <p className="t-sm t-muted">{ios ? install.ios : addToHome.androidBody}</p>
+          <h3 className="t-h3">{install.title}</h3>
+          <p className="t-sm t-muted">
+            {deferred
+              ? addToHome.androidBody
+              : ios
+                ? install.ios
+                : panel.installUnsupported}
+          </p>
         </div>
       </div>
+      {error ? (
+        <p className="pn-inline-error" role="alert">
+          {error}
+        </p>
+      ) : null}
       {deferred ? (
         <button
-          className="btn btn-coral"
+          className="am-btn am-btn--primary am-btn--block"
           type="button"
-          style={{ width: "100%" }}
-          onClick={async () => {
-            await deferred.prompt();
-            setDeferred(null);
-            setHidden(true);
+          disabled={busy}
+          onClick={() => {
+            void promptInstall();
           }}
         >
-          {install.cta}
+          {busy ? panel.sending : install.cta}
         </button>
       ) : null}
       <button
-        className="btn btn-ghost"
+        className="am-btn am-btn--ghost am-btn--block mt-3"
         type="button"
-        style={{ width: "100%", marginTop: 8 }}
-        onClick={() => {
-          setHidden(true);
-          sessionStorage.setItem("am_app_install", "1");
-        }}
+        disabled={busy}
+        onClick={close}
       >
         {install.dismiss}
       </button>

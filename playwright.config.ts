@@ -17,6 +17,12 @@ export default defineConfig({
     locale: "tr-TR",
     timezoneId: "Europe/Nicosia",
     trace: "on-first-retry",
+    launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
+      ? {
+          executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE,
+          args: ["--no-sandbox", "--disable-dev-shm-usage"],
+        }
+      : undefined,
   },
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
@@ -30,10 +36,18 @@ export default defineConfig({
             ...process.env,
             PORT: String(apiPort),
             DATABASE_URL: process.env.DATABASE_URL ?? "",
-            INTERNAL_EXPORT_TOKEN: process.env.INTERNAL_EXPORT_TOKEN ?? "e2e-export-token",
-            AUTH_SECRET: process.env.AUTH_SECRET ?? "e2e-auth-secret",
-            OTP_PEPPER: process.env.OTP_PEPPER ?? "e2e-otp-pepper",
+            INTERNAL_EXPORT_TOKEN:
+              process.env.INTERNAL_EXPORT_TOKEN ?? "e2e-export-token",
+            AUTH_SECRET:
+              process.env.E2E_AUTH_SECRET ??
+              process.env.AUTH_SECRET ??
+              "e2e-auth-secret",
+            OTP_PEPPER:
+              process.env.E2E_OTP_PEPPER ??
+              process.env.OTP_PEPPER ??
+              "e2e-otp-pepper",
             OTP_RETURN_CODE: process.env.OTP_RETURN_CODE ?? "true",
+            AUTH_TEST_LOGIN: process.env.AUTH_TEST_LOGIN ?? "off",
             CORS_ORIGINS: process.env.CORS_ORIGINS ?? baseURL,
             WAITLIST_OPEN: process.env.WAITLIST_OPEN ?? "",
           },
@@ -47,6 +61,15 @@ export default defineConfig({
             ...process.env,
             PORT: String(port),
             NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL ?? apiURL,
+            AUTH_SECRET:
+              process.env.E2E_AUTH_SECRET ??
+              process.env.AUTH_SECRET ??
+              "e2e-auth-secret",
+            OTP_PEPPER:
+              process.env.E2E_OTP_PEPPER ??
+              process.env.OTP_PEPPER ??
+              "e2e-otp-pepper",
+            AUTH_TEST_LOGIN: process.env.AUTH_TEST_LOGIN ?? "off",
             COOKIE_SECURE: process.env.COOKIE_SECURE ?? "false",
           },
         },

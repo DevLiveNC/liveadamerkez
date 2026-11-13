@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { isPanelPath, PANEL_UPDATE } from "../../lib/panel-api";
 import { unregisterLegacyAppServiceWorkers } from "../../lib/pwa";
 
 const RELOAD_KEY = "am_sw_reload_at";
@@ -24,8 +25,8 @@ function reloadOnce(): boolean {
  * Uygulama service worker'ı.
  *
  * - Kayıt kapsamı `/app`; eski `/app/` kayıtları temizlenir.
- * - Yeni sürüm devraldığında sayfa bir kez yenilenir: eski HTML + yeni
- *   parçalar karışıp kırık ekran oluşmaz.
+ * - Müşteri ekranında yeni sürüm devraldığında bir kez yenilenir.
+ *   Panellerde devam eden formu kaybetmemek için kullanıcıya yenileme seçimi verilir.
  * - Gizli sekmede/özel modda kayıt hatası uygulamayı düşürmez.
  */
 export function AppSwRegister() {
@@ -36,17 +37,39 @@ export function AppSwRegister() {
 
     const onControllerChange = () => {
       if (cancelled || !hadController) return;
+      if (isPanelPath(window.location.pathname)) {
+        window.dispatchEvent(new Event(PANEL_UPDATE));
+        return;
+      }
       if (!reloadOnce()) return;
       window.location.reload();
     };
-    navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
+    navigator.serviceWorker.addEventListener(
+      "controllerchange",
+      onControllerChange,
+    );
 
     navigator.serviceWorker
       .register("/app/sw.js", { scope: "/app", updateViaCache: "none" })
       .then((registration) => {
         if (cancelled) return;
         void unregisterLegacyAppServiceWorkers(registration);
-        void registration.update().catch(() => undefined);
+        const notify = () => {
+          if (
+            !cancelled &&
+            registration.waiting &&
+            isPanelPath(window.location.pathname)
+          )
+            window.dispatchEvent(new Event(PANEL_UPDATE));
+        };
+        notify();
+        registration.addEventListener("updatefound", () => {
+          registration.installing?.addEventListener("statechange", notify);
+        });
+        void registration
+          .update()
+          .then(notify)
+          .catch(() => undefined);
       })
       .catch(() => {
         /* Service worker yoksa uygulama normal çalışır. */
@@ -57,15 +80,20 @@ export function AppSwRegister() {
       if (document.visibilityState !== "visible") return;
       if (Date.now() - lastCheck < UPDATE_CHECK_MS) return;
       lastCheck = Date.now();
-      void navigator.serviceWorker.getRegistration("/app").then((registration) => {
-        void registration?.update().catch(() => undefined);
-      });
+      void navigator.serviceWorker
+        .getRegistration("/app")
+        .then((registration) => {
+          void registration?.update().catch(() => undefined);
+        });
     };
     document.addEventListener("visibilitychange", onVisible);
 
     return () => {
       cancelled = true;
-      navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
+      navigator.serviceWorker.removeEventListener(
+        "controllerchange",
+        onControllerChange,
+      );
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);

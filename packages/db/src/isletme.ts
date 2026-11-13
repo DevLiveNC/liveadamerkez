@@ -576,6 +576,13 @@ export async function bookingStatsForTenant(tenantId: string, now = new Date()) 
     0,
     0,
   );
+  const weekEnd = nicosiaWallTimeToUtc(
+    parts.year,
+    parts.month,
+    parts.day - mondayOffset + 7,
+    0,
+    0,
+  );
 
   return withTenantDb(tenantId, async (db) => {
     const [todayConfirmed] = await db
@@ -608,6 +615,7 @@ export async function bookingStatsForTenant(tenantId: string, now = new Date()) 
           eq(booking.tenantId, tenantId),
           eq(booking.status, "confirmed"),
           gte(booking.startsAt, weekStart),
+          lt(booking.startsAt, weekEnd),
         ),
       );
     const [pendingIncoming] = await db

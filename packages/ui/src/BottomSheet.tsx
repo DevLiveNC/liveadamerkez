@@ -19,7 +19,8 @@ const FOCUSABLE = [
 const CLOSE_MS = 180;
 
 function reducedMotion(): boolean {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return false;
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function")
+    return false;
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
@@ -65,6 +66,10 @@ export function BottomSheet({
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
   const lastFocus = useRef<HTMLElement | null>(null);
+  /* Üst bileşen her render'ında yeni kapanış fonksiyonu verebilir; odak
+     kilidi buna göre yeniden kurulmaz (panel saati her saniye tick eder). */
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   const generatedId = useId();
   const headingId = titleId ?? generatedId;
   const [mounted, setMounted] = useState(false);
@@ -95,7 +100,10 @@ export function BottomSheet({
 
   useEffect(() => {
     if (!open) return;
-    lastFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    lastFocus.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     const panel = panelRef.current;
     const first = panel ? visibleFocusables(panel)[0] : undefined;
     first?.focus();
@@ -103,7 +111,7 @@ export function BottomSheet({
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
         event.preventDefault();
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (event.key !== "Tab" || !panel) return;
@@ -148,7 +156,7 @@ export function BottomSheet({
       }
       lastFocus.current?.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open && !closing) return null;
   if (!mounted) return null;
@@ -183,7 +191,12 @@ export function BottomSheet({
               {closeLabel}
             </span>
           )}
-          <button type="button" className="am-icon-btn am-icon-btn--ghost" aria-label={closeLabel} onClick={onClose}>
+          <button
+            type="button"
+            className="am-icon-btn am-icon-btn--ghost"
+            aria-label={closeLabel}
+            onClick={onClose}
+          >
             ×
           </button>
         </div>
