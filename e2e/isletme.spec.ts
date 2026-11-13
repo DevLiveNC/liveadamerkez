@@ -4,7 +4,8 @@ import pg from "pg";
 import { signSession } from "@ada-merkez/shared/node";
 
 const apiURL = process.env.PLAYWRIGHT_API_URL ?? "http://127.0.0.1:3001";
-const authSecret = process.env.AUTH_SECRET ?? "e2e-auth-secret";
+const authSecret =
+  process.env.E2E_AUTH_SECRET ?? process.env.AUTH_SECRET ?? "e2e-auth-secret";
 
 test("işletme paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar", async ({
   page,
@@ -15,9 +16,13 @@ test("işletme paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar", 
   await expect(page.locator("body")).not.toContainText(/KKTC/i);
   await expect(page.locator("body")).not.toContainText("[CTA]");
   await expect(page.locator("body")).not.toContainText(/önizleme/i);
-  const emptyAsset = await page.request.get("/app/bos-durum/rezervasyon-yok.webp");
+  const emptyAsset = await page.request.get(
+    "/app/bos-durum/rezervasyon-yok.webp",
+  );
   expect(emptyAsset.ok()).toBeTruthy();
-  const empty2x = await page.request.get("/app/bos-durum/rezervasyon-yok@2x.webp");
+  const empty2x = await page.request.get(
+    "/app/bos-durum/rezervasyon-yok@2x.webp",
+  );
   expect(empty2x.ok()).toBeTruthy();
 
   const health = await request.get(`${apiURL}/health`);
@@ -64,18 +69,30 @@ test("işletme paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar", 
     },
   ]);
   await page.goto("/app/isletme");
-  await expect(page.locator("body")).toHaveAttribute("data-dekor", "app-isletme");
-  await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute("href", "#isletme-icerik");
+  await expect(page.locator("body")).toHaveAttribute(
+    "data-dekor",
+    "app-isletme",
+  );
+  await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute(
+    "href",
+    "#isletme-icerik",
+  );
   await expect(page.getByRole("main")).toHaveAttribute("id", "isletme-icerik");
   await expect(page.locator("body.landing")).toHaveCount(0);
   await expect(page.locator("body.am-app")).toHaveCount(1);
-  await expect(page.getByRole("heading", { name: "Genel bakış" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Genel bakış" }),
+  ).toBeVisible();
   const panelIcon = page.locator(".am-icon").first();
   await expect(panelIcon).toBeVisible();
-  expect(await panelIcon.evaluate((el) => getComputedStyle(el).flexShrink)).toBe("0");
+  expect(
+    await panelIcon.evaluate((el) => getComputedStyle(el).flexShrink),
+  ).toBe("0");
   const kicker = page.locator(".am-kicker").first();
   if (await kicker.count()) {
-    expect(await kicker.evaluate((el) => getComputedStyle(el).fontSize)).toBe("12px");
+    expect(await kicker.evaluate((el) => getComputedStyle(el).fontSize)).toBe(
+      "12px",
+    );
   }
   await expect(page.getByText("Örnek").first()).toBeVisible();
   await expect(page.locator(".am-dash-tabbar")).toHaveCount(1);
@@ -83,13 +100,21 @@ test("işletme paneli sunucuda kilitli, KKTC yazmaz, v2 kabuk ve yeni rotalar", 
   await expect(page.locator("body")).not.toContainText(/KKTC/i);
 
   await page.goto("/app/isletme/takvim");
-  await expect(page.getByRole("heading", { name: "Takvim", level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Takvim", level: 1 }),
+  ).toBeVisible();
   await page.goto("/app/isletme/talepler");
-  await expect(page.getByRole("heading", { name: "Gelen talepler", level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Gelen talepler", level: 1 }),
+  ).toBeVisible();
   await page.goto("/app/isletme/hizmetler");
-  await expect(page.getByRole("heading", { name: "Hizmetler", level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Hizmetler", level: 1 }),
+  ).toBeVisible();
   await page.goto("/app/isletme/profil");
-  await expect(page.getByRole("heading", { name: "Ayarlar", level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Ayarlar", level: 1 }),
+  ).toBeVisible();
 
   await page.goto("/app/isletme/istatistik");
   await expect(page).toHaveURL(/\/app\/isletme\/?$/);

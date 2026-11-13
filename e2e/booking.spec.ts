@@ -4,9 +4,12 @@ import pg from "pg";
 import { signSession } from "@ada-merkez/shared/node";
 
 const apiURL = process.env.PLAYWRIGHT_API_URL ?? "http://127.0.0.1:3001";
-const authSecret = process.env.AUTH_SECRET ?? "e2e-auth-secret";
+const authSecret =
+  process.env.E2E_AUTH_SECRET ?? process.env.AUTH_SECRET ?? "e2e-auth-secret";
 
-test("booking endpoints require a session and reject overlap", async ({ request }) => {
+test("booking endpoints require a session and reject overlap", async ({
+  request,
+}) => {
   const health = await request.get(`${apiURL}/health`);
   expect(health.ok()).toBeTruthy();
   const body = (await health.json()) as { db?: string; waitlistOpen?: boolean };
@@ -47,10 +50,10 @@ test("booking endpoints require a session and reject overlap", async ({ request 
       `INSERT INTO business (id, name, slug, status) VALUES ($1, 'E2E', $2, 'draft')`,
       [tenantId, `e2e-${tenantId.slice(0, 8)}`],
     );
-    await client.query(`INSERT INTO staff (id, tenant_id, name) VALUES ($1, $2, 'E2E')`, [
-      staffId,
-      tenantId,
-    ]);
+    await client.query(
+      `INSERT INTO staff (id, tenant_id, name) VALUES ($1, $2, 'E2E')`,
+      [staffId, tenantId],
+    );
   } finally {
     await client.end();
   }
@@ -71,7 +74,9 @@ test("booking endpoints require a session and reject overlap", async ({ request 
     },
   });
   expect(created.status()).toBe(201);
-  const createdBody = (await created.json()) as { booking?: { status?: string; id?: string } };
+  const createdBody = (await created.json()) as {
+    booking?: { status?: string; id?: string };
+  };
   expect(createdBody.booking?.status).toBe("pending");
 
   const overlap = await request.post(`${apiURL}/v1/bookings`, {
@@ -85,16 +90,22 @@ test("booking endpoints require a session and reject overlap", async ({ request 
   });
   expect(overlap.status()).toBe(409);
 
-  const confirmed = await request.patch(`${apiURL}/v1/bookings/${createdBody.booking?.id}`, {
-    headers: auth,
-    data: { status: "confirmed" },
-  });
+  const confirmed = await request.patch(
+    `${apiURL}/v1/bookings/${createdBody.booking?.id}`,
+    {
+      headers: auth,
+      data: { status: "confirmed" },
+    },
+  );
   expect(confirmed.status()).toBe(200);
 
-  const invalid = await request.patch(`${apiURL}/v1/bookings/${createdBody.booking?.id}`, {
-    headers: auth,
-    data: { status: "pending" },
-  });
+  const invalid = await request.patch(
+    `${apiURL}/v1/bookings/${createdBody.booking?.id}`,
+    {
+      headers: auth,
+      data: { status: "pending" },
+    },
+  );
   expect(invalid.status()).toBe(422);
 
   const closed = await request.post(`${apiURL}/v1/waitlist`, {
@@ -106,5 +117,7 @@ test("booking endpoints require a session and reject overlap", async ({ request 
     },
   });
   expect(closed.status()).toBe(503);
-  expect((await closed.json()) as { code?: string }).toMatchObject({ code: "waitlist_closed" });
+  expect((await closed.json()) as { code?: string }).toMatchObject({
+    code: "waitlist_closed",
+  });
 });

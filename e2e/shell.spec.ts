@@ -4,13 +4,21 @@ test("uygulama kabuğu mobil ve masaüstünde durur", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/app");
   await expect(page.getByRole("heading", { name: "Keşif" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute("href", "#icerik");
+  await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute(
+    "href",
+    "#icerik",
+  );
   await expect(page.getByRole("main")).toHaveAttribute("id", "icerik");
-  const mainPad = await page.locator("#icerik").evaluate((el) => getComputedStyle(el).paddingLeft);
+  const mainPad = await page
+    .locator("#icerik")
+    .evaluate((el) => getComputedStyle(el).paddingLeft);
   expect(Number.parseFloat(mainPad)).toBeGreaterThanOrEqual(16);
   const nav = page.getByRole("navigation", { name: "Müşteri gezinme" });
   await expect(nav).toBeVisible();
-  await expect(nav.getByRole("link", { name: "Keşif" })).toHaveAttribute("aria-current", "page");
+  await expect(nav.getByRole("link", { name: "Keşif" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
   await expect(nav.getByRole("link", { name: "Randevu" })).toBeVisible();
   await expect(nav.getByRole("link", { name: "Favori" })).toBeVisible();
   await expect(nav.getByRole("link", { name: "Hesap" })).toBeVisible();
@@ -29,47 +37,88 @@ test("uygulama kabuğu mobil ve masaüstünde durur", async ({ page }) => {
   expect(shellTokens.safeTop.length).toBeGreaterThan(0);
   expect(shellTokens.header).toBe("56px");
   expect(shellTokens.tabbar).toBe("56px");
-  const headerPad = await page.locator("header.am-header").evaluate((el) => getComputedStyle(el).paddingTop);
+  const headerPad = await page
+    .locator("header.am-header")
+    .evaluate((el) => getComputedStyle(el).paddingTop);
   expect(Number.parseFloat(headerPad)).toBeGreaterThanOrEqual(8);
 
-  await page.screenshot({ path: "artifacts/app-shell-mobile-390.png", fullPage: false });
-  await page.screenshot({ path: "artifacts/app-kesif-mobile-390.png", fullPage: false });
+  await page.screenshot({
+    path: "artifacts/app-shell-mobile-390.png",
+    fullPage: false,
+  });
+  await page.screenshot({
+    path: "artifacts/app-kesif-mobile-390.png",
+    fullPage: false,
+  });
 
   await page.goto("/app?q=kuaf%C3%B6r");
   await expect(page.getByRole("heading", { name: "Arama" })).toBeVisible();
   await expect(page.getByRole("searchbox")).toHaveValue("kuaför");
-  await expect(page.getByRole("heading", { name: "Örnek Kuaför" })).toBeVisible();
-  await page.screenshot({ path: "artifacts/app-ara-mobile-390.png", fullPage: false });
+  await expect(
+    page.getByRole("heading", { name: "Örnek Kuaför" }),
+  ).toBeVisible();
+  await page.screenshot({
+    path: "artifacts/app-ara-mobile-390.png",
+    fullPage: false,
+  });
   await page.goto("/app");
 
   await page.goto("/app?iskelet=1");
   await expect(page.getByRole("status")).toBeVisible();
-  await page.screenshot({ path: "artifacts/app-skeleton-mobile-390.png", fullPage: false });
+  await page.screenshot({
+    path: "artifacts/app-skeleton-mobile-390.png",
+    fullPage: false,
+  });
   await page.goto("/app");
 
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/app");
-  await expect(page.getByRole("navigation", { name: "Müşteri gezinme" })).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "Müşteri gezinme" }),
+  ).toBeVisible();
   await expect(page.locator(".am-shell")).toBeVisible();
-  await page.screenshot({ path: "artifacts/app-shell-desktop.png", fullPage: false });
+  await page.screenshot({
+    path: "artifacts/app-shell-desktop.png",
+    fullPage: false,
+  });
 
   await page.emulateMedia({ reducedMotion: "reduce" });
-  const motion = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--am-motion-base").trim());
+  const motion = await page.evaluate(() =>
+    getComputedStyle(document.documentElement)
+      .getPropertyValue("--am-motion-base")
+      .trim(),
+  );
   expect(motion).toBe("80ms");
 });
 
-test("giriş kabuğu sekmesiz kalır ve sayfa geçişi çalışır", async ({ page }) => {
+test("giriş kabuğu sekmesiz kalır ve sayfa geçişi çalışır", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/app/giris");
-  await expect(page.getByRole("heading", { name: "Adada randevu ve rezervasyon dağılmasın." })).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Müşteri gezinme" })).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", {
+      name: "Adada randevu ve rezervasyon dağılmasın.",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "Müşteri gezinme" }),
+  ).toHaveCount(0);
   await expect(page.getByRole("tab", { name: "Müşteri" })).toBeVisible();
   await expect(page.getByRole("main")).toHaveAttribute("id", "icerik");
-  await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute("href", "#icerik");
-  await page.screenshot({ path: "artifacts/app-giris-mobile-390.png", fullPage: false });
+  await expect(page.getByRole("link", { name: "İçeriğe geç" })).toHaveAttribute(
+    "href",
+    "#icerik",
+  );
+  await page.screenshot({
+    path: "artifacts/app-giris-mobile-390.png",
+    fullPage: false,
+  });
 });
 
-test("keşif → işletme detayı → geri: yığın korunur, alt şerit içeriği örtmez", async ({ page }) => {
+test("keşif → işletme detayı → geri: yığın korunur, alt şerit içeriği örtmez", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.addInitScript(() => {
     try {
@@ -100,11 +149,13 @@ test("keşif → işletme detayı → geri: yığın korunur, alt şerit içeri�
   expect(metrics).not.toBeNull();
   expect(metrics?.mainScrolls).toBe(true);
   expect(metrics?.navHeight).toBeGreaterThanOrEqual(56);
-  expect(metrics?.paddingBottom).toBeGreaterThanOrEqual((metrics?.navHeight ?? 0));
+  expect(metrics?.paddingBottom).toBeGreaterThanOrEqual(
+    metrics?.navHeight ?? 0,
+  );
   expect(metrics?.navBottom).toBeGreaterThanOrEqual(0);
 
   await page.getByRole("link", { name: "Örnek Kuaför" }).first().click();
-  await expect(page).toHaveURL(/\/app\/isletmeler\/1/);
+  await expect(page).toHaveURL(/\/app\/isletmeler\/[^/]+$/);
   const back = page.locator("[data-am-back]");
   await expect(back).toBeVisible();
   const backBox = await back.boundingBox();
@@ -116,7 +167,9 @@ test("keşif → işletme detayı → geri: yığın korunur, alt şerit içeri�
   await expect(page.getByRole("heading", { name: "Keşif" })).toBeVisible();
 });
 
-test("doğrudan girişte geri düğmesi üst rotaya iner (geçmiş yok)", async ({ page }) => {
+test("doğrudan girişte geri düğmesi üst rotaya iner (geçmiş yok)", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.addInitScript(() => {
     try {
@@ -128,8 +181,12 @@ test("doğrudan girişte geri düğmesi üst rotaya iner (geçmiş yok)", async 
   });
 
   await page.goto("/app/isletmeler/2");
-  await expect(page.getByRole("heading", { name: "Örnek Güzellik" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Örnek Güzellik" }),
+  ).toBeVisible();
   await page.locator("[data-am-back]").click();
   await expect(page).toHaveURL(/\/app$/);
-  await expect(page.getByRole("navigation", { name: "Müşteri gezinme" })).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "Müşteri gezinme" }),
+  ).toBeVisible();
 });

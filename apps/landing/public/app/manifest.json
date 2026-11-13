@@ -8,16 +8,11 @@
   "start_url": "/app?source=pwa",
   "scope": "/app",
   "display": "standalone",
-  "display_override": [
-    "standalone"
-  ],
-  "orientation": "portrait-primary",
+  "display_override": ["standalone"],
+  "orientation": "any",
   "theme_color": "#F8F0E3",
   "background_color": "#fffbf2",
-  "categories": [
-    "lifestyle",
-    "business"
-  ],
+  "categories": ["lifestyle", "business"],
   "prefer_related_applications": false,
   "icons": [
     {
@@ -55,6 +50,28 @@
       "name": "Randevularım",
       "short_name": "Randevu",
       "url": "/app/randevular",
+      "icons": [
+        {
+          "src": "/app/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "İşletme paneli",
+      "short_name": "İşletme",
+      "url": "/app/isletme",
+      "icons": [
+        {
+          "src": "/app/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Yönetici paneli",
+      "short_name": "Yönetim",
+      "url": "/app/yonetim",
       "icons": [
         {
           "src": "/app/icons/icon-192.png",
