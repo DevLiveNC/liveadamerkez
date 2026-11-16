@@ -1,95 +1,192 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
-import { yonetimApp } from "@ada-merkez/copy";
-import { EmptyState } from "../../../../components/app/EmptyState";
-import { createCategory, fetchCategories, type AdminCategory } from "../../../../lib/yonetim-api";
+import { useCallback, useState, type FormEvent } from "react";
+import { panel, yonetimApp } from "@ada-merkez/copy";
+import { BottomSheet } from "@ada-merkez/ui";
+import {
+  PanelEmpty,
+  PanelError,
+  PanelFeedback,
+  PanelIntro,
+  PanelLoading,
+  SearchField,
+} from "../../../../components/panel/PanelKit";
+import {
+  useOnline,
+  usePanelData,
+  usePanelMutation,
+} from "../../../../components/panel/use-panel-data";
+import {
+  createCategory,
+  fetchCategories,
+  patchCategory,
+  type AdminCategory,
+} from "../../../../lib/yonetim-api";
+import { matchesSearch } from "../../../../lib/panel-workflow";
 
 export function IcerikView() {
-  const [rows, setRows] = useState<AdminCategory[] | null>(null);
-  const [error, setError] = useState(false);
-  const [name, setName] = useState("");
-  const [kind, setKind] = useState("service");
-  const [saved, setSaved] = useState(false);
-
-  const load = useCallback(async () => {
-    try {
-      const data = await fetchCategories();
-      setRows(data.categories);
-      setError(false);
-    } catch {
-      setError(true);
-      setRows([]);
+  const loader = useCallback(
+    async () => (await fetchCategories()).categories,
+    [],
+  );
+  const query = usePanelData(loader, "admin-categories");
+  const mutation = usePanelMutation();
+  const online = useOnline();
+  const [search, setSearch] = useState("");
+  const [editor, setEditor] = useState<AdminCategory | "new" | null>(null);
+  const row = editor && editor !== "new" ? editor : null;
+  const visible = (query.data ?? []).filter((item) =>
+    matchesSearch([item.name, item.slug, item.kind], search),
+  );
+  const close = () => {
+    if (!mutation.busy) {
+      setEditor(null);
+      mutation.setError(null);
     }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
-
-  async function onSubmit(event: FormEvent) {
+  };
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSaved(false);
-    await createCategory({ name, kind });
-    setName("");
-    setSaved(true);
-    await load();
+    const form = new FormData(event.currentTarget);
+    const input = {
+      name: String(form.get("name") ?? "").trim(),
+      kind: String(form.get("kind") ?? "service"),
+    };
+    const ok = await mutation.run(async () => {
+      if (row) await patchCategory(row.id, input);
+      else await createCategory(input);
+    }, panel.saved);
+    if (ok) {
+      setEditor(null);
+      await query.refresh();
+    }
   }
-
-  if (error) return <EmptyState kind="hata" />;
-  if (!rows) {
-    return (
-      <div className="yonetim-head">
-        <h1>{yonetimApp.contentTitle}</h1>
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <div className="yonetim-head">
-        <p className="t-label">{yonetimApp.who}</p>
-        <h1>{yonetimApp.contentTitle}</h1>
-        <p className="t-sm t-muted">{yonetimApp.contentLead}</p>
-      </div>
-      <form className="form-card yonetim-form" onSubmit={(e) => void onSubmit(e)} style={{ marginBottom: 20 }}>
-        <div className="field">
-          <label className="field-label" htmlFor="cat-name">
-            {yonetimApp.categoryName}
-          </label>
-          <input className="input" id="cat-name" value={name} onChange={(e) => setName(e.target.value)} required />
-        </div>
-        <div className="field">
-          <label className="field-label" htmlFor="cat-kind">
-            {yonetimApp.categoryKind}
-          </label>
-          <input className="input" id="cat-kind" value={kind} onChange={(e) => setKind(e.target.value)} required />
-        </div>
-        <button className="btn btn-navy" type="submit">
-          {yonetimApp.addCategory}
-        </button>
-        {saved ? (
-          <p className="t-sm t-muted" style={{ marginTop: 8 }}>
-            {yonetimApp.saved}
-          </p>
-        ) : null}
-      </form>
-      {rows.length === 0 ? (
-        <EmptyState kind="sonuc-yok" title={yonetimApp.emptyContentTitle} body={yonetimApp.emptyContentBody} />
+    <>
+      <PanelIntro
+        eyebrow={yonetimApp.panelName}
+        title={yonetimApp.contentTitle}
+        action={
+          <button
+            type="button"
+            className="am-btn am-btn--primary"
+            disabled={!online || !query.data}
+            onClick={() => {
+              mutation.setError(null);
+              setEditor("new");
+            }}
+          >
+            {yonetimApp.addCategory}
+          </button>
+        }
+      >
+        {yonetimApp.contentLead}
+      </PanelIntro>
+      <SearchField value={search} onChange={setSearch} />
+      {query.loading ? (
+        <PanelLoading />
+      ) : !query.data ? (
+        <PanelError
+          message={query.error ?? ""}
+          retry={() => {
+            void query.refresh();
+          }}
+        />
       ) : (
-        <div className="yonetim-list">
-          {rows.map((row) => (
-            <article key={row.id} className="yonetim-card">
-              <p className="t-sm" style={{ fontWeight: 600 }}>
-                {row.name}
-              </p>
-              <p className="t-xs t-muted">
-                {row.slug} · {row.kind}
-              </p>
-            </article>
-          ))}
-        </div>
+        <section className="pn-card mt-4">
+          <PanelFeedback
+            success={mutation.success}
+            error={!editor ? mutation.error : null}
+          />
+          {query.error ? <PanelError compact message={query.error} /> : null}
+          {!visible.length ? (
+            <PanelEmpty
+              title={search ? panel.noResults : yonetimApp.emptyContentTitle}
+              body={search ? panel.noResultsBody : yonetimApp.emptyContentBody}
+            />
+          ) : (
+            visible.map((item) => (
+              <div className="pn-entity" key={item.id}>
+                <div className="pn-entity-body">
+                  <h4>{item.name}</h4>
+                  <p>
+                    {item.slug} · {item.kind}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="am-btn am-btn--ghost am-btn--sm"
+                  disabled={!online}
+                  onClick={() => {
+                    mutation.setError(null);
+                    setEditor(item);
+                  }}
+                >
+                  {panel.edit}
+                </button>
+              </div>
+            ))
+          )}
+        </section>
       )}
-    </div>
+      <BottomSheet
+        open={Boolean(editor)}
+        onClose={close}
+        title={row ? panel.edit : yonetimApp.addCategory}
+        closeLabel={panel.close}
+        className="pn-edit-sheet"
+      >
+        <form
+          key={row?.id ?? "new"}
+          className="pn-form"
+          onSubmit={(event) => {
+            void submit(event);
+          }}
+        >
+          <div className="pn-field">
+            <label htmlFor="category-name">{yonetimApp.categoryName}</label>
+            <input
+              id="category-name"
+              name="name"
+              defaultValue={row?.name ?? ""}
+              minLength={2}
+              maxLength={80}
+              required
+            />
+          </div>
+          <div className="pn-field">
+            <label htmlFor="category-kind">{yonetimApp.categoryKind}</label>
+            <select
+              id="category-kind"
+              name="kind"
+              defaultValue={row?.kind ?? "service"}
+            >
+              <option value="service">{panel.serviceCategory}</option>
+              <option value="table">{panel.tableCategory}</option>
+              {row && !["service", "table"].includes(row.kind) ? (
+                <option value={row.kind}>{row.kind}</option>
+              ) : null}
+            </select>
+          </div>
+          <PanelFeedback error={mutation.error} />
+          <div className="pn-form-actions">
+            <button
+              type="button"
+              className="am-btn am-btn--ghost"
+              disabled={mutation.busy}
+              onClick={close}
+            >
+              {panel.cancel}
+            </button>
+            <button
+              type="submit"
+              className="am-btn am-btn--primary"
+              disabled={mutation.busy || !online}
+            >
+              {mutation.busy ? panel.saving : panel.save}
+            </button>
+          </div>
+        </form>
+      </BottomSheet>
+    </>
   );
 }

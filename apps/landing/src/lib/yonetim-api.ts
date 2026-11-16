@@ -1,3 +1,5 @@
+import { panelRequest } from "./panel-api";
+
 export type AdminBusiness = {
   id: string;
   name: string;
@@ -77,55 +79,55 @@ export type AuditRow = {
   createdAt: string;
   actorName: string | null;
   actorPhone: string | null;
+  detail?: unknown;
 };
-
-async function parse<T>(res: Response): Promise<T> {
-  const body = (await res.json()) as T & { ok?: boolean };
-  if (!res.ok) throw new Error("İstek başarısız.");
-  return body;
-}
-
-function yonetimFetch(path: string, init?: RequestInit) {
-  return fetch(`/app/api/yonetim${path.replace(/^\/v1/, "")}`, {
-    ...init,
-    credentials: "same-origin",
-    cache: "no-store",
-  });
-}
 
 export async function fetchBusinesses(status?: string) {
   const q = status ? `?status=${encodeURIComponent(status)}` : "";
-  const res = await yonetimFetch(`/v1/admin/businesses${q}`);
-  return parse<{ ok: boolean; businesses: AdminBusiness[] }>(res);
+  return panelRequest<{ ok: boolean; businesses: AdminBusiness[] }>(
+    `/app/api/yonetim/admin/businesses${q}`,
+  );
 }
 
-export async function patchBusiness(id: string, status: "approved" | "rejected") {
-  const res = await yonetimFetch(`/v1/admin/businesses/${id}`, {
-    method: "PATCH",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ status }),
-  });
-  return parse<{ ok: boolean }>(res);
+export async function patchBusiness(
+  id: string,
+  status: "approved" | "rejected",
+) {
+  return panelRequest<{ ok: boolean }>(
+    "/app/api/yonetim" + `/v1/admin/businesses/${id}`.replace(/^\/v1/, ""),
+    {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ status }),
+    },
+  );
 }
 
 export async function fetchApplications(status?: string) {
   const q = status ? `?status=${encodeURIComponent(status)}` : "";
-  const res = await yonetimFetch(`/v1/admin/applications${q}`);
-  return parse<{ ok: boolean; applications: AdminApplication[] }>(res);
+  return panelRequest<{ ok: boolean; applications: AdminApplication[] }>(
+    `/app/api/yonetim/admin/applications${q}`,
+  );
 }
 
-export async function patchApplication(id: string, status: "approved" | "rejected" | "review") {
-  const res = await yonetimFetch(`/v1/admin/applications/${id}`, {
-    method: "PATCH",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ status }),
-  });
-  return parse<{ ok: boolean }>(res);
+export async function patchApplication(
+  id: string,
+  status: "approved" | "rejected" | "review",
+) {
+  return panelRequest<{ ok: boolean }>(
+    "/app/api/yonetim" + `/v1/admin/applications/${id}`.replace(/^\/v1/, ""),
+    {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ status }),
+    },
+  );
 }
 
 export async function fetchUsers() {
-  const res = await yonetimFetch("/v1/admin/users");
-  return parse<{ ok: boolean; users: AdminUser[] }>(res);
+  return panelRequest<{ ok: boolean; users: AdminUser[] }>(
+    "/app/api/yonetim/admin/users",
+  );
 }
 
 export type AdminBookingCounted = {
@@ -134,55 +136,120 @@ export type AdminBookingCounted = {
   app: number;
 };
 
-export async function fetchBookings(query?: { from?: string; to?: string }) {
+export type AdminBookingQuery = {
+  from?: string;
+  to?: string;
+  tenantId?: string;
+  status?: string;
+  channel?: string;
+};
+
+export async function fetchBookings(query?: AdminBookingQuery) {
   const params = new URLSearchParams();
   if (query?.from) params.set("from", query.from);
   if (query?.to) params.set("to", query.to);
+  if (query?.tenantId) params.set("tenantId", query.tenantId);
+  if (query?.status && query.status !== "all")
+    params.set("status", query.status);
+  if (query?.channel && query.channel !== "all")
+    params.set("channel", query.channel);
   const suffix = params.toString() ? `?${params}` : "";
-  const res = await yonetimFetch(`/v1/admin/bookings${suffix}`);
-  return parse<{
+  return panelRequest<{
     ok: boolean;
     bookings: AdminBooking[];
     total?: number;
     truncated?: boolean;
     counted?: AdminBookingCounted;
-  }>(res);
+  }>(`/app/api/yonetim/admin/bookings${suffix}`);
 }
 
-export async function patchBooking(id: string, status: "confirmed" | "cancelled") {
-  const res = await yonetimFetch(`/v1/admin/bookings/${id}`, {
-    method: "PATCH",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ status }),
-  });
-  return parse<{ ok: boolean }>(res);
+export async function patchBooking(
+  id: string,
+  status: "confirmed" | "cancelled",
+) {
+  return panelRequest<{ ok: boolean }>(
+    "/app/api/yonetim" + `/v1/admin/bookings/${id}`.replace(/^\/v1/, ""),
+    {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ status }),
+    },
+  );
 }
 
 export async function fetchCategories() {
-  const res = await yonetimFetch("/v1/admin/categories");
-  return parse<{ ok: boolean; categories: AdminCategory[] }>(res);
+  return panelRequest<{ ok: boolean; categories: AdminCategory[] }>(
+    "/app/api/yonetim/admin/categories",
+  );
 }
 
-export async function createCategory(input: { name: string; kind: string; slug?: string }) {
-  const res = await yonetimFetch("/v1/admin/categories", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(input),
-  });
-  return parse<{ ok: boolean }>(res);
+export async function createCategory(input: {
+  name: string;
+  kind: string;
+  slug?: string;
+}) {
+  return panelRequest<{ ok: boolean }>(
+    "/app/api/yonetim" + "/v1/admin/categories".replace(/^\/v1/, ""),
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(input),
+    },
+  );
 }
 
-export async function fetchReports() {
-  const res = await yonetimFetch("/v1/admin/reports");
-  return parse<{ ok: boolean; reports: AdminReports }>(res);
+export type DailyBookingSummary = {
+  day: string;
+  total: number;
+  confirmed: number;
+  pending: number;
+  cancelled: number;
+  noShow: number;
+  app: number;
+  whatsapp: number;
+};
+export type BookingReport = {
+  from: string;
+  to: string;
+  days: DailyBookingSummary[];
+  total: number;
+  active: number;
+  app: number;
+  whatsapp: number;
+};
+export async function fetchReports(range?: { from: string; to: string }) {
+  const query = range
+    ? `?from=${encodeURIComponent(range.from)}&to=${encodeURIComponent(range.to)}`
+    : "";
+  return panelRequest<{
+    ok: boolean;
+    reports: AdminReports;
+    summary?: BookingReport;
+  }>(`/app/api/yonetim/admin/reports${query}`);
 }
 
 export async function fetchHealth() {
-  const res = await yonetimFetch("/v1/admin/health");
-  return parse<{ ok: boolean; health: AdminHealth }>(res);
+  return panelRequest<{ ok: boolean; health: AdminHealth }>(
+    "/app/api/yonetim/admin/health",
+  );
 }
 
 export async function fetchAudit() {
-  const res = await yonetimFetch("/v1/admin/audit");
-  return parse<{ ok: boolean; audit: AuditRow[] }>(res);
+  return panelRequest<{ ok: boolean; audit: AuditRow[] }>(
+    "/app/api/yonetim/admin/audit",
+  );
+}
+
+export async function patchCategory(
+  id: string,
+  input: { name: string; kind: string },
+) {
+  return panelRequest<{ ok: boolean; category: AdminCategory }>(
+    `/app/api/yonetim/admin/categories/${id}`,
+    {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(input),
+    },
+  );
 }

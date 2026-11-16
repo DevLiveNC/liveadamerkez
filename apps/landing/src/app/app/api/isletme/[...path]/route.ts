@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { apiMessages } from "@ada-merkez/copy";
+import { apiMessages, panel } from "@ada-merkez/copy";
 import { SESSION_COOKIE } from "@ada-merkez/shared";
 import { apiBase } from "../../../../../lib/api";
 import { isTrustedSameOrigin } from "../../../../../lib/bff-origin";
@@ -14,13 +14,21 @@ function cookieOptions() {
   return {
     httpOnly: true,
     sameSite: "lax" as const,
-    secure: process.env.NODE_ENV === "production",
+    secure:
+      process.env.COOKIE_SECURE === "false"
+        ? false
+        : process.env.COOKIE_SECURE === "true"
+          ? true
+          : process.env.NODE_ENV === "production",
     path: "/app",
     maxAge: 8 * 60 * 60,
   };
 }
 
-async function proxy(request: Request, context: { params: Promise<{ path: string[] }> }) {
+async function proxy(
+  request: Request,
+  context: { params: Promise<{ path: string[] }> },
+) {
   const headers: Record<string, string> = { "Cache-Control": "no-store" };
   if (MUTATING.has(request.method) && !isTrustedSameOrigin(request)) {
     return NextResponse.json(
@@ -31,7 +39,11 @@ async function proxy(request: Request, context: { params: Promise<{ path: string
   const base = apiBase();
   if (!base) {
     return NextResponse.json(
-      { ok: false, code: "SERVICE_UNAVAILABLE", message: apiMessages.authRequired },
+      {
+        ok: false,
+        code: "SERVICE_UNAVAILABLE",
+        message: apiMessages.authRequired,
+      },
       { status: 503, headers },
     );
   }
@@ -50,12 +62,25 @@ async function proxy(request: Request, context: { params: Promise<{ path: string
   if (contentType) upstreamHeaders["content-type"] = contentType;
   if (token) upstreamHeaders.authorization = `Bearer ${token}`;
   const body = MUTATING.has(request.method) ? await request.text() : undefined;
-  const upstream = await fetch(`${base}/v1/${suffix}${search}`, {
-    method: request.method,
-    headers: upstreamHeaders,
-    body: body && body.length ? body : undefined,
-    cache: "no-store",
-  });
+  let upstream: Response;
+  try {
+    upstream = await fetch(`${base}/v1/${suffix}${search}`, {
+      method: request.method,
+      headers: upstreamHeaders,
+      body: body && body.length ? body : undefined,
+      cache: "no-store",
+      signal: AbortSignal.timeout(15_000),
+    });
+  } catch {
+    return NextResponse.json(
+      {
+        ok: false,
+        code: "UPSTREAM_UNAVAILABLE",
+        message: panel.unavailableError,
+      },
+      { status: 503, headers },
+    );
+  }
   const raw = await upstream.text();
   let payload: { token?: string } | null = null;
   try {

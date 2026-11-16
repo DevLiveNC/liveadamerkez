@@ -74,12 +74,27 @@ async function main(): Promise<void> {
   ] as const;
 
   for (const row of accounts) {
-    await pool.query(
+    const account = await pool.query<{ id: string }>(
       `INSERT INTO app_account (phone, name, role, tenant_id)
        VALUES ($1, $2, $3, $4)
-       ON CONFLICT (phone, role) DO UPDATE SET name = EXCLUDED.name, tenant_id = EXCLUDED.tenant_id`,
+       ON CONFLICT (phone, role) DO UPDATE SET name = EXCLUDED.name, tenant_id = EXCLUDED.tenant_id
+       RETURNING id`,
       [row.phone, row.name, row.role, row.tenantId],
     );
+    if (row.role === "business" && tenantId) {
+      /* API kiracı yetkisini business_member üzerinden doğrular; yalnız
+         app_account.tenant_id yazmak panel girişini açmaz. */
+      await pool.query(
+        `INSERT INTO business_member (user_id, tenant_id, member_role)
+         VALUES ($1, $2, 'owner')
+         ON CONFLICT (user_id, tenant_id) DO NOTHING`,
+        [account.rows[0]?.id, tenantId],
+      );
+      await pool.query(
+        `UPDATE business SET owner_user_id = $1 WHERE id = $2`,
+        [account.rows[0]?.id, tenantId],
+      );
+    }
     const hash = hashOtp(row.phone, "login", row.code);
     await pool.query(
       `INSERT INTO otp_challenge (phone, purpose, code_hash, send_count, attempt_count, window_started_at, last_sent_at, expires_at)

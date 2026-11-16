@@ -1,4 +1,4 @@
-import { and, count, desc, eq, gte, lt, notInArray } from "drizzle-orm";
+import { and, count, desc, eq, gte, lt, notInArray, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import {
   TenantAccessError,
@@ -6,14 +6,24 @@ import {
   maskPhone,
   nicosiaWallTimeToUtc,
   utcToNicosiaParts,
+  nicosiaDateKey,
 } from "@ada-merkez/shared";
 import { BookingStatusError } from "./bookings.js";
 import { checkDatabase, getPool, type Database } from "./client.js";
 import { getAccountById } from "./accounts.js";
 import * as schema from "./schema.js";
-import { appAccount, auditLog, booking, business, businessApplication, category } from "./schema.js";
+import {
+  appAccount,
+  auditLog,
+  booking,
+  business,
+  businessApplication,
+  category,
+} from "./schema.js";
 
-export async function withAdminDb<T>(fn: (db: Database) => Promise<T>): Promise<T> {
+export async function withAdminDb<T>(
+  fn: (db: Database) => Promise<T>,
+): Promise<T> {
   const client = await getPool().connect();
   try {
     await client.query("BEGIN");
@@ -91,17 +101,28 @@ export async function setBusinessStatus(
   status: "approved" | "rejected",
 ) {
   return withAdminDb(async (db) => {
-    const [existing] = await db.select().from(business).where(eq(business.id, businessId)).limit(1);
+    const [existing] = await db
+      .select()
+      .from(business)
+      .where(eq(business.id, businessId))
+      .limit(1);
     if (!existing) throw new TenantAccessError();
     const [row] = await db
       .update(business)
       .set({ status, updatedAt: new Date() })
       .where(eq(business.id, businessId))
       .returning();
-    await writeAudit(db, actorUserId, `business.${status}`, "business", businessId, {
-      from: existing.status,
-      to: status,
-    });
+    await writeAudit(
+      db,
+      actorUserId,
+      `business.${status}`,
+      "business",
+      businessId,
+      {
+        from: existing.status,
+        to: status,
+      },
+    );
     return row;
   });
 }
@@ -148,10 +169,17 @@ export async function setApplicationStatus(
         status: businessApplication.status,
         updatedAt: businessApplication.updatedAt,
       });
-    await writeAudit(db, actorUserId, `application.${status}`, "business_application", applicationId, {
-      from: existing.status,
-      to: status,
-    });
+    await writeAudit(
+      db,
+      actorUserId,
+      `application.${status}`,
+      "business_application",
+      applicationId,
+      {
+        from: existing.status,
+        to: status,
+      },
+    );
     return row;
   });
 }
@@ -165,7 +193,8 @@ export function adminBookingRangeError(
 ): "invalid_range" | "range_too_large" | null {
   if (!from || !to) return null;
   if (from.getTime() >= to.getTime()) return "invalid_range";
-  if (to.getTime() - from.getTime() > ADMIN_BOOKING_MAX_RANGE_MS) return "range_too_large";
+  if (to.getTime() - from.getTime() > ADMIN_BOOKING_MAX_RANGE_MS)
+    return "range_too_large";
   return null;
 }
 
@@ -186,11 +215,22 @@ export async function listAdminUsers() {
   return rows.map((row) => ({ ...row, phone: maskPhone(row.phone) }));
 }
 
-export async function listAdminBookings(range?: { from?: Date; to?: Date }) {
+export type AdminBookingFilters = {
+  from?: Date;
+  to?: Date;
+  tenantId?: string;
+  status?: "pending" | "confirmed" | "cancelled" | "no_show";
+  channel?: "app" | "whatsapp";
+};
+
+export async function listAdminBookings(range?: AdminBookingFilters) {
   return withAdminDb(async (db) => {
     const filters = [];
     if (range?.from) filters.push(gte(booking.startsAt, range.from));
     if (range?.to) filters.push(lt(booking.startsAt, range.to));
+    if (range?.tenantId) filters.push(eq(booking.tenantId, range.tenantId));
+    if (range?.status) filters.push(eq(booking.status, range.status));
+    if (range?.channel) filters.push(eq(booking.channel, range.channel));
     const where = filters.length ? and(...filters) : undefined;
     const active = notInArray(booking.status, ["cancelled", "no_show"]);
     const countedWhere = where ? and(where, active) : active;
@@ -249,7 +289,11 @@ export async function setAdminBookingStatus(
   nextStatus: "pending" | "confirmed" | "cancelled" | "no_show",
 ) {
   return withAdminDb(async (db) => {
-    const [existing] = await db.select().from(booking).where(eq(booking.id, bookingId)).limit(1);
+    const [existing] = await db
+      .select()
+      .from(booking)
+      .where(eq(booking.id, bookingId))
+      .limit(1);
     if (!existing) throw new TenantAccessError();
     if (!canTransitionBookingStatus(existing.status, nextStatus)) {
       throw new BookingStatusError();
@@ -270,10 +314,17 @@ export async function setAdminBookingStatus(
         notes: booking.notes,
         updatedAt: booking.updatedAt,
       });
-    await writeAudit(db, actorUserId, `booking.${nextStatus}`, "booking", bookingId, {
-      from: existing.status,
-      to: nextStatus,
-    });
+    await writeAudit(
+      db,
+      actorUserId,
+      `booking.${nextStatus}`,
+      "booking",
+      bookingId,
+      {
+        from: existing.status,
+        to: nextStatus,
+      },
+    );
     return row;
   });
 }
@@ -326,7 +377,11 @@ export async function updateAdminCategory(
   patch: { name?: string; kind?: string },
 ) {
   return withAdminDb(async (db) => {
-    const [existing] = await db.select().from(category).where(eq(category.id, categoryId)).limit(1);
+    const [existing] = await db
+      .select()
+      .from(category)
+      .where(eq(category.id, categoryId))
+      .limit(1);
     if (!existing) throw new TenantAccessError();
     const [row] = await db
       .update(category)
@@ -337,31 +392,60 @@ export async function updateAdminCategory(
       })
       .where(eq(category.id, categoryId))
       .returning();
-    await writeAudit(db, actorUserId, "category.update", "category", categoryId, {
-      name: row?.name,
-    });
+    await writeAudit(
+      db,
+      actorUserId,
+      "category.update",
+      "category",
+      categoryId,
+      {
+        name: row?.name,
+      },
+    );
     return row;
   });
 }
 
 function nicosiaTodayWindow(now = new Date()) {
   const parts = utcToNicosiaParts(now);
-  const start = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day, 0, 0, 0);
-  const end = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day + 1, 0, 0, 0);
+  const start = nicosiaWallTimeToUtc(
+    parts.year,
+    parts.month,
+    parts.day,
+    0,
+    0,
+    0,
+  );
+  const end = nicosiaWallTimeToUtc(
+    parts.year,
+    parts.month,
+    parts.day + 1,
+    0,
+    0,
+    0,
+  );
   return { start, end };
 }
 
 export async function adminReports() {
   const { start, end } = nicosiaTodayWindow();
   return withAdminDb(async (db) => {
-    const [pendingBiz] = await db.select({ n: count() }).from(business).where(eq(business.status, "pending"));
-    const [approvedBiz] = await db.select({ n: count() }).from(business).where(eq(business.status, "approved"));
+    const [pendingBiz] = await db
+      .select({ n: count() })
+      .from(business)
+      .where(eq(business.status, "pending"));
+    const [approvedBiz] = await db
+      .select({ n: count() })
+      .from(business)
+      .where(eq(business.status, "approved"));
     const [users] = await db.select({ n: count() }).from(appAccount);
     const [todayBookings] = await db
       .select({ n: count() })
       .from(booking)
       .where(and(gte(booking.startsAt, start), lt(booking.startsAt, end)));
-    const [applications] = await db.select({ n: count() }).from(businessApplication);
+    const [applications] = await db
+      .select({ n: count() })
+      .from(businessApplication);
     return {
       businessesPending: Number(pendingBiz?.n ?? 0),
       businessesApproved: Number(approvedBiz?.n ?? 0),
@@ -390,6 +474,11 @@ export async function listAuditLog() {
       .leftJoin(appAccount, eq(auditLog.actorUserId, appAccount.id))
       .orderBy(desc(auditLog.createdAt))
       .limit(100),
+  ).then((rows) =>
+    rows.map((row) => ({
+      ...row,
+      actorPhone: row.actorPhone ? maskPhone(row.actorPhone) : null,
+    })),
   );
 }
 
@@ -402,5 +491,108 @@ export async function adminHealth() {
     waitlistOpen: false,
     whatsapp: "not_connected" as const,
     queue: "closed" as const,
+  };
+}
+
+export type DailyBookingSummary = {
+  day: string;
+  total: number;
+  confirmed: number;
+  pending: number;
+  cancelled: number;
+  noShow: number;
+  app: number;
+  whatsapp: number;
+};
+
+/** Bütün aralığı veritabanında sayar; listelerin 200 satır sınırı rapora sızmaz. */
+export async function adminBookingReport(range: { from: Date; to: Date }) {
+  const timezone = "Europe/Nicosia";
+  const day =
+    sql<string>`to_char(${booking.startsAt} AT TIME ZONE ${timezone}, 'YYYY-MM-DD')`.mapWith(
+      String,
+    );
+  const total = count();
+  const confirmed =
+    sql<number>`count(*) filter (where ${booking.status} = 'confirmed')`.mapWith(
+      Number,
+    );
+  const pending =
+    sql<number>`count(*) filter (where ${booking.status} = 'pending')`.mapWith(
+      Number,
+    );
+  const cancelled =
+    sql<number>`count(*) filter (where ${booking.status} = 'cancelled')`.mapWith(
+      Number,
+    );
+  const noShow =
+    sql<number>`count(*) filter (where ${booking.status} = 'no_show')`.mapWith(
+      Number,
+    );
+  const app =
+    sql<number>`count(*) filter (where ${booking.channel} = 'app' and ${booking.status} in ('pending', 'confirmed'))`.mapWith(
+      Number,
+    );
+  const whatsapp =
+    sql<number>`count(*) filter (where ${booking.channel} = 'whatsapp' and ${booking.status} in ('pending', 'confirmed'))`.mapWith(
+      Number,
+    );
+  const rows = await withAdminDb((db) =>
+    db
+      .select({
+        day,
+        total,
+        confirmed,
+        pending,
+        cancelled,
+        noShow,
+        app,
+        whatsapp,
+      })
+      .from(booking)
+      .where(
+        and(gte(booking.startsAt, range.from), lt(booking.startsAt, range.to)),
+      )
+      .groupBy(sql`1`)
+      .orderBy(sql`1`),
+  );
+  const byDay = new Map(rows.map((row) => [row.day, row]));
+  const days: DailyBookingSummary[] = [];
+  const cursor = new Date(range.from);
+  while (cursor < range.to && days.length <= 31) {
+    const key = nicosiaDateKey(cursor, timezone);
+    days.push(
+      byDay.get(key) ?? {
+        day: key,
+        total: 0,
+        confirmed: 0,
+        pending: 0,
+        cancelled: 0,
+        noShow: 0,
+        app: 0,
+        whatsapp: 0,
+      },
+    );
+    const parts = utcToNicosiaParts(cursor, timezone);
+    cursor.setTime(
+      nicosiaWallTimeToUtc(
+        parts.year,
+        parts.month,
+        parts.day + 1,
+        0,
+        0,
+        0,
+        timezone,
+      ).getTime(),
+    );
+  }
+  return {
+    from: nicosiaDateKey(range.from, timezone),
+    to: nicosiaDateKey(new Date(range.to.getTime() - 1), timezone),
+    days,
+    total: rows.reduce((sum, row) => sum + row.total, 0),
+    active: rows.reduce((sum, row) => sum + row.confirmed + row.pending, 0),
+    app: rows.reduce((sum, row) => sum + row.app, 0),
+    whatsapp: rows.reduce((sum, row) => sum + row.whatsapp, 0),
   };
 }

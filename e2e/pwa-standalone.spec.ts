@@ -40,9 +40,16 @@ async function emulateAndroidStandalone(page: Page) {
 
 async function expectAppShell(page: Page) {
   await expect(page).toHaveURL(/\/app\/?(\?|$)/);
-  await expect(page.getByRole("navigation", { name: "Müşteri gezinme" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Keşif" })).toHaveAttribute("aria-current", "page");
-  await expect(page.locator("body")).not.toContainText(/Adada randevu ve rezervasyon dağılmasın/i);
+  await expect(
+    page.getByRole("navigation", { name: "Müşteri gezinme" }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Keşif" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  await expect(page.locator("body")).not.toContainText(
+    /Adada randevu ve rezervasyon dağılmasın/i,
+  );
 }
 
 test("landing HTML redirects standalone before body and links the app manifest", async ({
@@ -60,7 +67,9 @@ test("landing HTML redirects standalone before body and links the app manifest",
   expect(html).toContain('location.replace("/app")');
   expect(html).toContain('p!=="/"');
   expect(html).toContain("1500");
-  expect(html).toMatch(/rel="manifest"[^>]*href="\/app\/manifest\.json"|href="\/app\/manifest\.json"[^>]*rel="manifest"/);
+  expect(html).toMatch(
+    /rel="manifest"[^>]*href="\/app\/manifest\.json"|href="\/app\/manifest\.json"[^>]*rel="manifest"/,
+  );
   expect(html).toContain('name="apple-mobile-web-app-capable"');
   expect(html).toContain('name="mobile-web-app-capable"');
   expect(html).toContain('name="apple-mobile-web-app-status-bar-style"');
@@ -76,7 +85,9 @@ test("landing HTML redirects standalone before body and links the app manifest",
   }
 });
 
-test("app manifest is installable and scope covers /app root", async ({ page }) => {
+test("app manifest is installable and scope covers /app root", async ({
+  page,
+}) => {
   await page.goto("/");
   await expect(page.locator('link[rel="manifest"]').first()).toHaveAttribute(
     "href",
@@ -101,15 +112,18 @@ test("app manifest is installable and scope covers /app root", async ({ page }) 
   expect(manifestScopeCoversPath("/app/", "/app")).toBe(false);
   expect(body.icons?.some((icon) => icon.sizes === "192x192")).toBe(true);
   expect(body.icons?.some((icon) => icon.sizes === "512x512")).toBe(true);
-  expect(body.shortcuts?.some((item) => item.url === "/app/randevular")).toBe(true);
+  expect(body.shortcuts?.some((item) => item.url === "/app/randevular")).toBe(
+    true,
+  );
   expect(JSON.stringify(body)).not.toMatch(/KKTC/i);
 
-  const startPath = new URL(body.start_url ?? "", "https://ada.invalid").pathname;
+  const startPath = new URL(body.start_url ?? "", "https://ada.invalid")
+    .pathname;
   expect(manifestScopeCoversPath(body.scope, startPath)).toBe(true);
 
   const sw = await page.request.get("/app/sw.js");
   expect(sw.headers()["service-worker-allowed"] ?? "").toBe("/app");
-  expect(await sw.text()).toMatch(/ada-merkez-app-v5/);
+  expect(await sw.text()).toMatch(/ada-merkez-app-v6/);
 
   const client = await page.context().newCDPSession(page);
   const appManifest = (await client.send("Page.getAppManifest")) as {
@@ -120,12 +134,18 @@ test("app manifest is installable and scope covers /app root", async ({ page }) 
   expect(appManifest.url ?? "").toMatch(/\/app\/manifest\.json/);
   expect(appManifest.data ?? "").toContain("/app?source=pwa");
   expect(appManifest.data ?? "").toMatch(/"scope"\s*:\s*"\/app"/);
-  expect(JSON.stringify(appManifest.errors ?? [])).not.toMatch(/start-url|scope/i);
+  expect(JSON.stringify(appManifest.errors ?? [])).not.toMatch(
+    /start-url|scope/i,
+  );
 
-  const installability = (await client.send("Page.getInstallabilityErrors")) as {
+  const installability = (await client.send(
+    "Page.getInstallabilityErrors",
+  )) as {
     errors?: { errorId?: string }[];
   };
-  const errorIds = (installability.errors ?? []).map((item) => item.errorId ?? "");
+  const errorIds = (installability.errors ?? []).map(
+    (item) => item.errorId ?? "",
+  );
   expect(errorIds).not.toContain("manifest-start-url-is-not-valid");
   expect(errorIds).not.toContain("start-url-not-valid");
   expect(errorIds.some((id) => /scope/i.test(id))).toBe(false);
@@ -171,9 +191,12 @@ test("landing SW cache of / does not shadow /app", async ({ page }) => {
     const cache = await caches.open("probe-landing-shadow");
     await cache.put(
       "/",
-      new Response("<!doctype html><html><body>LANDING_SHADOW_PROBE</body></html>", {
-        headers: { "content-type": "text/html" },
-      }),
+      new Response(
+        "<!doctype html><html><body>LANDING_SHADOW_PROBE</body></html>",
+        {
+          headers: { "content-type": "text/html" },
+        },
+      ),
     );
   });
 
@@ -181,10 +204,8 @@ test("landing SW cache of / does not shadow /app", async ({ page }) => {
   await expectAppShell(page);
   await expect(page.locator("body")).not.toContainText("LANDING_SHADOW_PROBE");
 
-  const appHtml = await page.evaluate(async () => {
-    const res = await fetch("/app", { method: "GET" });
-    return res.text();
-  });
+  const appResponse = await page.request.get("/app");
+  const appHtml = await appResponse.text();
   expect(appHtml).not.toContain("LANDING_SHADOW_PROBE");
   expect(appHtml).toContain("Keşif");
   expect(appHtml).toContain('data-dekor="app-musteri"');
@@ -198,7 +219,9 @@ test("unregisters leftover /app/ service worker scope", async ({ page }) => {
     const regs = await navigator.serviceWorker.getRegistrations();
     return regs.map((reg) => new URL(reg.scope).pathname);
   });
-  expect(scopesAfterLegacy.some((path) => path === "/app" || path === "/app/")).toBe(true);
+  expect(
+    scopesAfterLegacy.some((path) => path === "/app" || path === "/app/"),
+  ).toBe(true);
   if (!scopesAfterLegacy.includes("/app/")) {
     return;
   }
@@ -228,7 +251,9 @@ test.describe("Android Chrome standalone display-mode", () => {
   test("home-screen launch opens /app, not landing", async ({ page }) => {
     await emulateAndroidStandalone(page);
     await page.goto("/", { waitUntil: "commit" }).catch(() => undefined);
-    await page.waitForURL((url) => url.pathname === "/app" || url.pathname === "/app/");
+    await page.waitForURL(
+      (url) => url.pathname === "/app" || url.pathname === "/app/",
+    );
     await expectAppShell(page);
   });
 
@@ -266,7 +291,9 @@ test.describe("iOS Safari UA + navigator.standalone", () => {
       });
     });
     await page.goto("/", { waitUntil: "commit" }).catch(() => undefined);
-    await page.waitForURL((url) => url.pathname === "/app" || url.pathname === "/app/");
+    await page.waitForURL(
+      (url) => url.pathname === "/app" || url.pathname === "/app/",
+    );
     await expectAppShell(page);
   });
 

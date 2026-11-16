@@ -1,124 +1,220 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { isletmeApp } from "@ada-merkez/copy";
-import { nicosiaWallTimeToUtc, utcToNicosiaParts } from "@ada-merkez/shared";
-import { EmptyKabuki } from "../../../../components/isletme/EmptyKabuki";
-import { fetchSlots, formatNicosiaDate, type SlotCell } from "../../../../lib/isletme-api";
+import Link from "next/link";
+import { useCallback, useState } from "react";
+import { isletmeApp, panel } from "@ada-merkez/copy";
+import { nicosiaDateKey } from "@ada-merkez/shared";
+import {
+  DataToolbar,
+  FilterChips,
+  PanelEmpty,
+  PanelError,
+  PanelIntro,
+  PanelLoading,
+} from "../../../../components/panel/PanelKit";
+import { usePanelData } from "../../../../components/panel/use-panel-data";
+import {
+  fetchServices,
+  fetchSlots,
+  fetchStaff,
+  formatNicosiaDate,
+} from "../../../../lib/isletme-api";
+import { nicosiaDayRange } from "../../../../lib/panel-workflow";
 
 export function BosSaatlerView() {
-  const [slots, setSlots] = useState<SlotCell[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const from = nicosiaWallTimeToUtc(
-      utcToNicosiaParts(new Date()).year,
-      utcToNicosiaParts(new Date()).month,
-      utcToNicosiaParts(new Date()).day,
-      0,
-      0,
-    );
-    void fetchSlots({ from: from.toISOString(), days: 6 })
-      .then((data) => {
-        setSlots(data.slots);
-        setLoaded(true);
-      })
-      .catch(() => {
-        setError(true);
-        setLoaded(true);
-      });
-  }, []);
-
-  const grid = useMemo(() => buildGrid(slots), [slots]);
-
-  if (!loaded) return <div className="isletme-head" />;
-  if (error) return <EmptyKabuki kind="hata" />;
-
-  return (
-    <div>
-      <div className="isletme-head">
-        <h1>{isletmeApp.slotsTitle}</h1>
-        <p className="t-sm t-muted">{isletmeApp.slotsLead}</p>
-        <div className="day-nav">
-          <span className="chip" style={{ background: "var(--am-status-free-bg)", color: "var(--am-status-free-fg)" }}>
-            {isletmeApp.free}
-          </span>
-          <span className="chip">{isletmeApp.busy}</span>
-        </div>
-      </div>
-      {slots.length === 0 ? (
-        <EmptyKabuki
-          kind="sonuc-yok"
-          title={isletmeApp.slotsEmptyTitle}
-          body={isletmeApp.slotsEmptyBody}
-        />
-      ) : (
-        <div className="week">
-          <div />
-          {grid.days.map((day) => (
-            <div key={day} className="dhead">
-              {formatNicosiaDate(day, { weekday: "short", day: "numeric" })}
-            </div>
-          ))}
-          {grid.times.map((time) => (
-            <SlotRow key={time} time={time} days={grid.days} cells={grid.cells} />
-          ))}
-        </div>
-      )}
-    </div>
+  const [day, setDay] = useState(() => nicosiaDateKey(new Date()));
+  const [serviceId, setServiceId] = useState("");
+  const [staffId, setStaffId] = useState("");
+  const [freeOnly, setFreeOnly] = useState(true);
+  const loader = useCallback(async () => {
+    const [services, staff] = await Promise.all([
+      fetchServices(),
+      fetchStaff(),
+    ]);
+    const selected =
+      serviceId || services.services.find((row) => row.active)?.id;
+    const result = await fetchSlots({
+      from: nicosiaDayRange(day)!.from,
+      days: 7,
+      serviceId: selected,
+      staffId: staffId || undefined,
+    });
+    return {
+      services: services.services,
+      staff: staff.staff,
+      slots: result.slots,
+      duration: services.services.find((row) => row.id === selected)
+        ?.durationMinutes,
+    };
+  }, [day, serviceId, staffId]);
+  const query = usePanelData(
+    loader,
+    `business-slots:${day}:${serviceId}:${staffId}`,
   );
-}
-
-function SlotRow({
-  time,
-  days,
-  cells,
-}: {
-  time: string;
-  days: string[];
-  cells: Map<string, "free" | "busy">;
-}) {
+  const slots = (query.data?.slots ?? []).filter(
+    (slot) => !freeOnly || slot.status === "free",
+  );
+  const days = [
+    ...new Set(slots.map((slot) => nicosiaDateKey(new Date(slot.startsAt)))),
+  ].sort();
   return (
     <>
-      <div className="dhead" style={{ textAlign: "right", paddingRight: 8 }}>
-        {time}
+      <PanelIntro
+        eyebrow={isletmeApp.loginTitle}
+        title={isletmeApp.slotsTitle}
+        action={
+          <Link
+            className="am-btn am-btn--ghost"
+            href="/app/isletme/profil#calisma-saatleri"
+          >
+            {isletmeApp.hoursTitle}
+          </Link>
+        }
+      >
+        {panel.slotsLead}
+      </PanelIntro>
+      <div className="pn-calendar-controls">
+        <div className="pn-field">
+          <label htmlFor="slots-day">{panel.from}</label>
+          <input
+            id="slots-day"
+            type="date"
+            value={day}
+            onChange={(event) => {
+              if (nicosiaDayRange(event.target.value))
+                setDay(event.target.value);
+            }}
+          />
+        </div>
+        <div className="pn-field">
+          <label htmlFor="slots-service">{panel.service}</label>
+          <select
+            id="slots-service"
+            value={serviceId}
+            onChange={(event) => setServiceId(event.target.value)}
+          >
+            <option value="">{panel.serviceCategory}</option>
+            {query.data?.services
+              .filter((row) => row.active)
+              .map((row) => (
+                <option key={row.id} value={row.id}>
+                  {row.name} · {row.durationMinutes} {panel.minutesShort}
+                </option>
+              ))}
+          </select>
+        </div>
+        <div className="pn-field">
+          <label htmlFor="slots-staff">{isletmeApp.staffTitle}</label>
+          <select
+            id="slots-staff"
+            value={staffId}
+            onChange={(event) => setStaffId(event.target.value)}
+          >
+            <option value="">{panel.allStaff}</option>
+            {query.data?.staff
+              .filter((row) => row.active)
+              .map((row) => (
+                <option key={row.id} value={row.id}>
+                  {row.name}
+                </option>
+              ))}
+          </select>
+        </div>
       </div>
-      {days.map((day) => {
-        const key = `${day}|${time}`;
-        const status = cells.get(key);
-        if (!status) return <div key={key} className="cell" />;
-        return (
-          <div key={key} className={`cell ${status}`}>
-            {status === "busy" ? "—" : time}
-          </div>
-        );
-      })}
+      <FilterChips
+        label={isletmeApp.slotsTitle}
+        value={freeOnly ? "free" : "all"}
+        onChange={(value) => setFreeOnly(value === "free")}
+        options={[
+          ["free", panel.onlyFree],
+          ["all", panel.showAllSlots],
+        ]}
+      />
+      {query.loading ? (
+        <PanelLoading />
+      ) : !query.data ? (
+        <PanelError
+          message={query.error ?? ""}
+          retry={() => {
+            void query.refresh();
+          }}
+        />
+      ) : (
+        <>
+          <DataToolbar updated={query.updatedAt} refreshing={query.refreshing}>
+            <span>
+              {panel.suggestionZone}
+              {query.data.duration
+                ? ` · ${query.data.duration} ${panel.minutesShort}`
+                : ""}
+            </span>
+          </DataToolbar>
+          {query.error ? <PanelError compact message={query.error} /> : null}
+          {!days.length ? (
+            <div className="pn-card">
+              <PanelEmpty
+                title={isletmeApp.slotsEmptyTitle}
+                body={
+                  query.data.slots.length
+                    ? panel.noResultsBody
+                    : panel.slotsSetup
+                }
+                href="/app/isletme/profil#calisma-saatleri"
+                action={isletmeApp.addHours}
+              />
+            </div>
+          ) : (
+            <div className="pn-slot-days">
+              {days.map((key) => (
+                <section className="pn-card" key={key}>
+                  <h3>
+                    {formatNicosiaDate(nicosiaDayRange(key)!.from, {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "short",
+                    })}
+                  </h3>
+                  <div className="pn-slot-grid">
+                    {slots
+                      .filter(
+                        (slot) =>
+                          nicosiaDateKey(new Date(slot.startsAt)) === key,
+                      )
+                      .map((slot) => (
+                        <div
+                          key={`${slot.startsAt}:${slot.staffId}`}
+                          className={`pn-slot ${slot.status === "free" ? "is-free" : "is-busy"}`}
+                        >
+                          <strong>
+                            {formatNicosiaDate(slot.startsAt, {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </strong>
+                          <span>
+                            {slot.status === "free"
+                              ? isletmeApp.free
+                              : isletmeApp.busy}
+                          </span>
+                          {slot.staffId ? (
+                            <small>
+                              {
+                                query.data?.staff.find(
+                                  (row) => row.id === slot.staffId,
+                                )?.name
+                              }
+                            </small>
+                          ) : null}
+                        </div>
+                      ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          )}
+          <p className="pn-lead mt-4">{panel.slotsReadOnly}</p>
+        </>
+      )}
     </>
   );
-}
-
-function buildGrid(slots: SlotCell[]) {
-  const days: string[] = [];
-  const times = new Set<string>();
-  const cells = new Map<string, "free" | "busy">();
-  for (const slot of slots) {
-    const day = new Date(slot.startsAt);
-    const dayKey = nicosiaWallTimeToUtc(
-      utcToNicosiaParts(day).year,
-      utcToNicosiaParts(day).month,
-      utcToNicosiaParts(day).day,
-      0,
-      0,
-    ).toISOString();
-    if (!days.includes(dayKey)) days.push(dayKey);
-    const time = formatNicosiaDate(slot.startsAt, { hour: "2-digit", minute: "2-digit" });
-    times.add(time);
-    const key = `${dayKey}|${time}`;
-    const prev = cells.get(key);
-    if (prev === "busy" || slot.status === "busy") cells.set(key, "busy");
-    else cells.set(key, "free");
-  }
-  days.sort();
-  return { days: days.slice(0, 6), times: [...times].sort(), cells };
 }

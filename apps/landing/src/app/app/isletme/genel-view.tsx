@@ -1,221 +1,281 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { isletmeApp } from "@ada-merkez/copy";
-import { nicosiaWallTimeToUtc, utcToNicosiaParts } from "@ada-merkez/shared";
-import { SampleBadge } from "../../../components/panel/SampleBadge";
-import { EmptyKabuki } from "../../../components/isletme/EmptyKabuki";
+import Link from "next/link";
+import { useCallback } from "react";
+import { isletmeApp, panel } from "@ada-merkez/copy";
+import { nicosiaDateKey } from "@ada-merkez/shared";
+import { usePanelData } from "../../../components/panel/use-panel-data";
 import {
+  DataToolbar,
+  PanelEmpty,
+  PanelError,
+  PanelIntro,
+  PanelLoading,
+  StatusBadge,
+} from "../../../components/panel/PanelKit";
+import { WeekChart } from "../../../components/panel/WeekChart";
+import {
+  IconCalendar,
+  IconClock,
+  IconServices,
+  IconSettings,
+} from "../../../components/panel/icons";
+import {
+  fetchAvailability,
   fetchBookings,
+  fetchMe,
   fetchServices,
-  fetchSlots,
+  fetchStaff,
   fetchStats,
   formatNicosiaDate,
   initials,
-  type BookingRow,
-  type ServiceRow,
-  type SlotCell,
-  type StatsRow,
 } from "../../../lib/isletme-api";
-
-const SAMPLE_KPI = { requests: 12, confirmed: 8, pending: 3, free: 4 };
-const SAMPLE_WEEK = [5, 7, 6, 8, 9, 4, 2];
-const WEEK_LABELS = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
-
-function dayBounds(day: Date) {
-  const parts = utcToNicosiaParts(day);
-  const from = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day, 0, 0);
-  const to = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day + 1, 0, 0);
-  return { from, to };
-}
-
-function weekStart(day: Date) {
-  const parts = utcToNicosiaParts(day);
-  const asUtc = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day, 12, 0);
-  const weekday = (asUtc.getUTCDay() + 6) % 7;
-  return nicosiaWallTimeToUtc(parts.year, parts.month, parts.day - weekday, 0, 0);
-}
+import { reportRange, nicosiaDayRange } from "../../../lib/panel-workflow";
 
 export function GenelView() {
-  const [stats, setStats] = useState<StatsRow | null>(null);
-  const [bookings, setBookings] = useState<BookingRow[]>([]);
-  const [weekBookings, setWeekBookings] = useState<BookingRow[]>([]);
-  const [slots, setSlots] = useState<SlotCell[]>([]);
-  const [services, setServices] = useState<ServiceRow[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
-
-  const load = useCallback(async () => {
-    const now = new Date();
-    const { from, to } = dayBounds(now);
-    const start = weekStart(now);
-    const weekEnd = nicosiaWallTimeToUtc(
-      utcToNicosiaParts(start).year,
-      utcToNicosiaParts(start).month,
-      utcToNicosiaParts(start).day + 7,
-      0,
-      0,
-    );
-    const [st, b, wb, s, svc] = await Promise.all([
+  const loader = useCallback(async () => {
+    const range = reportRange("week");
+    const start = nicosiaDayRange(range.from)!;
+    const end = nicosiaDayRange(range.to)!;
+    const [stats, bookings, services, staff, hours, me] = await Promise.all([
       fetchStats(),
-      fetchBookings({ from: from.toISOString(), to: to.toISOString() }),
-      fetchBookings({ from: start.toISOString(), to: weekEnd.toISOString() }),
-      fetchSlots({ from: from.toISOString(), days: 1 }),
-      fetchServices().catch(() => ({ services: [] as ServiceRow[] })),
+      fetchBookings({ from: start.from, to: end.to }),
+      fetchServices(),
+      fetchStaff(),
+      fetchAvailability(),
+      fetchMe(),
     ]);
-    setStats(st.stats);
-    setBookings(b.bookings);
-    setWeekBookings(wb.bookings);
-    setSlots(s.slots);
-    setServices(svc.services);
-    setError(false);
-    setLoaded(true);
+    return {
+      stats: stats.stats,
+      bookings: bookings.bookings,
+      services: services.services,
+      staff: staff.staff,
+      hours: hours.rules,
+      me: me.me,
+      todayKey: nicosiaDateKey(new Date()),
+    };
   }, []);
-
-  useEffect(() => {
-    void load().catch(() => {
-      setError(true);
-      setLoaded(true);
-    });
-  }, [load]);
-
-  const freeCount = slots.filter((slot) => slot.status === "free").length;
-  const hasKpi =
-    Boolean(stats) &&
-    ((stats?.todayConfirmed ?? 0) +
-      (stats?.todayPending ?? 0) +
-      (stats?.weekConfirmed ?? 0) +
-      (stats?.pendingIncoming ?? 0) +
-      freeCount >
-      0);
-
-  const weekCounts = useMemo(() => {
-    const counts = [0, 0, 0, 0, 0, 0, 0];
-    for (const row of weekBookings) {
-      if (row.status === "cancelled" || row.status === "no_show") continue;
-      const parts = utcToNicosiaParts(new Date(row.startsAt));
-      const asUtc = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day, 12, 0);
-      const idx = (asUtc.getUTCDay() + 6) % 7;
-      counts[idx] = (counts[idx] ?? 0) + 1;
-    }
-    return counts;
-  }, [weekBookings]);
-  const hasWeek = weekCounts.some((n) => n > 0);
-  const chart = hasWeek ? weekCounts : SAMPLE_WEEK;
-  const maxBar = Math.max(...chart, 1);
-
-  const flow = useMemo(() => {
-    const items: { time: string; title: string; meta: string; kind: "confirmed" | "pending" | "free" }[] = [];
-    for (const row of bookings.filter((item) => item.status !== "cancelled" && item.status !== "no_show")) {
-      const service = services.find((svc) => svc.id === row.serviceId)?.name ?? "Randevu";
-      items.push({
-        time: formatNicosiaDate(row.startsAt, { hour: "2-digit", minute: "2-digit" }),
-        title: service,
-        meta: `${initials(row.customerName)} · ${
-          row.channel === "whatsapp" ? isletmeApp.sourceWa : isletmeApp.sourceApp
-        } · ${row.status === "confirmed" ? isletmeApp.statusConfirmed : isletmeApp.statusPending}`,
-        kind: row.status === "confirmed" ? "confirmed" : "pending",
-      });
-    }
-    for (const slot of slots.filter((item) => item.status === "free")) {
-      items.push({
-        time: formatNicosiaDate(slot.startsAt, { hour: "2-digit", minute: "2-digit" }),
-        title: isletmeApp.free,
-        meta: "Uygun",
-        kind: "free",
-      });
-    }
-    return items.sort((a, b) => a.time.localeCompare(b.time, "tr"));
-  }, [bookings, services, slots]);
-
-  if (!loaded) return null;
-  if (error) return <EmptyKabuki kind="hata" />;
-
-  const kpis = hasKpi
-    ? [
-        {
-          label: isletmeApp.todayRequests,
-          value: (stats?.todayConfirmed ?? 0) + (stats?.todayPending ?? 0),
-          hint: `${isletmeApp.sourceApp} ve ${isletmeApp.sourceWa}`,
-        },
-        { label: "Onaylı", value: stats?.todayConfirmed ?? 0, hint: "Bugünün onaylı randevuları" },
-        { label: "Onay bekliyor", value: stats?.todayPending ?? 0, hint: "İşletme yanıtı beklenen" },
-        { label: isletmeApp.free, value: freeCount, hint: "Görünen uygun aralık" },
-      ]
-    : [
-        { label: isletmeApp.todayRequests, value: SAMPLE_KPI.requests, hint: `${isletmeApp.sourceApp} ve ${isletmeApp.sourceWa}` },
-        { label: "Onaylı", value: SAMPLE_KPI.confirmed, hint: "Bugünün onaylı randevuları" },
-        { label: "Onay bekliyor", value: SAMPLE_KPI.pending, hint: "İşletme yanıtı beklenen" },
-        { label: isletmeApp.free, value: SAMPLE_KPI.free, hint: "Görünen uygun aralık" },
-      ];
-
-  const sampleFlow = [
-    { time: "09:00", title: "Örnek kesim", meta: "Örnek müşteri · 45 dk · Onaylı", kind: "confirmed" as const },
-    { time: "10:00", title: isletmeApp.free, meta: "45 dk uygun", kind: "free" as const },
-    { time: "11:00", title: "Örnek kesim", meta: `Örnek müşteri · ${isletmeApp.sourceWa} · Onay bekliyor`, kind: "pending" as const },
-    { time: "14:00", title: "Örnek sakal", meta: "Örnek müşteri · 20 dk · Onaylı", kind: "confirmed" as const },
-    { time: "16:00", title: isletmeApp.free, meta: "60 dk uygun", kind: "free" as const },
+  const query = usePanelData(loader, "business-overview");
+  if (query.loading) return <PanelLoading />;
+  if (!query.data)
+    return (
+      <PanelError
+        message={query.error ?? ""}
+        retry={() => {
+          void query.refresh();
+        }}
+      />
+    );
+  const { stats, bookings, services, staff, hours, me, todayKey } = query.data;
+  const activeServices = services.filter((row) => row.active);
+  const activeStaff = staff.filter((row) => row.active);
+  const steps = [
+    {
+      label: panel.setupProfile,
+      done: Boolean(me.business?.phone && me.business?.address),
+      href: "/app/isletme/profil",
+    },
+    {
+      label: panel.setupService,
+      done: activeServices.length > 0,
+      href: "/app/isletme/hizmetler",
+    },
+    {
+      label: panel.setupStaff,
+      done: activeStaff.length > 0,
+      href: "/app/isletme/hizmetler",
+    },
+    {
+      label: panel.setupHours,
+      done: hours.length > 0,
+      href: "/app/isletme/profil#calisma-saatleri",
+    },
   ];
-  const shownFlow = flow.length ? flow : sampleFlow;
-  const flowSample = flow.length === 0;
-
+  const completed = steps.filter((step) => step.done).length;
+  const today = bookings
+    .filter(
+      (row) =>
+        nicosiaDateKey(new Date(row.startsAt)) === todayKey &&
+        ["pending", "confirmed"].includes(row.status),
+    )
+    .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+  const week = [0, 0, 0, 0, 0, 0, 0];
+  const range = reportRange("week");
+  for (const row of bookings) {
+    if (!["pending", "confirmed"].includes(row.status)) continue;
+    const key = nicosiaDateKey(new Date(row.startsAt));
+    const day = Math.round(
+      (Date.parse(`${key}T12:00:00Z`) - Date.parse(`${range.from}T12:00:00Z`)) /
+        86_400_000,
+    );
+    if (day >= 0 && day < 7) week[day] = (week[day] ?? 0) + 1;
+  }
+  const kpis = [
+    {
+      label: isletmeApp.statTodayConfirmed,
+      value: stats.todayConfirmed,
+      hint: isletmeApp.today,
+      href: "/app/isletme/takvim",
+    },
+    {
+      label: isletmeApp.statTodayPending,
+      value: stats.todayPending,
+      hint: panel.today,
+      href: "/app/isletme/talepler",
+    },
+    {
+      label: isletmeApp.statWeekConfirmed,
+      value: stats.weekConfirmed,
+      hint: panel.thisWeek,
+      href: "/app/isletme/takvim",
+    },
+    {
+      label: isletmeApp.statPending,
+      value: stats.pendingIncoming,
+      hint: panel.viewAll,
+      href: "/app/isletme/talepler",
+    },
+  ];
   return (
     <>
-      <div className="am-kpis">
-        {kpis.map((kpi) => (
-          <article key={kpi.label} className="am-kpi">
-            <p className="am-kicker">{kpi.label}</p>
-            <p className="am-kpi-val">{kpi.value}</p>
-            <p className="hint">{kpi.hint}</p>
-            {hasKpi ? null : <SampleBadge />}
+      <PanelIntro
+        eyebrow={isletmeApp.loginTitle}
+        title={me.business?.name ?? isletmeApp.loginTitle}
+        action={
+          <Link href="/app/isletme/talepler" className="am-btn am-btn--primary">
+            {isletmeApp.navInboxLong}
+          </Link>
+        }
+      >
+        {panel.weekNote}
+      </PanelIntro>
+      <DataToolbar updated={query.updatedAt} refreshing={query.refreshing} />
+      {query.error ? <PanelError compact message={query.error} /> : null}
+      <div className="pn-kpis">
+        {kpis.map((kpi, index) => (
+          <article
+            key={kpi.label}
+            className={`pn-kpi${index === 0 ? " pn-kpi--accent" : ""}`}
+          >
+            <div className="pn-kpi-top">
+              <span className="pn-kpi-label">{kpi.label}</span>
+              <IconCalendar />
+            </div>
+            <strong>{kpi.value}</strong>
+            <small>{kpi.hint}</small>
+            <Link className="pn-kpi-link" href={kpi.href}>
+              {panel.viewAll} →
+            </Link>
           </article>
         ))}
       </div>
-      <div className="am-grid-2">
-        <section className="am-panel-card">
-          <h2>
-            {hasWeek ? "Haftalık talepler" : isletmeApp.weekChart} {hasWeek ? null : <SampleBadge />}
-          </h2>
-          <svg className="am-chart" viewBox="0 0 420 200" role="img" aria-label={isletmeApp.weekChart}>
-            {chart.map((value, index) => {
-              const height = Math.max(8, (value / maxBar) * 126);
-              const x = 24 + index * 56;
-              const y = 160 - height;
-              const fill = index === 2 ? "#0F2C44" : "#0E7C78";
-              return (
-                <g key={WEEK_LABELS[index]}>
-                  <rect x={x} y={y} width={40} height={height} rx={6} fill={fill} />
-                  <text x={x + 20} y={y - 6} textAnchor="middle" fontSize="11" fill="#0A4F4D" fontFamily="Inter">
-                    {value}
-                  </text>
-                  <text x={x + 20} y={180} textAnchor="middle" fontSize="11" fill="#6E5E4E" fontFamily="Inter">
-                    {WEEK_LABELS[index]}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
-          {hasWeek ? null : <p className="am-chart-caption">{isletmeApp.chartNote}</p>}
-        </section>
-        <section className="am-panel-card">
-          <h2>
-            {isletmeApp.todayFlow} {flowSample ? <SampleBadge /> : null}
-          </h2>
-          <div className="am-flow">
-            {shownFlow.map((item) => (
-              <div key={`${item.time}-${item.title}-${item.kind}`} className="am-flow-item">
-                <div className="am-flow-time">{item.time}</div>
-                <div className="am-flow-rail">
-                  <span className={`am-flow-dot is-${item.kind}`} />
-                </div>
-                <div className="am-flow-body">
-                  <h3>{item.title}</h3>
-                  <p>{item.meta}</p>
-                </div>
+      <div className="pn-columns">
+        <div className="pn-stack">
+          <section className="pn-card">
+            <div className="pn-card-head">
+              <h3>{panel.todayAgenda}</h3>
+              <Link href="/app/isletme/takvim">{panel.viewAll} →</Link>
+            </div>
+            {today.length ? (
+              <div className="pn-agenda">
+                {today.map((row) => (
+                  <div className="pn-agenda-row" key={row.id}>
+                    <time className="pn-agenda-time" dateTime={row.startsAt}>
+                      {formatNicosiaDate(row.startsAt, {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </time>
+                    <div>
+                      <h4>
+                        {services.find(
+                          (service) => service.id === row.serviceId,
+                        )?.name ??
+                          (row.kind === "table"
+                            ? panel.tableReservation
+                            : panel.appointment)}
+                      </h4>
+                      <p>
+                        {initials(row.customerName)} ·{" "}
+                        {row.channel === "whatsapp"
+                          ? isletmeApp.sourceWa
+                          : isletmeApp.sourceApp}
+                      </p>
+                    </div>
+                    <StatusBadge status={row.status} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
+            ) : (
+              <PanelEmpty title={panel.noAgenda} body={panel.noAgendaBody} />
+            )}
+          </section>
+          <section className="pn-card">
+            <h3>{panel.weekRequests}</h3>
+            <WeekChart values={week} label={panel.weekRequests} />
+            <p className="pn-lead">
+              {week.some((value) => value > 0)
+                ? panel.weekNote
+                : panel.noChartData}
+            </p>
+          </section>
+        </div>
+        <div className="pn-stack">
+          <section className="pn-card">
+            <h3>
+              {completed === steps.length ? panel.setupDone : panel.setupTitle}
+            </h3>
+            <p className="pn-lead">{panel.setupLead}</p>
+            <div
+              className="pn-setup-progress"
+              role="progressbar"
+              aria-label={panel.setupTitle}
+              aria-valuenow={completed}
+              aria-valuemin={0}
+              aria-valuemax={steps.length}
+            >
+              <span style={{ width: `${(completed / steps.length) * 100}%` }} />
+            </div>
+            <p className="pn-setup-count">
+              {completed}/{steps.length} {panel.setupCount}
+            </p>
+            <div className="pn-checklist">
+              {steps.map((step) => (
+                <Link key={step.label} href={step.href}>
+                  <span
+                    className={`pn-check${step.done ? " is-done" : ""}`}
+                    aria-hidden="true"
+                  >
+                    {step.done ? "✓" : "·"}
+                  </span>
+                  {step.label}
+                  <small>{step.done ? panel.done : panel.complete}</small>
+                </Link>
+              ))}
+            </div>
+          </section>
+          <section className="pn-card">
+            <h3>{panel.quickActions}</h3>
+            <div className="pn-quick-links">
+              <Link href="/app/isletme/hizmetler">
+                <IconServices />
+                {isletmeApp.addService}
+              </Link>
+              <Link href="/app/isletme/profil#calisma-saatleri">
+                <IconClock />
+                {isletmeApp.addHours}
+              </Link>
+              <Link href="/app/isletme/bos-saatler">
+                <IconCalendar />
+                {isletmeApp.navHours}
+              </Link>
+              <Link href="/app/isletme/profil">
+                <IconSettings />
+                {isletmeApp.navSettings}
+              </Link>
+            </div>
+          </section>
+        </div>
       </div>
     </>
   );

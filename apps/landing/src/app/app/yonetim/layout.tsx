@@ -5,6 +5,7 @@ import { YonetimShell } from "../../../components/yonetim/YonetimShell";
 import "../../../styles/tokens-v2-local.css";
 import "../../../styles/panel-v2.css";
 import "../../../styles/yonetim.css";
+import "../../../styles/panel-next.css";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,15 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function YonetimLayout({ children }: { children: React.ReactNode }) {
+export default async function YonetimLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const session = await requireRole("admin", "/app/yonetim");
-  return <YonetimShell session={session}>{children}</YonetimShell>;
+  return (
+    <YonetimShell key={session.id} session={session}>
+      {children}
+    </YonetimShell>
+  );
 }

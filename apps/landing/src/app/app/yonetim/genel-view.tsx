@@ -1,156 +1,225 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { yonetimApp } from "@ada-merkez/copy";
-import { nicosiaWallTimeToUtc, utcToNicosiaParts } from "@ada-merkez/shared";
-import { EmptyState } from "../../../components/app/EmptyState";
-import { SampleBadge } from "../../../components/panel/SampleBadge";
-import { WeekChart } from "../../../components/panel/WeekChart";
+import { useCallback } from "react";
+import { panel, yonetimApp } from "@ada-merkez/copy";
+import {
+  DataToolbar,
+  PanelEmpty,
+  PanelError,
+  PanelIntro,
+  PanelLoading,
+  StatusBadge,
+} from "../../../components/panel/PanelKit";
+import { usePanelData } from "../../../components/panel/use-panel-data";
+import {
+  IconApprove,
+  IconCalendar,
+  IconServices,
+  IconUsers,
+} from "../../../components/panel/icons";
 import {
   fetchApplications,
+  fetchBusinesses,
   fetchHealth,
   fetchReports,
-  type AdminApplication,
-  type AdminHealth,
-  type AdminReports,
 } from "../../../lib/yonetim-api";
-
-const SAMPLE_KPI = { pending: 2, approved: 6, users: 18 };
-const SAMPLE_WEEK = [5, 7, 6, 8, 9, 4, 2];
-const SAMPLE_PENDING = [
-  { name: "Örnek Klinik", meta: "Girne · Klinik · Başvuru" },
-  { name: "Örnek Restoran", meta: "Mağusa · Restoran · Başvuru" },
-];
-
-function weekStart(day: Date) {
-  const parts = utcToNicosiaParts(day);
-  const asUtc = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day, 12, 0);
-  const weekday = (asUtc.getUTCDay() + 6) % 7;
-  return nicosiaWallTimeToUtc(parts.year, parts.month, parts.day - weekday, 0, 0);
-}
-
-function bucketWeek(dates: string[]) {
-  const start = weekStart(new Date());
-  const startMs = start.getTime();
-  const endMs = startMs + 7 * 24 * 60 * 60 * 1000;
-  const counts = [0, 0, 0, 0, 0, 0, 0];
-  for (const raw of dates) {
-    const at = new Date(raw).getTime();
-    if (at < startMs || at >= endMs) continue;
-    const parts = utcToNicosiaParts(new Date(raw));
-    const asUtc = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day, 12, 0);
-    const idx = (asUtc.getUTCDay() + 6) % 7;
-    counts[idx] = (counts[idx] ?? 0) + 1;
-  }
-  return counts;
-}
-
-function initial(name: string) {
-  const ch = name.trim()[0];
-  return ch ? ch.toLocaleUpperCase("tr-TR") : "İ";
-}
+import { isApprovalPending } from "../../../lib/panel-workflow";
+import { formatWhen } from "../../../lib/nicosia-format";
 
 export function GenelView() {
-  const [reports, setReports] = useState<AdminReports | null>(null);
-  const [health, setHealth] = useState<AdminHealth | null>(null);
-  const [applications, setApplications] = useState<AdminApplication[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
-
-  const load = useCallback(async () => {
-    const [rep, hel, apps] = await Promise.all([fetchReports(), fetchHealth(), fetchApplications()]);
-    setReports(rep.reports);
-    setHealth(hel.health);
-    setApplications(apps.applications);
-    setError(false);
-    setLoaded(true);
+  const loader = useCallback(async () => {
+    const [reports, health, businesses, applications] = await Promise.all([
+      fetchReports(),
+      fetchHealth(),
+      fetchBusinesses(),
+      fetchApplications(),
+    ]);
+    const queue = [
+      ...businesses.businesses
+        .filter((row) => isApprovalPending(row.status))
+        .map((row) => ({
+          id: `b-${row.id}`,
+          name: row.name,
+          meta: `${row.inTurkey ? panel.turkey : (row.cityName ?? "—")} · ${row.categoryName ?? row.sector ?? "—"}`,
+          source: panel.businessRecord,
+          createdAt: row.createdAt,
+          status: row.status,
+        })),
+      ...applications.applications
+        .filter((row) => isApprovalPending(row.status))
+        .map((row) => ({
+          id: `a-${row.id}`,
+          name: row.businessName,
+          meta: `${row.inTurkey ? panel.turkey : (row.city ?? "—")} · ${row.sector}`,
+          source: panel.applicationRecord,
+          createdAt: row.createdAt,
+          status: row.status,
+        })),
+    ].sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    return { reports: reports.reports, health: health.health, queue };
   }, []);
-
-  useEffect(() => {
-    void load().catch(() => {
-      setError(true);
-      setLoaded(true);
-    });
-  }, [load]);
-
-  const weekCounts = useMemo(() => bucketWeek(applications.map((row) => row.createdAt)), [applications]);
-  const hasWeek = weekCounts.some((n) => n > 0);
-  const pendingApps = applications.filter(
-    (row) => row.status === "pending" || row.status === "received" || row.status === "review",
-  );
-
-  if (!loaded) return null;
-  if (error) return <EmptyState kind="hata" />;
-
-  const pendingLive = (reports?.businessesPending ?? 0) > 0;
-  const approvedLive = (reports?.businessesApproved ?? 0) > 0;
-  const usersLive = (reports?.usersTotal ?? 0) > 0;
-  const waitlistClosed = health ? !health.waitlistOpen : true;
-
+  const query = usePanelData(loader, "admin-overview");
+  if (query.loading) return <PanelLoading />;
+  if (!query.data)
+    return (
+      <PanelError
+        message={query.error ?? ""}
+        retry={() => {
+          void query.refresh();
+        }}
+      />
+    );
+  const { reports, health, queue } = query.data;
+  const kpis = [
+    {
+      label: yonetimApp.statPendingBiz,
+      value: queue.length,
+      hint: yonetimApp.statPendingHint,
+      href: "/app/yonetim/onaylar",
+      icon: <IconApprove />,
+    },
+    {
+      label: yonetimApp.statApprovedBiz,
+      value: reports.businessesApproved,
+      hint: yonetimApp.navTenants,
+      href: "/app/yonetim/kiracilar",
+      icon: <IconServices />,
+    },
+    {
+      label: yonetimApp.statUsers,
+      value: reports.usersTotal,
+      hint: yonetimApp.statUsersHint,
+      href: "/app/yonetim/kullanicilar",
+      icon: <IconUsers />,
+    },
+    {
+      label: yonetimApp.statTodayBookings,
+      value: reports.bookingsToday,
+      hint: panel.today,
+      href: "/app/yonetim/rezervasyonlar",
+      icon: <IconCalendar />,
+    },
+  ];
   return (
     <>
-      <div className="am-kpis">
-        <article className="am-kpi">
-          <p className="am-kicker">{yonetimApp.statPendingBiz}</p>
-          <p className="am-kpi-val">{pendingLive ? reports?.businessesPending : SAMPLE_KPI.pending}</p>
-          <p className="hint">{yonetimApp.statPendingHint}</p>
-          {pendingLive ? null : <SampleBadge />}
-        </article>
-        <article className="am-kpi">
-          <p className="am-kicker">{approvedLive ? yonetimApp.statApprovedBiz : yonetimApp.statLiveSample}</p>
-          <p className="am-kpi-val">{approvedLive ? reports?.businessesApproved : SAMPLE_KPI.approved}</p>
-          <p className="hint">{yonetimApp.statLiveSampleHint}</p>
-          {approvedLive ? null : <SampleBadge />}
-        </article>
-        <article className="am-kpi">
-          <p className="am-kicker">{yonetimApp.statUsers}</p>
-          <p className="am-kpi-val">{usersLive ? reports?.usersTotal : SAMPLE_KPI.users}</p>
-          <p className="hint">{yonetimApp.statUsersHint}</p>
-          {usersLive ? null : <SampleBadge />}
-        </article>
-        <article className="am-kpi">
-          <p className="am-kicker">{yonetimApp.statWaitlist}</p>
-          <p className="am-kpi-val is-text">
-            {waitlistClosed ? yonetimApp.waitlistClosed : yonetimApp.waitlistOpenLabel}
-          </p>
-          <p className="hint">{yonetimApp.statWaitlistHint}</p>
-        </article>
-      </div>
-      <div className="am-grid-2">
-        <section className="am-panel-card">
-          <h2>
-            {hasWeek ? yonetimApp.weekApps : yonetimApp.weekAppsSample} {hasWeek ? null : <SampleBadge />}
-          </h2>
-          <WeekChart values={hasWeek ? weekCounts : SAMPLE_WEEK} label={yonetimApp.weekAppsSample} />
-          {hasWeek ? null : <p className="am-chart-caption">{yonetimApp.chartNote}</p>}
-        </section>
-        <section className="am-panel-card">
-          <h2>
-            {yonetimApp.pendingQueue} {pendingApps.length ? null : <SampleBadge />}
-          </h2>
-          {(pendingApps.length ? pendingApps.slice(0, 4) : SAMPLE_PENDING).map((row) => {
-            const name = "businessName" in row ? row.businessName : row.name;
-            const meta =
-              "businessName" in row
-                ? `${row.inTurkey ? "Türkiye" : (row.city ?? "—")} · ${row.sector} · ${yonetimApp.statusReceived}`
-                : row.meta;
-            const key = "id" in row ? row.id : name;
-            return (
-              <div key={key} className="am-entity">
-                <div className="am-avatar">{initial(name)}</div>
-                <div className="am-entity-body">
-                  <h3>{name}</h3>
-                  <p>{meta}</p>
-                </div>
-                <span className="am-badge am-badge--pending">{yonetimApp.statusAwaiting}</span>
-              </div>
-            );
-          })}
-          <Link className="am-sec-link" href="/app/yonetim/onaylar">
+      <PanelIntro
+        eyebrow={yonetimApp.panelName}
+        title={panel.operationTitle}
+        action={
+          <Link className="am-btn am-btn--primary" href="/app/yonetim/onaylar">
             {yonetimApp.goApprovals}
           </Link>
+        }
+      >
+        {panel.operationLead}
+      </PanelIntro>
+      <DataToolbar updated={query.updatedAt} refreshing={query.refreshing} />
+      {query.error ? <PanelError compact message={query.error} /> : null}
+      <div className="pn-kpis">
+        {kpis.map((kpi, index) => (
+          <article
+            key={kpi.label}
+            className={`pn-kpi${index === 0 ? " pn-kpi--accent" : ""}`}
+          >
+            <div className="pn-kpi-top">
+              <span className="pn-kpi-label">{kpi.label}</span>
+              {kpi.icon}
+            </div>
+            <strong>{kpi.value}</strong>
+            <small>{kpi.hint}</small>
+            <Link className="pn-kpi-link" href={kpi.href}>
+              {panel.viewAll} →
+            </Link>
+          </article>
+        ))}
+      </div>
+      <div className="pn-columns">
+        <section className="pn-card">
+          <div className="pn-card-head">
+            <h3>{panel.pendingQueue}</h3>
+            <Link href="/app/yonetim/onaylar">{panel.viewAll} →</Link>
+          </div>
+          <p className="pn-lead">{panel.oldestFirst}</p>
+          {!queue.length ? (
+            <PanelEmpty title={panel.queueEmpty} body={panel.queueEmptyBody} />
+          ) : (
+            <div className="pn-agenda">
+              {queue.slice(0, 6).map((row) => (
+                <Link
+                  href="/app/yonetim/onaylar"
+                  className="pn-entity"
+                  key={row.id}
+                >
+                  <div className="pn-entity-body">
+                    <h4>{row.name}</h4>
+                    <p>
+                      {row.meta} · {row.source}
+                    </p>
+                    <p>{formatWhen(row.createdAt)}</p>
+                  </div>
+                  <StatusBadge status={row.status} />
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
+        <div className="pn-stack">
+          <section className="pn-card">
+            <h3>{yonetimApp.healthTitle}</h3>
+            <div className="pn-health-row">
+              <div>
+                <h3>
+                  {yonetimApp.healthApi} / {yonetimApp.healthDb}
+                </h3>
+                <p>{yonetimApp.healthDbBody}</p>
+              </div>
+              <strong>
+                {health.db === "connected"
+                  ? yonetimApp.healthOk
+                  : yonetimApp.healthOff}
+              </strong>
+            </div>
+            <div className="pn-health-row">
+              <div>
+                <h3>{yonetimApp.healthWa}</h3>
+                <p>{yonetimApp.healthWaBody}</p>
+              </div>
+              <strong>
+                {health.whatsapp === "not_connected"
+                  ? yonetimApp.healthOff
+                  : health.whatsapp}
+              </strong>
+            </div>
+            <Link
+              className="am-btn am-btn--ghost am-btn--block mt-3"
+              href="/app/yonetim/sistem"
+            >
+              {yonetimApp.navHealth}
+            </Link>
+          </section>
+          <section className="pn-card">
+            <h3>{panel.quickActions}</h3>
+            <div className="pn-quick-links">
+              <Link href="/app/yonetim/kiracilar">
+                <IconServices />
+                {yonetimApp.navTenants}
+              </Link>
+              <Link href="/app/yonetim/kullanicilar">
+                <IconUsers />
+                {yonetimApp.navUsers}
+              </Link>
+              <Link href="/app/yonetim/icerik">
+                <IconApprove />
+                {yonetimApp.navContent}
+              </Link>
+              <Link href="/app/yonetim/denetim">
+                <IconCalendar />
+                {yonetimApp.navAudit}
+              </Link>
+            </div>
+          </section>
+        </div>
       </div>
     </>
   );

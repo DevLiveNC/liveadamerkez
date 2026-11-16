@@ -6,8 +6,7 @@
   min-height: 100dvh;
 }
 .am-shell:has(.am-dash) > .am-top,
-.am-shell:has(.am-dash) > .am-tabs,
-.am-shell:has(.am-dash) .am-pwa-sheet {
+.am-shell:has(.am-dash) > .am-tabs {
   display: none;
 }
 .am-shell:has(.am-dash) > .am-main {

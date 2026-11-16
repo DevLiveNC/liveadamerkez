@@ -112,8 +112,7 @@ export const whatsapp = {
 
 export const roadmap = {
   title: "Sonra eklenecekler",
-  intro:
-    "Aşağıdakiler v2 yol haritasıdır. v1’de yokmuş gibi sunulmaz.",
+  intro: "Aşağıdakiler v2 yol haritasıdır. v1’de yokmuş gibi sunulmaz.",
   items: [
     { title: "QR menü", badge: "Yakında" },
     { title: "POS", badge: "Yakında" },
@@ -127,7 +126,8 @@ export const pilot = {
   kicker: "İşletmeler için",
   heading: "Defter durmasın, boş saat görünsün.",
   body: "Müşteri uygun saati kendisi seçer. Gelen istekler — uygulama veya WhatsApp — aynı panelde durur. Hatırlatma gider. Fiyat ve paket burada yoktur.",
-  citiesNote: "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
+  citiesNote:
+    "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler için ayrı bir dönem planlıyoruz.",
 } as const;
 
 export const close = {
@@ -179,7 +179,8 @@ export const waitlist = {
   consentError: "Devam etmek için rıza gerekli.",
   formMeta: "Bu bir rezervasyon formu değildir.",
   successTitle: "Kaydınız alındı.",
-  successBody: "Gelişmeleri paylaşırız. Ek bir vaat yok. Bu bir rezervasyon değildir.",
+  successBody:
+    "Gelişmeleri paylaşırız. Ek bir vaat yok. Bu bir rezervasyon değildir.",
   successMeta: "Bu bir rezervasyon değildir.",
   whatsappLabel:
     "WhatsApp üzerinden bilgilendirme mesajı almak istiyorum (isteğe bağlı). Aydınlatma metni kullanıcı onayı bekliyor.",
@@ -191,7 +192,8 @@ export const waitlist = {
   unavailable:
     "Bekleme listesi kaydı şu anda alınamıyor. Lütfen daha sonra yeniden deneyin.",
   consentRequired: "Devam etmek için rıza gerekli.",
-  invalid: "Lütfen adı, şehri, segmenti ve en az bir iletişim alanını kontrol edin.",
+  invalid:
+    "Lütfen adı, şehri, segmenti ve en az bir iletişim alanını kontrol edin.",
   closedTitle: "Bekleme listesi çok yakında açılıyor",
   closedShort: "Yakında açılıyor",
   closedBody:
@@ -199,7 +201,8 @@ export const waitlist = {
   retentionNote:
     "Açık rıza ile iletişim bilgileri önerilen 730 gün saklanır; süre yasal metin onayıyla kesinleşir.",
   kvkkPlaceholder: "KVKK aydınlatma metni yakında",
-  marketingConsentLabel: "Pazarlama ve ölçüm iletişimi için ayrı rızam vardır (isteğe bağlı).",
+  marketingConsentLabel:
+    "Pazarlama ve ölçüm iletişimi için ayrı rızam vardır (isteğe bağlı).",
 } as const;
 
 export const businessApply = {
@@ -219,7 +222,8 @@ export const businessApply = {
   inTurkeyHint: "Ayrı değerlendirilir; otomatik yayına girmez",
   northCyprus: "Kuzey Kıbrıs",
   northCyprusHint: "Lefkoşa, Girne, Mağusa veya diğer",
-  turkeyHint: "Türkiye’deki işletmeler ayrı değerlendirilir; keşif listesine otomatik düşmez.",
+  turkeyHint:
+    "Türkiye’deki işletmeler ayrı değerlendirilir; keşif listesine otomatik düşmez.",
   locationLabel: "Konum",
   cityLabel: "Şehir",
   contactName: "Yetkili adı",
@@ -231,13 +235,15 @@ export const businessApply = {
   submit: "Başvuruyu gönder",
   submitting: "Gönderiliyor",
   success: "Başvurunuz alındı.",
-  successBody: "İnceleme sonrası size döneceğiz. Bu bir kabul değildir. Fiyat veya paket vaadi yoktur.",
+  successBody:
+    "İnceleme sonrası size döneceğiz. Bu bir kabul değildir. Fiyat veya paket vaadi yoktur.",
   formMeta: "Başvuru kabul anlamına gelmez.",
   unavailable: "Başvuru şu anda alınamıyor. Lütfen daha sonra yeniden deneyin.",
   invalid: "Zorunlu alanları ve rızayı kontrol edin.",
   closedTitle: "Başvuru çok yakında açılıyor",
   closedShort: "Yakında açılıyor",
-  closedBody: "Yasal metinler onaylanınca işletme başvurusu alınacak. Şu an form kapalıdır.",
+  closedBody:
+    "Yasal metinler onaylanınca işletme başvurusu alınacak. Şu an form kapalıdır.",
 } as const;
 
 export const qrPage = {
@@ -253,7 +259,8 @@ export const trackingConsent = {
   reject: "Reddet",
   settings: "Ayarlar",
   save: "Kaydet",
-  settingsBody: "Ölçüm (GA4) ve pazarlama (Pixel) rızasını ayrı seçin. İletişim rızası formda ayrıdır.",
+  settingsBody:
+    "Ölçüm (GA4) ve pazarlama (Pixel) rızasını ayrı seçin. İletişim rızası formda ayrıdır.",
   analyticsLabel: "Ölçüm (GA4)",
   marketingLabel: "Pazarlama (Pixel)",
 } as const;
@@ -319,9 +326,12 @@ export const app = {
   homeTitle: "Keşif",
   searchPlaceholder: "Kuaför, klinik, restoran",
   greeting: "Günaydın. Bugün ada sakin; uygun saatlere birlikte bakalım.",
-  greetingMorning: "Günaydın. Bugün ada sakin; uygun saatlere birlikte bakalım.",
-  greetingAfternoon: "İyi günler. Bugün ada sakin; uygun saatlere birlikte bakalım.",
-  greetingEvening: "İyi akşamlar. Bugün ada sakin; uygun saatlere birlikte bakalım.",
+  greetingMorning:
+    "Günaydın. Bugün ada sakin; uygun saatlere birlikte bakalım.",
+  greetingAfternoon:
+    "İyi günler. Bugün ada sakin; uygun saatlere birlikte bakalım.",
+  greetingEvening:
+    "İyi akşamlar. Bugün ada sakin; uygun saatlere birlikte bakalım.",
   slogan: "Adanın saati, burada.",
   nearby: "Yakınımdakiler",
   seeAll: "Tümü",
@@ -360,7 +370,8 @@ export const app = {
   phone: "Telefon",
   phonePlaceholder: "+90 5xx xxx xx xx",
   testLogin: "Kodsuz test girişi",
-  testLoginHint: "Test erişimi açık: Bu numarayla üç panele de kod almadan girebilirsin.",
+  testLoginHint:
+    "Test erişimi açık: Bu numarayla üç panele de kod almadan girebilirsin.",
   phoneHint: "Yalnız +90 (Kuzey Kıbrıs ve Türkiye).",
   name: "Ad",
   namePlaceholder: "Adınız",
@@ -370,26 +381,34 @@ export const app = {
   verify: "Doğrula",
   verifying: "Doğrulanıyor",
   codeMismatch: "Kod eşleşmedi. Yeni kod isteyebilirsin.",
-  adminNoRegister: "Yönetici hesabı davetle açılır. Bu ekrandan açık kayıt yoktur.",
+  adminNoRegister:
+    "Yönetici hesabı davetle açılır. Bu ekrandan açık kayıt yoktur.",
   backToSignIn: "Girişe dön",
-  guestHint: "Keşif ve işletme sayfaları girişsiz görünür. Randevu ve favori için giriş gerekir.",
+  guestHint:
+    "Keşif ve işletme sayfaları girişsiz görünür. Randevu ve favori için giriş gerekir.",
   nextHint: "Girişten sonra kaldığın yere dönersin.",
   authTitle: "Adada randevu ve rezervasyon dağılmasın.",
-  authLead: "Kuaför, klinik veya restoranı bul; uygun saati seç. Dilersen uygulama indirmeden WhatsApp’tan hallet.",
+  authLead:
+    "Kuaför, klinik veya restoranı bul; uygun saati seç. Dilersen uygulama indirmeden WhatsApp’tan hallet.",
   authSub: "Girişten sonra kaldığın yere dönersin. Keşif girişsiz görünür.",
-  businessAuthSub: "İşletme paneline geçersin. Pilot Lefkoşa, Girne ve Mağusa’da.",
+  businessAuthSub:
+    "İşletme paneline geçersin. Pilot Lefkoşa, Girne ve Mağusa’da.",
   adminAuthSub: "Yönetim paneli. Yetki sunucuda kontrol edilir.",
-  businessBalloon: "İşletme paneline hoş geldin. Defter durmasın, boş saat görünsün.",
+  businessBalloon:
+    "İşletme paneline hoş geldin. Defter durmasın, boş saat görünsün.",
   adminBalloon: "Yönetim paneli. Onaylar ve sistem burada durur.",
   nameOptional: "Ad (isteğe bağlı)",
   example: "Örnek",
-  exampleNote: "Örnek işletme. Gerçek işletme değildir. Puan veya yorum yoktur.",
+  exampleNote:
+    "Örnek işletme. Gerçek işletme değildir. Puan veya yorum yoktur.",
   demoBanner: "Gösterilen işletmeler örnektir; gerçek işletme verisi yoktur.",
   emptyTitle: "Şimdilik boş",
-  emptyDiscover: "Yayımlanmış işletme yok. Örnek kartlar aşağıda, gerçek işletme değildir.",
+  emptyDiscover:
+    "Yayımlanmış işletme yok. Örnek kartlar aşağıda, gerçek işletme değildir.",
   emptyBookings: "Henüz randevun yok.",
   emptyFavorites: "Henüz favorin yok",
-  emptyFavoritesLead: "Beğendiğin örnek işletmeleri kalp ile kaydedebilirsin. Sonra buradan dönersin.",
+  emptyFavoritesLead:
+    "Beğendiğin örnek işletmeleri kalp ile kaydedebilirsin. Sonra buradan dönersin.",
   favoritesCta: "Keşfet",
   favoritesTitle: "Favoriler",
   sampleSaves: "örnek kayıt",
@@ -456,7 +475,8 @@ export const app = {
   notifySuggestTitle: "Başka saat önerildi",
   notifySuggestBody: "başka bir saat önerdi.",
   pageNotFound: "Bu ekran bulunamadı.",
-  pageNotFoundBody: "Bağlantı eski olabilir. Keşfe dönüp yeniden arayabilirsin.",
+  pageNotFoundBody:
+    "Bağlantı eski olabilir. Keşfe dönüp yeniden arayabilirsin.",
 } as const;
 
 export const ui = {
@@ -572,7 +592,8 @@ export const yonetimApp = {
   navHealth: "Sistem",
   navAudit: "Denetim",
   approvalsTitle: "İşletme onayları",
-  approvalsLead: "Kuzey Kıbrıs ve Türkiye için başvuru kuyruğu. Unvanlar kayıttaki metindir.",
+  approvalsLead:
+    "Kuzey Kıbrıs ve Türkiye için başvuru kuyruğu. Unvanlar kayıttaki metindir.",
   filterPending: "Bekleyen",
   filterApproved: "Onaylı",
   filterRejected: "Reddedilen",
@@ -580,7 +601,8 @@ export const yonetimApp = {
   approve: "Onayla",
   reject: "Reddet",
   emptyApprovalsTitle: "Bekleyen işletme yok",
-  emptyApprovalsBody: "Yeni kayıt veya başvuru gelince onay kuyruğu burada durur.",
+  emptyApprovalsBody:
+    "Yeni kayıt veya başvuru gelince onay kuyruğu burada durur.",
   tenantsTitle: "Kiracılar",
   tenantsLead: "Kayıtlı işletmeler. Sayılar veritabanından gelir.",
   emptyTenantsTitle: "Kayıtlı işletme yok",
@@ -590,7 +612,8 @@ export const yonetimApp = {
   emptyUsersTitle: "Kayıtlı kullanıcı yok",
   emptyUsersBody: "Giriş yapan hesaplar burada listelenir.",
   bookingsTitle: "Rezervasyonlar",
-  bookingsLead: "Tüm kiracılar. Onay veya iptal bu panelden; ileti gönderilmez.",
+  bookingsLead:
+    "Tüm kiracılar. Onay veya iptal bu panelden; ileti gönderilmez.",
   emptyBookingsTitle: "Rezervasyon yok",
   emptyBookingsBody: "Kayıtlı randevu olunca liste burada durur.",
   contentTitle: "İçerik ve kategoriler",
@@ -604,7 +627,8 @@ export const yonetimApp = {
   reportsTitle: "Rapor özetleri",
   reportsLead: "Yalnızca kayıtlı sayılar. Kayıt yoksa boş durum gösterilir.",
   emptyReportsTitle: "Özet yok",
-  emptyReportsBody: "İşletme, kullanıcı veya rezervasyon olunca sayılar burada durur.",
+  emptyReportsBody:
+    "İşletme, kullanıcı veya rezervasyon olunca sayılar burada durur.",
   statPendingBiz: "Onay bekleyen işletme",
   statPendingHint: "Başvuru kuyruğu",
   statApprovedBiz: "Onaylı işletme",
@@ -645,13 +669,16 @@ export const yonetimApp = {
   statEvents: "Etkinlikler",
   eventsSoon: "Yakında",
   eventsSoonHint: "v2 özellik",
-  eventsBody: "Konser ve etkinlik bileti sonraki evrededir. Bu ekranda etkinlik yayını veya bilet satışı yoktur.",
+  eventsBody:
+    "Konser ve etkinlik bileti sonraki evrededir. Bu ekranda etkinlik yayını veya bilet satışı yoktur.",
   weekVolume: "Haftalık hacim",
   weekVolumeSample: "Örnek haftalık hacim",
-  reportsChartNote: "Örnek veri. Gerçek ciro, büyüme veya kullanıcı sayısı iddiası yoktur.",
+  reportsChartNote:
+    "Örnek veri. Gerçek ciro, büyüme veya kullanıcı sayısı iddiası yoktur.",
   listTruncated: "Liste 200 kayıtla sınırlı; toplam sayı sunucuda sayılır.",
   healthTitle: "Sistem durumu",
-  healthLead: "Bileşenler gerçek kontrolden doldurulur. Yüzde veya kestirme kesinti yazılmaz.",
+  healthLead:
+    "Bileşenler gerçek kontrolden doldurulur. Yüzde veya kestirme kesinti yazılmaz.",
   healthWaitlistBody: "Ürün kuralı — liste açık değil",
   healthMonitorNote: "Gerçek izleme bu tasarımda ölçülmez",
   healthPwa: "PWA / bildirim",
@@ -692,7 +719,8 @@ export const customerApp = {
   soon: "Yakında",
   integration: "Yakında: CY Ticket ve Ada Kampüs entegrasyonu",
   example: "Örnek",
-  exampleNote: "Örnek işletme. Gerçek işletme değildir. Puan veya yorum yoktur.",
+  exampleNote:
+    "Örnek işletme. Gerçek işletme değildir. Puan veya yorum yoktur.",
   demoBanner: "Gösterilen işletmeler örnektir; gerçek işletme verisi yoktur.",
   allCities: "Tüm şehirler",
   allCategories: "Tüm kategoriler",
@@ -777,12 +805,48 @@ export const examples = {
   lede: "Aşağıdakiler örnek kartlardır. Gerçek işletme değildir.",
   badge: "Örnek",
   cards: [
-    { name: "Örnek Kuaför", city: "Lefkoşa", category: "Kuaför ve güzellik", service: "Kesim ve bakım", image: "kuafor-salon" },
-    { name: "Örnek Güzellik", city: "Lefkoşa", category: "Kuaför ve güzellik", service: "Cilt bakımı", image: "kuafor-makas" },
-    { name: "Örnek Klinik", city: "Girne", category: "Klinik", service: "Muayene randevusu", image: "klinik-muayene" },
-    { name: "Örnek Diş Kliniği", city: "Girne", category: "Klinik", service: "Kontrol randevusu", image: "klinik-muayene" },
-    { name: "Örnek Restoran", city: "Mağusa", category: "Restoran", service: "Masa rezervasyonu", image: "restoran-servis" },
-    { name: "Örnek Sofra", city: "Mağusa", category: "Restoran", service: "Masa rezervasyonu", image: "restoran-sofra" },
+    {
+      name: "Örnek Kuaför",
+      city: "Lefkoşa",
+      category: "Kuaför ve güzellik",
+      service: "Kesim ve bakım",
+      image: "kuafor-salon",
+    },
+    {
+      name: "Örnek Güzellik",
+      city: "Lefkoşa",
+      category: "Kuaför ve güzellik",
+      service: "Cilt bakımı",
+      image: "kuafor-makas",
+    },
+    {
+      name: "Örnek Klinik",
+      city: "Girne",
+      category: "Klinik",
+      service: "Muayene randevusu",
+      image: "klinik-muayene",
+    },
+    {
+      name: "Örnek Diş Kliniği",
+      city: "Girne",
+      category: "Klinik",
+      service: "Kontrol randevusu",
+      image: "klinik-muayene",
+    },
+    {
+      name: "Örnek Restoran",
+      city: "Mağusa",
+      category: "Restoran",
+      service: "Masa rezervasyonu",
+      image: "restoran-servis",
+    },
+    {
+      name: "Örnek Sofra",
+      city: "Mağusa",
+      category: "Restoran",
+      service: "Masa rezervasyonu",
+      image: "restoran-sofra",
+    },
   ],
 } as const;
 
@@ -791,9 +855,24 @@ export const events = {
   title: "Bilet de aynı çatıda olacak.",
   lede: "Etkinlik bileti sonraki evrede. Aşağıdakiler örnek kartlardır; gerçek etkinlik veya fiyat değildir.",
   cards: [
-    { name: "Örnek Sahne", city: "Lefkoşa", hint: "Konser bileti, sonraki evrede.", image: "konser-sahne" },
-    { name: "Örnek Gösteri", city: "Girne", hint: "Etkinlik bileti, sonraki evrede.", image: "tiyatro-salon" },
-    { name: "Örnek Açık Hava", city: "Mağusa", hint: "Etkinlik bileti, sonraki evrede.", image: "acik-hava-sahne" },
+    {
+      name: "Örnek Sahne",
+      city: "Lefkoşa",
+      hint: "Konser bileti, sonraki evrede.",
+      image: "konser-sahne",
+    },
+    {
+      name: "Örnek Gösteri",
+      city: "Girne",
+      hint: "Etkinlik bileti, sonraki evrede.",
+      image: "tiyatro-salon",
+    },
+    {
+      name: "Örnek Açık Hava",
+      city: "Mağusa",
+      hint: "Etkinlik bileti, sonraki evrede.",
+      image: "acik-hava-sahne",
+    },
   ],
 } as const;
 
@@ -806,7 +885,8 @@ export const trust = {
   s2Title: "Saati seç",
   s2Body: "Uygun saati görür, talep gönderirsin. Talep onay bekler.",
   s3Title: "Onayı takip et",
-  s3Body: "İşletme onaylar veya başka saat önerir. Durum Randevularım’da durur.",
+  s3Body:
+    "İşletme onaylar veya başka saat önerir. Durum Randevularım’da durur.",
   securityTitle: "Güvenlik",
   otp: "Giriş tek kullanımlık 6 haneli kodla.",
   tls: "Bağlantı HTTPS ile şifrelenir.",
@@ -845,7 +925,8 @@ export const whatsappFlow = {
   s2Body: "Asistan boş saatleri veya masaları gösterir.",
   s3Title: "Onayı al",
   s3Body: "Onay gelince dilersen hatırlatma aç.",
-  footnote: "Sohbet görseli stilizedir; resmi bir mesajlaşma arayüzünün kopyası değildir.",
+  footnote:
+    "Sohbet görseli stilizedir; resmi bir mesajlaşma arayüzünün kopyası değildir.",
   headTitle: "Ada Merkez asistanı",
   headSub: "Stilize akış · resmi arayüz değil",
   b1: "Merhaba. Kuaför, klinik veya restoran için saat bakabilirim. Şehir ve gün söylemen yeterli.",
@@ -1013,7 +1094,8 @@ export const isletmeApp = {
   pendingBody:
     "İşletme kaydınız alındı. Yönetici onayından sonra keşif listesine girersiniz. Profil ve hizmetleri şimdiden doldurabilirsiniz.",
   rejectedBadge: "Başvuru kabul edilmedi",
-  rejectedBody: "Bu kayıt onaylanmadı. Yeni bir başvuru için destek ile konuşun.",
+  rejectedBody:
+    "Bu kayıt onaylanmadı. Yeni bir başvuru için destek ile konuşun.",
   registerTitle: "İşletmeni yaz",
   registerLead:
     "Pilot Lefkoşa, Girne ve Mağusa’da. Türkiye’deki işletmeler ayrı bakılır; keşif listesine otomatik düşmez. Başvurmak kabul değildir.",
@@ -1026,7 +1108,8 @@ export const isletmeApp = {
   nextDay: "Sonraki gün",
   today: "Bugün",
   inboxTitle: "Gelen istekler",
-  inboxLead: "Uygulama ve WhatsApp talepleri. Onay veya ret bu panelden verilir; ileti gönderilmez.",
+  inboxLead:
+    "Uygulama ve WhatsApp talepleri. Onay veya ret bu panelden verilir; ileti gönderilmez.",
   whatsappChannel: "WhatsApp talebi",
   appChannel: "Uygulama",
   approve: "Onayla",
@@ -1035,15 +1118,18 @@ export const isletmeApp = {
   suggestSend: "Öneriyi gönder",
   suggestWhen: "Önerilen saat",
   inboxEmptyTitle: "Bekleyen istek yok",
-  inboxEmptyBody: "Gelen rezervasyon veya WhatsApp talebi olunca burada listelenir.",
+  inboxEmptyBody:
+    "Gelen rezervasyon veya WhatsApp talebi olunca burada listelenir.",
   slotsTitle: "Boş saatler",
   slotsLead: "Europe/Nicosia. Çalışma saati yoksa ızgara boş kalır.",
   slotsEmptyTitle: "Çalışma saati yok",
-  slotsEmptyBody: "Personel ve çalışma saatini işletme sayfasından ekleyin. Saat yoksa ızgara boş kalır.",
+  slotsEmptyBody:
+    "Personel ve çalışma saatini işletme sayfasından ekleyin. Saat yoksa ızgara boş kalır.",
   free: "Boş",
   busy: "Dolu",
   profileTitle: "İşletme",
-  profileLead: "Ad, iletişim, hizmet ve fiyatları siz girersiniz. Girilmeyen fiyat boş kalır.",
+  profileLead:
+    "Ad, iletişim, hizmet ve fiyatları siz girersiniz. Girilmeyen fiyat boş kalır.",
   servicesTitle: "Hizmetler ve fiyatlar",
   serviceName: "Hizmet adı",
   duration: "Süre (dakika)",
@@ -1063,7 +1149,8 @@ export const isletmeApp = {
   save: "Kaydet",
   saved: "Kaydedildi.",
   statsTitle: "İstatistik",
-  statsLead: "Yalnızca kayıtlı randevulardan. Kayıt yoksa boş durum gösterilir.",
+  statsLead:
+    "Yalnızca kayıtlı randevulardan. Kayıt yoksa boş durum gösterilir.",
   statsEmptyTitle: "Henüz istatistik yok",
   statsEmptyBody: "Onaylı veya bekleyen randevu olunca sayılar burada durur.",
   statTodayConfirmed: "Bugün onaylı",
@@ -1073,4 +1160,251 @@ export const isletmeApp = {
   kabukiAlt: "Kabuki, Ada Merkez maskotu",
   logout: "Çıkış",
   tz: "Europe/Nicosia",
+} as const;
+
+/** İşletme ve yönetim panellerinin ortak, mobil öncelikli çalışma dili. */
+export const panel = {
+  refresh: "Yenile",
+  refreshing: "Güncelleniyor…",
+  loading: "Çalışma alanın hazırlanıyor…",
+  updated: "Son güncelleme",
+  retry: "Yeniden dene",
+  errorTitle: "Bilgiler alınamadı",
+  errorBody:
+    "Bağlantıyı kontrol edip yeniden dene. Kaydettiğin bilgiler korunur.",
+  stale: "Liste yenilenemedi. Gösterilen bilgiler eski olabilir.",
+  offline:
+    "Çevrimdışısın. Bilgileri yenilemek ve değişiklik yapmak için bağlantı gerekli.",
+  offlineAction: "Bağlantı gerekli",
+  connected: "Bağlantı geri geldi. Bilgiler yenileniyor.",
+  more: "Diğer",
+  moreTitle: "Çalışma alanı",
+  install: "Ana ekrana ekle",
+  updateTitle: "Yeni sürüm hazır",
+  updateBody: "Kaydedilmemiş değişiklikleri kaydet, sonra uygulamayı yenile.",
+  updateAction: "Şimdi yenile",
+  later: "Sonra",
+  save: "Kaydet",
+  saving: "Kaydediliyor…",
+  sending: "Gönderiliyor…",
+  saved: "Değişiklikler kaydedildi.",
+  cancel: "Vazgeç",
+  close: "Kapat",
+  edit: "Düzenle",
+  details: "Detaylar",
+  search: "Ara",
+  searchHint: "Ad, hizmet veya not ara",
+  all: "Tümü",
+  active: "Aktif",
+  inactive: "Pasif",
+  activate: "Aktifleştir",
+  deactivate: "Pasifleştir",
+  status: "Durum",
+  channel: "Kanal",
+  date: "Tarih",
+  allDates: "Tüm tarihler",
+  today: "Bugün",
+  upcoming: "Yaklaşan",
+  past: "Geçmiş",
+  notes: "Müşteri notu",
+  noNotes: "Müşteri notu yok.",
+  noResults: "Eşleşen kayıt yok",
+  noResultsBody: "Aramayı veya süzgeçleri değiştirerek yeniden dene.",
+  clearFilters: "Süzgeçleri temizle",
+  previous: "Önceki",
+  next: "Sonraki",
+  page: "Sayfa",
+  records: "kayıt",
+  shownRecords: "Gösterilen kayıt",
+  confirmTitle: "İşlemi onayla",
+  approveBooking: "Randevuyu onayla",
+  approveBookingBody:
+    "Bu randevu onaylanacak. Müşteri durumunu randevularında görecek.",
+  cancelBooking: "Randevuyu iptal et",
+  cancelBookingBody:
+    "Bu randevu iptal edilecek. Saat yeniden uygun hale gelecek.",
+  approveBusiness: "İşletmeyi onayla",
+  approveBusinessBody:
+    "Bu işletme keşif listesinde görünür olacak. Kayıt bilgilerini kontrol ettiğinden emin ol.",
+  rejectBusiness: "Başvuruyu reddet",
+  rejectBusinessBody: "Bu kayıt reddedilecek ve keşif listesinde görünmeyecek.",
+  reviewApplication: "İncelemeye al",
+  reviewApplicationBody:
+    "Başvuru inceleme durumuna geçecek. Bu işlem işletme hesabı açmaz.",
+  applicationNote:
+    "Pazarlama başvurusu. Onaylamak işletme hesabı açmaz veya keşifte yayımlamaz.",
+  businessRecord: "İşletme kaydı",
+  applicationRecord: "Pazarlama başvurusu",
+  contact: "Başvuru sahibi",
+  approved: "Onaylandı.",
+  cancelled: "Randevu iptal edildi.",
+  rejected: "Reddedildi.",
+  reviewed: "İncelemeye alındı.",
+  suggestionSent: "Saat önerisi müşteriye iletildi.",
+  suggestionFuture: "Gelecekte bir tarih ve saat seç.",
+  suggestionZone: "Saatler Europe/Nicosia ile gösterilir.",
+  deactivateService: "Hizmeti pasifleştir",
+  deactivateServiceBody:
+    "Hizmet yeni randevulara kapatılacak. Geçmiş randevular korunur.",
+  deactivateStaff: "Personeli pasifleştir",
+  deactivateStaffBody:
+    "Personel yeni randevulara atanmayacak. Geçmiş kayıtlar korunur.",
+  removeHours: "Çalışma saatini kaldır",
+  removeHoursBody:
+    "Bu aralıkta yeni randevu alınmayacak. Mevcut randevular iptal edilmez.",
+  invalidHours: "Bitiş saati başlangıçtan sonra olmalı.",
+  setupTitle: "Randevu almaya hazırlan",
+  setupLead: "Bu adımları tamamla; müşteriler uygun saatlerini görebilsin.",
+  setupProfile: "İletişim ve adres bilgileri",
+  setupService: "En az bir aktif hizmet",
+  setupStaff: "En az bir aktif personel",
+  setupHours: "Çalışma saatleri",
+  setupDone: "Kurulum tamamlandı",
+  setupCount: "adım tamamlandı",
+  complete: "Tamamla",
+  done: "Tamam",
+  quickActions: "Hızlı işlemler",
+  viewAll: "Tümünü gör",
+  todayAgenda: "Bugünün randevuları",
+  noAgenda: "Bugün randevu yok",
+  noAgendaBody: "Bugüne ait onaylı veya bekleyen randevular burada görünecek.",
+  weekRequests: "Bu haftaki randevular",
+  weekNote: "Onaylı ve bekleyen randevular · Europe/Nicosia",
+  noChartData: "Bu aralıkta randevu kaydı yok.",
+  pendingQueue: "Öncelikli kuyruk",
+  oldestFirst: "En eski başvuru önce",
+  queueEmpty: "Bekleyen kayıt yok",
+  queueEmptyBody:
+    "Yeni işletme kaydı veya başvuru geldiğinde burada görünecek.",
+  source: "Kayıt türü",
+  reportRange: "Rapor aralığı",
+  thisWeek: "Bu hafta",
+  last7: "Son 7 gün",
+  thisMonth: "Bu ay",
+  customRange: "Özel aralık",
+  from: "Başlangıç",
+  to: "Bitiş",
+  applyRange: "Aralığı uygula",
+  invalidRange:
+    "Başlangıç bitişten önce olmalı; aralık en fazla 31 gün olabilir.",
+  exportCsv: "CSV indir",
+  dailySummary: "Günlük özet",
+  totalBookings: "Toplam randevu",
+  confirmed: "Onaylı",
+  pending: "Bekleyen",
+  cancelledStatus: "İptal",
+  noShow: "Gelmedi",
+  reportNote:
+    "Sayılar sunucudaki tüm kayıtlardan hesaplanır; liste sınırı grafikleri etkilemez.",
+  deviceTitle: "Bu cihaz",
+  installed: "Ana ekranda",
+  browser: "Tarayıcıda",
+  online: "Çevrimiçi",
+  offlineShort: "Çevrimdışı",
+  logoutAction: "Çıkış",
+  logoutError: "Çıkış yapılamadı. Bağlantıyı kontrol edip yeniden dene.",
+  sessionError: "Oturum sona erdi. Yeniden giriş yap.",
+  forbiddenError: "Bu işlem için yetkin yok.",
+  conflictError:
+    "Kayıt başka bir işlemle değişti. Listeyi yenileyip yeniden dene.",
+  unavailableError: "Hizmet şu anda yanıt vermiyor. Daha sonra yeniden dene.",
+  updateError: "Güncelleme uygulanamadı. Biraz sonra yeniden dene.",
+  installUnsupported:
+    "Bu tarayıcı otomatik kurulum istemi sunmuyor. Tarayıcı menüsünde Ana ekrana ekle veya Uygulamayı yükle seçeneğini arayabilirsin.",
+  installError:
+    "Kurulum tamamlanamadı. Tarayıcı menüsünden yeniden deneyebilirsin.",
+  review: "İncelemede",
+  rejectedFilter: "Reddedilen",
+  turkey: "Türkiye",
+  businessName: "İşletme adı",
+  category: "Kategori",
+  address: "Adres",
+  phone: "Telefon",
+  email: "E-posta",
+  whatsappLine: "WhatsApp hattı",
+  description: "Kısa açıklama",
+  serviceDescription: "Hizmet açıklaması",
+  unsaved: "Kaydedilmemiş değişiklikler var.",
+  everyDay: "Her gün",
+  allStaff: "Tüm personel",
+  remove: "Kaldır",
+  operationTitle: "Operasyon merkezi",
+  operationLead:
+    "Kuzey Kıbrıs ve Türkiye için işletme, başvuru ve randevu operasyonu.",
+  auditLimit: "Son 100 işlem.",
+  reportFullHint: "Tam günlük sayılar için Raporlar ekranını kullan.",
+  table: "Masa",
+  tableReservation: "Masa rezervasyonu",
+  appointment: "Randevu",
+  minutesShort: "dk",
+  searchLoadedHint: "Yüklenen kayıtlarda ad veya not ara",
+  validationError:
+    "Gönderilen bilgiler geçerli değil. Alanları kontrol edip yeniden dene.",
+  tableCategory: "Masa / rezervasyon",
+  serviceCategory: "Hizmet",
+  services: "Servisler",
+  timezone: "Saat dilimi",
+  timezoneBody: "Randevu ve raporların takvim günü.",
+  connection: "Bağlantı",
+  displayMode: "Görünüm",
+  activeAppointments: "Aktif randevu",
+  total: "Toplam",
+  day: "Gün",
+  csvDay: "Gün",
+  csvTotal: "Toplam",
+  csvConfirmed: "Onaylı",
+  csvPending: "Bekleyen",
+  csvCancelled: "İptal",
+  csvNoShow: "Gelmedi",
+  csvApp: "Uygulama",
+  csvWhatsapp: "WhatsApp",
+  calendarLead: "Randevular ve uygun saatler, işletmenin yerel günüyle.",
+  calendarEmpty: "Bu günde randevu yok",
+  calendarEmptyBody:
+    "Başka bir gün seçebilir veya gelen talepleri kontrol edebilirsin.",
+  openInbox: "Gelen taleplere git",
+  slotsLead:
+    "Hizmet süresine ve çalışma saatlerine göre uygunluk. Dolu saatler yeni randevuya kapalıdır.",
+  slotsSetup: "Önce aktif bir hizmet ve çalışma saati ekle.",
+  slotsReadOnly:
+    "Bu ekran uygunluğu gösterir; müşteri randevusunu kendisi oluşturur.",
+  onlyFree: "Yalnız boş saatler",
+  showAllSlots: "Boş ve dolu",
+  time: "Saat",
+  bookingDetails: "Randevu detayı",
+  customer: "Müşteri",
+  service: "Hizmet",
+  business: "İşletme",
+  allBusinesses: "Tüm işletmeler",
+  dateRangeOptional: "İsteğe bağlı tarih aralığı",
+  auditActions: {
+    "business.approved": "İşletme onaylandı",
+    "business.rejected": "İşletme reddedildi",
+    "application.approved": "Başvuru onaylandı",
+    "application.rejected": "Başvuru reddedildi",
+    "application.review": "Başvuru incelemeye alındı",
+    "booking.confirmed": "Randevu onaylandı",
+    "booking.cancelled": "Randevu iptal edildi",
+    "booking.no_show": "Gelmedi olarak işaretlendi",
+    "category.create": "Kategori eklendi",
+    "category.update": "Kategori güncellendi",
+  },
+  weekdays: {
+    sunday: "Pazar",
+    monday: "Pazartesi",
+    tuesday: "Salı",
+    wednesday: "Çarşamba",
+    thursday: "Perşembe",
+    friday: "Cuma",
+    saturday: "Cumartesi",
+  },
+  weekdaysShort: {
+    sunday: "Paz",
+    monday: "Pzt",
+    tuesday: "Sal",
+    wednesday: "Çar",
+    thursday: "Per",
+    friday: "Cum",
+    saturday: "Cmt",
+  },
 } as const;

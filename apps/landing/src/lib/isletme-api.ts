@@ -79,29 +79,11 @@ export type StatsRow = {
   pendingIncoming: number;
 };
 
-type ApiError = Error & { status: number; code?: string };
+import { panel } from "@ada-merkez/copy";
+import { panelRequest } from "./panel-api";
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`/app/api/isletme${path.replace(/^\/v1/, "")}`, {
-    ...init,
-    credentials: "same-origin",
-    headers: {
-      "content-type": "application/json",
-      ...(init?.headers ?? {}),
-    },
-  });
-  const body = (await response.json().catch(() => ({}))) as {
-    ok?: boolean;
-    message?: string;
-    code?: string;
-  } & T;
-  if (!response.ok) {
-    const error = new Error(body.message || "İstek başarısız.") as ApiError;
-    error.status = response.status;
-    error.code = body.code;
-    throw error;
-  }
-  return body;
+function request<T>(path: string, init?: RequestInit): Promise<T> {
+  return panelRequest<T>(`/app/api/isletme${path.replace(/^\/v1/, "")}`, init);
 }
 
 export async function fetchMe() {
@@ -119,14 +101,19 @@ export async function registerBusiness(input: {
   whatsapp?: string;
   notes?: string;
 }) {
-  return request<{ ok: true; me: BusinessMe; token?: string }>(`/v1/business/register`, {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
+  return request<{ ok: true; me: BusinessMe; token?: string }>(
+    `/v1/business/register`,
+    {
+      method: "POST",
+      body: JSON.stringify(input),
+    },
+  );
 }
 
+export type BusinessProfile = NonNullable<BusinessMe["business"]>;
+
 export async function patchBusiness(input: Record<string, unknown>) {
-  return request<{ ok: true }>(`/v1/business/me`, {
+  return request<{ ok: true; business: BusinessProfile }>(`/v1/business/me`, {
     method: "PATCH",
     body: JSON.stringify(input),
   });
@@ -141,6 +128,7 @@ export async function createService(input: {
   durationMinutes: number;
   staffId?: string | null;
   priceLabel?: string | null;
+  description?: string | null;
 }) {
   return request<{ ok: true; service: ServiceRow }>(`/v1/business/services`, {
     method: "POST",
@@ -149,14 +137,19 @@ export async function createService(input: {
 }
 
 export async function patchService(id: string, input: Record<string, unknown>) {
-  return request<{ ok: true; service: ServiceRow }>(`/v1/business/services/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(input),
-  });
+  return request<{ ok: true; service: ServiceRow }>(
+    `/v1/business/services/${id}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    },
+  );
 }
 
 export async function removeService(id: string) {
-  return request<{ ok: true }>(`/v1/business/services/${id}`, { method: "DELETE" });
+  return request<{ ok: true }>(`/v1/business/services/${id}`, {
+    method: "DELETE",
+  });
 }
 
 export async function fetchStaff() {
@@ -170,8 +163,20 @@ export async function createStaff(name: string) {
   });
 }
 
+export async function patchStaff(
+  id: string,
+  input: { name?: string; active?: boolean },
+) {
+  return request<{ ok: true; staff: StaffRow }>(`/v1/business/staff/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
+}
+
 export async function fetchAvailability() {
-  return request<{ ok: true; rules: AvailabilityRow[] }>(`/v1/business/availability`);
+  return request<{ ok: true; rules: AvailabilityRow[] }>(
+    `/v1/business/availability`,
+  );
 }
 
 export async function createAvailability(input: {
@@ -180,14 +185,19 @@ export async function createAvailability(input: {
   startsAtMinutes: number;
   endsAtMinutes: number;
 }) {
-  return request<{ ok: true; rule: AvailabilityRow }>(`/v1/business/availability`, {
-    method: "POST",
-    body: JSON.stringify(input),
-  });
+  return request<{ ok: true; rule: AvailabilityRow }>(
+    `/v1/business/availability`,
+    {
+      method: "POST",
+      body: JSON.stringify(input),
+    },
+  );
 }
 
 export async function removeAvailability(id: string) {
-  return request<{ ok: true }>(`/v1/business/availability/${id}`, { method: "DELETE" });
+  return request<{ ok: true }>(`/v1/business/availability/${id}`, {
+    method: "DELETE",
+  });
 }
 
 export async function fetchBookings(query: {
@@ -216,14 +226,21 @@ export async function patchBooking(
   });
 }
 
-export async function fetchSlots(query: { from?: string; days?: number; staffId?: string; serviceId?: string }) {
+export async function fetchSlots(query: {
+  from?: string;
+  days?: number;
+  staffId?: string;
+  serviceId?: string;
+}) {
   const params = new URLSearchParams();
   if (query.from) params.set("from", query.from);
   if (query.days) params.set("days", String(query.days));
   if (query.staffId) params.set("staffId", query.staffId);
   if (query.serviceId) params.set("serviceId", query.serviceId);
   const suffix = params.toString() ? `?${params}` : "";
-  return request<{ ok: true; slots: SlotCell[] }>(`/v1/business/slots${suffix}`);
+  return request<{ ok: true; slots: SlotCell[] }>(
+    `/v1/business/slots${suffix}`,
+  );
 }
 
 export async function fetchStats() {
@@ -231,7 +248,7 @@ export async function fetchStats() {
 }
 
 export function initials(name: string | null | undefined): string {
-  if (!name?.trim()) return "Müşteri";
+  if (!name?.trim()) return panel.customer;
   return name
     .trim()
     .split(/\s+/)
@@ -239,7 +256,10 @@ export function initials(name: string | null | undefined): string {
     .join(" ");
 }
 
-export function formatNicosiaDate(iso: string, options?: Intl.DateTimeFormatOptions) {
+export function formatNicosiaDate(
+  iso: string,
+  options?: Intl.DateTimeFormatOptions,
+) {
   return new Intl.DateTimeFormat("tr-TR", {
     timeZone: "Europe/Nicosia",
     ...options,

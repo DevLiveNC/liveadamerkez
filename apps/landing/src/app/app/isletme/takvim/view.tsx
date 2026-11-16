@@ -1,185 +1,289 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { isletmeApp } from "@ada-merkez/copy";
-import { nicosiaWallTimeToUtc, utcToNicosiaParts } from "@ada-merkez/shared";
-import { EmptyKabuki } from "../../../../components/isletme/EmptyKabuki";
+import Link from "next/link";
+import { useCallback, useState } from "react";
+import { isletmeApp, panel } from "@ada-merkez/copy";
+import {
+  nicosiaDateKey,
+  nicosiaWallTimeToUtc,
+  utcToNicosiaParts,
+} from "@ada-merkez/shared";
+import { BottomSheet } from "@ada-merkez/ui";
+import {
+  DataToolbar,
+  PanelEmpty,
+  PanelError,
+  PanelIntro,
+  PanelLoading,
+  StatusBadge,
+} from "../../../../components/panel/PanelKit";
+import { usePanelData } from "../../../../components/panel/use-panel-data";
 import {
   fetchBookings,
   fetchServices,
-  fetchSlots,
+  fetchStaff,
   formatNicosiaDate,
-  initials,
   type BookingRow,
-  type ServiceRow,
-  type SlotCell,
 } from "../../../../lib/isletme-api";
+import { nicosiaDayRange } from "../../../../lib/panel-workflow";
 
-const HOUR_PX = 64;
-const START_HOUR = 9;
-const HOURS = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
-const DOW = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
-
-function shiftDay(day: Date, delta: number) {
-  const parts = utcToNicosiaParts(day);
-  return nicosiaWallTimeToUtc(parts.year, parts.month, parts.day + delta, 12, 0);
+const WEEK = [
+  panel.weekdaysShort.monday,
+  panel.weekdaysShort.tuesday,
+  panel.weekdaysShort.wednesday,
+  panel.weekdaysShort.thursday,
+  panel.weekdaysShort.friday,
+  panel.weekdaysShort.saturday,
+  panel.weekdaysShort.sunday,
+];
+function shift(key: string, days: number) {
+  const parts = utcToNicosiaParts(new Date(nicosiaDayRange(key)!.from));
+  return nicosiaDateKey(
+    nicosiaWallTimeToUtc(parts.year, parts.month, parts.day + days, 12, 0),
+  );
 }
-
-function weekDays(day: Date) {
-  const parts = utcToNicosiaParts(day);
-  const noon = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day, 12, 0);
-  const weekday = (noon.getUTCDay() + 6) % 7;
-  const start = nicosiaWallTimeToUtc(parts.year, parts.month, parts.day - weekday, 12, 0);
-  return Array.from({ length: 7 }, (_, i) => shiftDay(start, i));
-}
-
-function dayBounds(day: Date) {
-  const parts = utcToNicosiaParts(day);
-  return {
-    from: nicosiaWallTimeToUtc(parts.year, parts.month, parts.day, 0, 0),
-    to: nicosiaWallTimeToUtc(parts.year, parts.month, parts.day + 1, 0, 0),
-    parts,
-  };
-}
-
-function position(startsAt: string, endsAt: string) {
-  const start = utcToNicosiaParts(new Date(startsAt));
-  const end = utcToNicosiaParts(new Date(endsAt));
-  const startMin = start.hour * 60 + start.minute - START_HOUR * 60;
-  const endMin = end.hour * 60 + end.minute - START_HOUR * 60;
-  return {
-    top: Math.max(0, (startMin / 60) * HOUR_PX),
-    height: Math.max(24, ((endMin - startMin) / 60) * HOUR_PX - 4),
-  };
+function clock(iso: string) {
+  return formatNicosiaDate(iso, { hour: "2-digit", minute: "2-digit" });
 }
 
 export function TakvimView() {
-  const [day, setDay] = useState(() => new Date());
-  const [bookings, setBookings] = useState<BookingRow[]>([]);
-  const [slots, setSlots] = useState<SlotCell[]>([]);
-  const [services, setServices] = useState<ServiceRow[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
-
-  const load = useCallback(async () => {
-    const { from, to } = dayBounds(day);
-    const [b, s, svc] = await Promise.all([
-      fetchBookings({ from: from.toISOString(), to: to.toISOString() }),
-      fetchSlots({ from: from.toISOString(), days: 1 }),
-      fetchServices().catch(() => ({ services: [] as ServiceRow[] })),
+  const [day, setDay] = useState(() => nicosiaDateKey(new Date()));
+  const [staffId, setStaffId] = useState("");
+  const [detail, setDetail] = useState<BookingRow | null>(null);
+  const loader = useCallback(async () => {
+    const range = nicosiaDayRange(day)!;
+    const [bookings, services, staff] = await Promise.all([
+      fetchBookings(range),
+      fetchServices(),
+      fetchStaff(),
     ]);
-    setBookings(b.bookings);
-    setSlots(s.slots);
-    setServices(svc.services);
-    setError(false);
-    setLoaded(true);
+    return {
+      bookings: bookings.bookings,
+      services: services.services,
+      staff: staff.staff,
+    };
   }, [day]);
-
-  useEffect(() => {
-    void load().catch(() => {
-      setError(true);
-      setLoaded(true);
-    });
-  }, [load]);
-
-  const days = useMemo(() => weekDays(day), [day]);
-  const selected = utcToNicosiaParts(day);
-  const today = utcToNicosiaParts(new Date());
-  const isToday =
-    selected.year === today.year && selected.month === today.month && selected.day === today.day;
-  const heading = formatNicosiaDate(day.toISOString(), {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
-  if (!loaded) return null;
-  if (error) return <EmptyKabuki kind="hata" />;
-
-  const empty = bookings.length === 0 && slots.length === 0;
-  const serviceName = (id: string | null) => services.find((row) => row.id === id)?.name ?? "Randevu";
-
+  const query = usePanelData(loader, `business-calendar:${day}`);
+  const today = nicosiaDateKey(new Date());
+  const monday = shift(
+    day,
+    -((new Date(`${day}T12:00:00Z`).getUTCDay() + 6) % 7),
+  );
+  const rows = (query.data?.bookings ?? [])
+    .filter((row) => !staffId || row.staffId === staffId)
+    .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+  const serviceName = (row: BookingRow) =>
+    query.data?.services.find((service) => service.id === row.serviceId)
+      ?.name ??
+    (row.kind === "table" ? panel.tableReservation : panel.appointment);
+  const staffName = (id: string | null) =>
+    query.data?.staff.find((row) => row.id === id)?.name ?? panel.allStaff;
   return (
     <>
-      <p className="am-muted" style={{ marginBottom: 12 }}>
-        {heading}. {isletmeApp.tz}.
-      </p>
-      <div className="am-week">
-        {days.map((item) => {
-          const parts = utcToNicosiaParts(item);
-          const on = parts.day === selected.day && parts.month === selected.month;
+      <PanelIntro
+        eyebrow={isletmeApp.loginTitle}
+        title={isletmeApp.navCalendar}
+        action={
+          <Link
+            href="/app/isletme/bos-saatler"
+            className="am-btn am-btn--ghost"
+          >
+            {isletmeApp.navHours}
+          </Link>
+        }
+      >
+        {panel.calendarLead}
+      </PanelIntro>
+      <div className="pn-calendar-controls">
+        <div className="pn-chips">
+          <button
+            type="button"
+            className="am-btn am-btn--ghost"
+            aria-label={isletmeApp.prevDay}
+            onClick={() => setDay(shift(day, -1))}
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            className="am-btn am-btn--ghost"
+            aria-pressed={day === today}
+            onClick={() => setDay(today)}
+          >
+            {panel.today}
+          </button>
+          <button
+            type="button"
+            className="am-btn am-btn--ghost"
+            aria-label={isletmeApp.nextDay}
+            onClick={() => setDay(shift(day, 1))}
+          >
+            →
+          </button>
+        </div>
+        <div className="pn-field">
+          <label htmlFor="calendar-day">{panel.date}</label>
+          <input
+            id="calendar-day"
+            type="date"
+            value={day}
+            onChange={(event) => {
+              if (nicosiaDayRange(event.target.value))
+                setDay(event.target.value);
+            }}
+            required
+          />
+        </div>
+        <div className="pn-field">
+          <label htmlFor="calendar-staff">{isletmeApp.staffTitle}</label>
+          <select
+            id="calendar-staff"
+            value={staffId}
+            onChange={(event) => setStaffId(event.target.value)}
+          >
+            <option value="">{panel.allStaff}</option>
+            {query.data?.staff.map((row) => (
+              <option key={row.id} value={row.id}>
+                {row.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div
+        className="pn-week-strip"
+        role="group"
+        aria-label={panel.reportRange}
+      >
+        {WEEK.map((label, index) => {
+          const key = shift(monday, index);
           return (
             <button
-              key={`${parts.year}-${parts.month}-${parts.day}`}
               type="button"
-              className={`am-week-d${on ? " is-on" : ""}`}
-              onClick={() => setDay(item)}
+              key={key}
+              className={key === day ? "is-on" : ""}
+              aria-pressed={key === day}
+              aria-label={formatNicosiaDate(nicosiaDayRange(key)!.from, {
+                dateStyle: "full",
+              })}
+              onClick={() => setDay(key)}
             >
-              <span className="dow">{DOW[(item.getUTCDay() + 6) % 7]}</span>
-              <span className="num">{parts.day}</span>
+              <span>{label}</span>
+              <strong>{Number(key.slice(8))}</strong>
+              {key === today ? <i aria-hidden="true" /> : null}
             </button>
           );
         })}
       </div>
-      <section className="am-panel-card">
-        <h2>{isToday ? isletmeApp.todayFlow : heading}</h2>
-        {empty ? (
-          <EmptyKabuki kind="rezervasyon-yok" title={isletmeApp.todayEmptyTitle} body={isletmeApp.todayEmptyBody} />
-        ) : (
-          <div className="am-daycal">
-            <div>
-              {HOURS.map((hour) => (
-                <div key={hour} className="am-daycal-hour">
-                  {String(hour).padStart(2, "0")}:00
-                </div>
-              ))}
-            </div>
-            <div className="am-daycal-slots">
-              {HOURS.map((hour) => (
-                <div key={hour} className="line" />
-              ))}
-              {slots
-                .filter((slot) => slot.status === "free")
-                .map((slot) => {
-                  const pos = position(slot.startsAt, slot.endsAt);
-                  return (
-                    <div
-                      key={`free-${slot.startsAt}`}
-                      className="am-cal-block is-free"
-                      style={{ top: pos.top, height: pos.height }}
-                    >
-                      <strong>{isletmeApp.free}</strong>
-                    </div>
-                  );
-                })}
-              {bookings.map((row) => {
-                const pos = position(row.startsAt, row.endsAt);
-                const kind =
-                  row.status === "confirmed" ? "confirmed" : row.status === "pending" ? "pending" : "cancelled";
-                const status =
-                  row.status === "confirmed"
-                    ? isletmeApp.statusConfirmed
-                    : row.status === "pending"
-                      ? isletmeApp.statusPending
-                      : "İptal";
-                return (
-                  <div
-                    key={row.id}
-                    className={`am-cal-block is-${kind}`}
-                    style={{ top: pos.top, height: pos.height }}
-                  >
-                    <strong>
-                      {serviceName(row.serviceId)} · {status}
-                    </strong>
-                    {pos.height >= 40 ? <span>{initials(row.customerName)}</span> : null}
-                  </div>
-                );
+      {query.loading ? (
+        <PanelLoading />
+      ) : !query.data ? (
+        <PanelError
+          message={query.error ?? ""}
+          retry={() => {
+            void query.refresh();
+          }}
+        />
+      ) : (
+        <section className="pn-card">
+          <div className="pn-card-head">
+            <h3>
+              {formatNicosiaDate(nicosiaDayRange(day)!.from, {
+                day: "numeric",
+                month: "long",
+                weekday: "long",
               })}
-            </div>
+            </h3>
+            <span className="pn-setup-count">
+              {rows.length} {panel.records}
+            </span>
           </div>
-        )}
-      </section>
+          <DataToolbar
+            updated={query.updatedAt}
+            refreshing={query.refreshing}
+          />
+          {query.error ? <PanelError compact message={query.error} /> : null}
+          {!rows.length ? (
+            <PanelEmpty
+              title={panel.calendarEmpty}
+              body={panel.calendarEmptyBody}
+              href="/app/isletme/talepler"
+              action={panel.openInbox}
+            />
+          ) : (
+            <div className="pn-calendar-agenda">
+              {rows.map((row) => (
+                <button
+                  type="button"
+                  className="pn-calendar-item"
+                  key={row.id}
+                  onClick={() => setDetail(row)}
+                >
+                  <span className="pn-agenda-time">
+                    {clock(row.startsAt)}
+                    <small>{clock(row.endsAt)}</small>
+                  </span>
+                  <span className="pn-entity-body">
+                    <strong>{row.customerName ?? panel.customer}</strong>
+                    <span>
+                      {serviceName(row)} · {staffName(row.staffId)}
+                    </span>
+                  </span>
+                  <StatusBadge status={row.status} />
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+      <BottomSheet
+        open={Boolean(detail)}
+        onClose={() => setDetail(null)}
+        title={panel.bookingDetails}
+        closeLabel={panel.close}
+        className="pn-confirm-sheet"
+      >
+        {detail ? (
+          <>
+            <dl className="pn-record-details">
+              <div>
+                <dt>{panel.customer}</dt>
+                <dd>{detail.customerName ?? "—"}</dd>
+              </div>
+              <div>
+                <dt>{panel.status}</dt>
+                <dd>
+                  <StatusBadge status={detail.status} />
+                </dd>
+              </div>
+              <div>
+                <dt>{panel.service}</dt>
+                <dd>{serviceName(detail)}</dd>
+              </div>
+              <div>
+                <dt>{isletmeApp.staffTitle}</dt>
+                <dd>{staffName(detail.staffId)}</dd>
+              </div>
+              <div>
+                <dt>{panel.from}</dt>
+                <dd>{clock(detail.startsAt)}</dd>
+              </div>
+              <div>
+                <dt>{panel.to}</dt>
+                <dd>{clock(detail.endsAt)}</dd>
+              </div>
+            </dl>
+            <p className="pn-lead">{detail.notes || panel.noNotes}</p>
+            <Link
+              className="am-btn am-btn--primary am-btn--block"
+              href="/app/isletme/talepler"
+              onClick={() => setDetail(null)}
+            >
+              {panel.openInbox}
+            </Link>
+          </>
+        ) : null}
+      </BottomSheet>
     </>
   );
 }
